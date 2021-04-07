@@ -1,0 +1,33 @@
+cd Bootloader; make all
+make[1]: Entering directory '/root/Bootloader'
+cd BMFS; make all
+make[2]: Entering directory '/root/Bootloader/BMFS'
+gcc -ansi -std=c99 -Wall -pedantic -o bmfs.bin bmfs.c
+make[2]: Leaving directory '/root/Bootloader/BMFS'
+cd Pure64; make all
+make[2]: Entering directory '/root/Bootloader/Pure64'
+make[2]: Nothing to be done for 'all'.
+make[2]: Leaving directory '/root/Bootloader/Pure64'
+make[1]: Leaving directory '/root/Bootloader'
+cd Kernel; make all
+make[1]: Entering directory '/root/Kernel'
+make[1]: Nothing to be done for 'all'.
+make[1]: Leaving directory '/root/Kernel'
+cd Userland; make all
+make[1]: Entering directory '/root/Userland'
+echo "AAAAAAAAAAA"
+AAAAAAAAAAA
+cd SampleCodeModule; make
+make[2]: Entering directory '/root/Userland/SampleCodeModule'
+ld  -T ./sampleCodeModule.ld _loader.o asm/syscallsASM.o Shell/Shell.o libs/stdlib.o libs/stdio.o libs/stdGraphics.o sampleCodeModule.o -o ../0000-sampleCodeModule.bin
+echo "AAAA"
+AAAA
+make[2]: Leaving directory '/root/Userland/SampleCodeModule'
+printf "This is sample data." >> 0001-sampleDataModule.bin && dd if=/dev/zero bs=1 count=1 >> 0001-sampleDataModule.bin
+make[1]: Leaving directory '/root/Userland'
+cd Image; make all
+make[1]: Entering directory '/root/Image'
+../Toolchain/ModulePacker/mp.bin ../Kernel/kernel.bin ../Userland/0000-sampleCodeModule.bin ../Userland/0001-sampleDataModule.bin -o packedKernel.bin
+Makefile:22: recipe for target 'packedKernel.bin' failed
+make[1]: Leaving directory '/root/Image'
+Makefile:14: recipe for target 'image' failed
