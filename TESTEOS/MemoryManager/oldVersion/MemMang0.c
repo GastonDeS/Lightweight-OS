@@ -36,8 +36,7 @@ int num_of_blocks_used(void){
     return (next-start) / BLOCK_SIZE;
 }
 
-//--------------------------------TEST---------------------------------------
-
+//-------------------------------TEST---------------------------------------
 int main(int argc, char const *argv[]){
 
     if(MM_init() == -1 ){

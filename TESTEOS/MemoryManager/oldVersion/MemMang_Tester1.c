@@ -1,17 +1,24 @@
-#include "MemMang1.h"
+#include "MemMang.h"
 
 int main(int argc, char const *argv[]){
 
     //verifico el uso completo de bloques
     char *aux1 = (char*)my_malloc(100);
-    char *aux2 = (char*)my_malloc(50);
-    char *aux3 = (char*)my_malloc(876);
+    char *aux2 = (char*)my_malloc(100);
+    char *aux3 = (char*)my_malloc(100);
+    char *aux4 = (char*)my_malloc(100);
+    char *aux5 = (char*)my_malloc(100);
     printMemoryBLock();
     
-    for (int i = 0; i < 100; i++){aux1[i] = 0;}
+    for (int i = 0; i < 100; i++){aux1[i] = i;}
     for (int i = 0; i < 50; i++){aux2[i] = -1;} 
     for (int i = 0; i < 876; i++){aux3[i] = 0;}
     printAllMemory();
+
+    my_free(aux2);
+    my_free(aux4);
+    my_free(aux3);
+    printMemoryBLock();
 
     char *auxT = (char*)my_malloc(38);
     auxT = (char*)my_malloc(529);
@@ -22,9 +29,7 @@ int main(int argc, char const *argv[]){
     auxT = (char*)my_malloc(50);
     auxT = (char*)my_malloc(69);
     auxT = (char*)my_malloc(89);
-
     printMemoryBLock();
-
 
     void MM_end();
     
