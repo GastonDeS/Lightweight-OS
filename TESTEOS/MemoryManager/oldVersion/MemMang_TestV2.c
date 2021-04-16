@@ -108,7 +108,7 @@ int main(int argc, char const *argv[]){
     srand(time(NULL)); 
     char *aux[1000];
     int flag = 1, dimMaxAux;
-    for (int i = 0; i < 10000 && flag; i++){
+    for (int i = 0; i < 1000 && flag; i++){
         aux[i] = (char*)my_malloc(randNum(1, 20));
         if(aux[i] == NULL){
             flag = 0;

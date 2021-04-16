@@ -14,12 +14,11 @@ void *startMemory = NULL;
 void *currentMemoryLimit = NULL; 
 
 struct infoBlock{
-    size_t size;
+    size_t size; 
     int free;
     struct infoBlock *next;
 };
 typedef struct infoBlock *infoBlockPtr;
-
 
 //private:
 void *sysCall(size_t size);
@@ -93,7 +92,6 @@ void my_free(void *ptr){
     infoBlockPtr blockPtr = getBlockPtr(ptr);
     blockPtr->free = 1;
 }
-
 
 /*--------------------------------debugger------------------------------------
   (*) bloque->next - bloque = bloque->size + INFO_BLOCK_SIZE 

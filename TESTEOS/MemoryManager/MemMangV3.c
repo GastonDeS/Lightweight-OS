@@ -3,6 +3,12 @@
 ** Se agregaron las siguientes mejoras:
 **   -> Se reducieron las llamas al sistema con la funcion MemManager() la cual pide MIN_BYTES_REQUEST bytes que luego administra
 **   -> Si el tamaño del bloque devuelto por findFreeBlock() supera en MAX_DIFF_SIZE al tamaño neceasrio entonces se divide el bolque 
+**   alineamiento
+**   ->pasar int free a char free (o de menor tamaño)
+    (FALTA)
+        ->hacer que printAllMemory y printMemoryBLock sean la misma y con un flag se imprime el contenido de la memorya 
+        ->que la memoria este alineada
+        ->en la parte de debugger se repite mucho codigo
 */
 #include "MemMang.h"
 
@@ -12,13 +18,13 @@ void *memorySize = NULL; //(memorySize-firstInfoBlock) tamaño total de la memor
 void *memoryDim = NULL;  //(memoryDim-firstInfoBlock) bytes usados 
 
 //solo visible para syscall
-#define HEAP_SIZE 10000  //10 Kb 
+#define HEAP_SIZE 8000  //10 Kb 
 void *startMemory = NULL;  
 void *currentMemoryLimit = NULL; 
 
 struct infoBlock{
-    size_t size;
-    int free;
+    size_t size;  //12 bytes
+    char free;  
     struct infoBlock *next;
     struct infoBlock *previous;
 };
@@ -30,7 +36,7 @@ infoBlockPtr findFreeBlock(infoBlockPtr *last, size_t size);
 infoBlockPtr requestSpace(infoBlockPtr last, size_t size);
 void splitBlock(infoBlockPtr block, size_t size);
 infoBlockPtr getBlockPtr(void *ptr);
-void *MemManager(size_t size);
+void *syscallManager(size_t size);
 
 /*----------------------------------------------------------------*/
 void *my_malloc(size_t size){
@@ -52,7 +58,7 @@ void *my_malloc(size_t size){
                 return NULL;
         }else{ //se encontro un boque
             block->free = 0;
-            if(block->size-size-INFO_BLOCK_SIZE > MAX_DIFF_SIZE)//si es muy grande lo divido
+            if((int)block->size-(int)size-(int)INFO_BLOCK_SIZE > (int)MAX_DIFF_SIZE)//si es muy grande lo divido  ------------------------------------------------  CAMBIO!!!!!!
                 splitBlock(block, size); //no esta testiado
         }
     }
@@ -63,12 +69,15 @@ void *my_malloc(size_t size){
 void splitBlock(infoBlockPtr block, size_t size){
     infoBlockPtr newBlock = (void*)(block+1) + size;
     newBlock->free = 1;
-    newBlock->size = block->size-size-INFO_BLOCK_SIZE;
+    newBlock->size = (block->size)-size-INFO_BLOCK_SIZE;
     newBlock->previous = block;
     newBlock->next = block->next;
 
+    if (block->next != NULL)           
+        block->next->previous = newBlock;
+
     block->next = newBlock;
-    block->size = size;
+    block->size = size;    
     return;
 } 
 
@@ -94,7 +103,7 @@ infoBlockPtr findFreeBlock(infoBlockPtr* last, size_t size){
 
 /*----------------------------------------------------------------*/
 infoBlockPtr requestSpace(infoBlockPtr last, size_t size){
-    infoBlockPtr block = MemManager(size + INFO_BLOCK_SIZE);
+    infoBlockPtr block = syscallManager(size + INFO_BLOCK_SIZE);
     if(block == NULL) //no hay mas espacio en el heap
         return NULL;
 
@@ -110,20 +119,22 @@ infoBlockPtr requestSpace(infoBlockPtr last, size_t size){
 }
 
 /*----------------------------------------------------------------*/
-void *MemManager(size_t size){
+void *syscallManager(size_t size){
     if(memoryDim == NULL){ //primer llamado
-        //memoryDim = sysCall(0);
         memorySize = sysCall(0);
         memoryDim = memorySize;
     }
     void* resutl = memoryDim;
     if(memorySize-memoryDim < size){
-        if(size <= MIN_BYTES_REQUEST)
-            memorySize = sysCall(MIN_BYTES_REQUEST);
-        else
-            memorySize = sysCall(size+MIN_BYTES_REQUEST);
-        if(memorySize == NULL)
-            return NULL;
+        void *check = NULL;
+        if(size <= MIN_BYTES_REQUEST){
+            check= sysCall(MIN_BYTES_REQUEST);
+        }else{
+            check= sysCall(size+MIN_BYTES_REQUEST);
+        }
+        if(check == NULL)
+           return NULL; //no hay mas espacio en el heap
+        memorySize = check;
         memoryDim += size; //ver si funciona bien
     }else
         memoryDim += size;
@@ -169,6 +180,7 @@ void my_free(void *ptr){
   (*) current = current->next->previous 
   (*) currentMemoryLimit = memorySize
   (*) firstInfoBlock = startMemory
+  (*) del total de memoria usada mostrar cunata memoria se uso en infoBLocke, cuanta usa el usuario y cuanta en alinear (FALTA)
 */
 int checkMemory(void){
     infoBlockPtr current = firstInfoBlock;
@@ -220,6 +232,7 @@ int checkMemory(void){
     return numError>0?-1:0;
 }
 
+// (*) del total de memoria usada mostrar cunata memoria se uso en infoBLocke, cuanta usa el usuario y cuanta en alinear (FALTA)
 void printMemoryBLock(void){
     infoBlockPtr current = firstInfoBlock;
     int numeberOfBlocks= 0;

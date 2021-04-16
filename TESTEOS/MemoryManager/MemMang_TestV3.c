@@ -10,7 +10,7 @@ int main(int argc, char const *argv[]){
     char *aux3 = (char*)my_malloc(100);
     char *aux4 = (char*)my_malloc(100);
     char *aux5 = (char*)my_malloc(100);
-    printMemoryBLock();
+    //printMemoryBLock();
     checkMemory();
 
     my_free(aux1);
@@ -19,7 +19,7 @@ int main(int argc, char const *argv[]){
     my_free(aux3);
     my_free(aux4);
     my_free(aux5);
-    printAllMemory();
+    //printMemoryBLock();
     checkMemory();
     
     aux1 = (char*)my_malloc(100);
@@ -28,18 +28,17 @@ int main(int argc, char const *argv[]){
     for (int i = 0; i < 100; i++){aux1[i] = i;}
     for (int i = 0; i < 50; i++){aux2[i] = i;} 
     for (int i = 0; i < 876; i++){aux3[i] = i;}
-    printAllMemory();
+    //printMemoryBLock();
     checkMemory();
 
     my_free(aux2);
-    printMemoryBLock();
     checkMemory();
 
     char *auxT = (char*)my_malloc(38);
     auxT = (char*)my_malloc(529);
     auxT = (char*)my_malloc(43);
     auxT = (char*)my_malloc(456);
-    auxT = (char*)my_malloc(352);
+    auxT = (char *)my_malloc(352);
     auxT = (char*)my_malloc(5263);
     auxT = (char*)my_malloc(50);
     auxT = (char*)my_malloc(69);
@@ -47,8 +46,9 @@ int main(int argc, char const *argv[]){
     printMemoryBLock();
     checkMemory();
     */
-    
-    /*//uniones del free
+
+    /*
+    //uniones del free
     char *aux1 = (char*)my_malloc(100);
     char *aux2 = (char*)my_malloc(100);
     printMemoryBLock();
@@ -104,17 +104,48 @@ int main(int argc, char const *argv[]){
     checkMemory();
     */
 
+    //syscallManager()
+    /*
+    char *aux1 = (char *)my_malloc(MIN_BYTES_REQUEST);
+    char *aux2 = (char *)my_malloc(MIN_BYTES_REQUEST);
+    char *aux3 = (char *)my_malloc(MIN_BYTES_REQUEST);
+    char *aux4 = (char *)my_malloc(MIN_BYTES_REQUEST);
+    printMemoryBLock();
+    checkMemory();
+
+    my_free(aux1);
+    my_free(aux2);
+    my_free(aux3);
+    my_free(aux4);
+    printMemoryBLock();
+    checkMemory();
+
+        //limite de heap
+    aux1 = (char *)my_malloc(MIN_BYTES_REQUEST*5);
+    if(aux1 == NULL)
+        printf("el puntero aux1 es NULL\n");
+    aux2 = (char *)my_malloc(MIN_BYTES_REQUEST*10);
+    if(aux2 == NULL)
+        printf("el puntero aux2 es NULL\n");
+    aux3 = (char *)my_malloc(MIN_BYTES_REQUEST*MIN_BYTES_REQUEST);
+    if(aux3 == NULL)
+        printf("el puntero aux3 es NULL\n");
+    printMemoryBLock();
+    checkMemory();
+    */
+
     //fragmentacion 
     srand(time(NULL)); 
     char *aux[1000];
     int flag = 1, dimMaxAux;
-    for (int i = 0; i < 10000 && flag; i++){
-        aux[i] = (char*)my_malloc(randNum(1, 20));
+    for (int i = 0; i < 1000 && flag; i++){
+        aux[i] = (char*)my_malloc(randNum(1, 10));
         if(aux[i] == NULL){
             flag = 0;
             dimMaxAux = i;
         }
     }
+
     printMemoryBLock();
     if(checkMemory() < 0){
         printf("\n---------------------------------------------------------------------------------\n");
@@ -130,7 +161,11 @@ int main(int argc, char const *argv[]){
     for (int i = 0; i < dimMaxAux; i++){
         int auxIndex = randNum(0, dimMaxAux-1);
         my_free(aux[auxIndex]);  
+        //if(checkMemory()<0){
+        //    return;
+        //}
     }
+    
     printMemoryBLock();
     if(checkMemory()<0){
             printf("\n---------------------------------------------------------------------------------\n");
@@ -142,8 +177,10 @@ int main(int argc, char const *argv[]){
         printf("                                   sin Errores\n");
         printf("------------------------------------------------------------------------------------\n\n");
     }
-
     
+    
+    
+
     void MM_end();
     return 0;
 }
