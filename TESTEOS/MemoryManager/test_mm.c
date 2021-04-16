@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "test_util.h"
 
+#include "test_util.h"
 #include "MemMang.h" 
 
 #define MAX_BLOCKS 128
@@ -38,16 +38,19 @@ void test_mm(){
       if (mm_rqs[i].address != NULL)
         memset(mm_rqs[i].address, i, mm_rqs[i].size); // TODO: Port this call as required
 
+    
     // Check
     for (i = 0; i < rq; i++)
       if (mm_rqs[i].address != NULL)
         if(!memcheck(mm_rqs[i].address, i, mm_rqs[i].size))
           printf("ERROR!\n"); // TODO: Port this call as required
+    
 
     // Free
     for (i = 0; i < rq; i++)
       if (mm_rqs[i].address != NULL)
-        free(mm_rqs[i].address);  // TODO: Port this call as required
+        my_free(mm_rqs[i].address);  // TODO: Port this call as required
+  printf("paso\n");
   } 
 }
 
