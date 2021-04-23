@@ -8,6 +8,7 @@
 #include <date_driver.h>
 #include <IO_driver.h>
 #include <exceptions.h>
+#include <memDrive.h>
 
 void writeStr(registerStruct * registers);
 void getDateInfo(uint8_t mode, uint8_t * target);
@@ -85,6 +86,11 @@ void syscallHandler(registerStruct * registers) {
     //rdi -> puntero a int para que devuelva el Error
     readError((uint64_t*)registers->rdi);
     break;
+    case 13: //sbrk
+    //rdi -> trae el size a pedir
+    sbrk((uint64_t) registers->rdi, (void *) registers->rsi);
+    break;
+    
   }
 }
 

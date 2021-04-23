@@ -81,7 +81,7 @@ static void clearShellLine(uint8_t line) {
   for (int i = 0; i < MAX_LINE_LENGTH; i++) {
     lines[line%(TOTAL_LINES-1)][i] = 0;
   }
-}
+} 
 
 static void drawBottomLine() {
   clearScreenLine(0);

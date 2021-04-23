@@ -11,8 +11,20 @@ GLOBAL readErrorSyscall
 GLOBAL setKeyPressedFunctionSyscall
 GLOBAL isMayusSyscall
 GLOBAL getTicksSyscall
+GLOBAL sbrkSyscall
 section .text
 
+
+sbrkSyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 13 ; la 12 ya estaba ocupada
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
 
 ;TODO describir esta syscall
 drawStringSysCall:

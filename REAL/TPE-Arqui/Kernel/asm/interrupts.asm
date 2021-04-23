@@ -113,7 +113,7 @@ _exc06Handler:
 	exceptionHandler 6
 
 picMasterMask:
-	 push rbp
+	push rbp
     mov rbp, rsp
     mov ax, di
     out	21h,al
@@ -121,7 +121,7 @@ picMasterMask:
     retn
 
 picSlaveMask:
-		push    rbp
+	push    rbp
     mov     rbp, rsp
     mov     ax, di  ; ax = mascara de 16 bits
     out	0A1h,al
