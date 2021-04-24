@@ -9,6 +9,7 @@
 #include <IO_driver.h>
 #include <exceptions.h>
 #include <memDrive.h>
+#include <unistd.h>
 
 void writeStr(registerStruct * registers);
 void getDateInfo(uint8_t mode, uint8_t * target);
@@ -91,7 +92,7 @@ void syscallHandler(registerStruct * registers) {
     sbrk((uint64_t) registers->rdi, (void *) registers->rsi);
     break;
     case 14: //execv
-    
+
     break;
   }
 }
