@@ -90,7 +90,9 @@ void syscallHandler(registerStruct * registers) {
     //rdi -> trae el size a pedir
     sbrk((uint64_t) registers->rdi, (void *) registers->rsi);
     break;
+    case 14: //execv
     
+    break;
   }
 }
 

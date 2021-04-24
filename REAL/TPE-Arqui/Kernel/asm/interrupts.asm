@@ -8,10 +8,11 @@ GLOBAL _irq80Handler
 GLOBAL _exc00Handler
 GLOBAL _exc06Handler
 GLOBAL saveInitialConditions
-
+GLOBAL notSoDummyHandler
 
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
+EXTERN scheduler
 
 SECTION .text
 
@@ -54,7 +55,8 @@ SECTION .text
 %macro irqHandlerMaster 1
 	pushState
 
-  mov rsi, rsp ;puntero a los registros
+	;TODO
+  	mov rsi, rsp ;puntero a los registros pone los registros en el segundo parametro
 
 	mov rdi, %1 ; pasaje de parametro
 	call irqDispatcher
@@ -86,6 +88,21 @@ SECTION .text
 	popState
 	iretq
 %endmacro
+
+notSoDummyHandler:
+	pushState
+
+	mov rdi,rsp
+	call scheduler
+	mov rsp, rax
+
+	; signal pic EOI (End of Interrupt)
+	mov al, 20h
+	out 20h, al
+
+	popState
+	iretq
+
 
 _cli:
 	cli

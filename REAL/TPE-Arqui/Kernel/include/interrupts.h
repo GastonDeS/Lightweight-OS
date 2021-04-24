@@ -16,4 +16,6 @@ void _exc06Handler(void);
 
 void saveInitialConditions(void* address);
 
+void notSoDummyHandler(void);
+
 #endif
