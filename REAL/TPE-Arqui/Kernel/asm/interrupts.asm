@@ -9,6 +9,8 @@ GLOBAL _exc00Handler
 GLOBAL _exc06Handler
 GLOBAL saveInitialConditions
 GLOBAL notSoDummyHandler
+GLOBAL createProcessInt
+GLOBAL goToFirstProcess
 
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
@@ -88,6 +90,49 @@ SECTION .text
 	popState
 	iretq
 %endmacro
+
+createProcessInt:
+	;pusheo el bp y el sp del proceso que venia corriento antes
+	mov r8, rbp
+	mov r9, rsp
+	;cambio el stack al stack del proceso
+	mov rbp, rsi ; apunto los SP al final de la memoria 
+	mov rsp, rsi			;es decir comienzo de stack
+	push 0x0 ;Ss = 0x0
+	push rsp ; rsp apuntar al final de la memoria pedida
+	push 0x202 ; rflags = 0x202
+	push 0x8 ; cs, 0x8
+	push rdi ; rpi, main
+	;registers
+	push 0
+	push 1
+	push 2
+	push 3
+	push 4
+	push rdx ; rdi
+	push rcx ; rsi
+	push 7
+	push 8
+	push 9
+	push 10
+	push 11
+	push 12
+	push 13
+	push 14
+	mov rax, rsp
+	;popeo memoria del proceso anterior
+	mov rsp, r9
+	mov rbp, r8
+	ret
+	
+goToFirstProcess:
+	mov rsp, rdi
+	; signal pic EOI (End of Interrupt)
+	mov al, 20h
+	out 20h, al
+
+	popState
+	iretq
 
 notSoDummyHandler:
 	pushState

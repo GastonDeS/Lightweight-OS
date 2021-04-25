@@ -9,7 +9,7 @@
 #include <IO_driver.h>
 #include <exceptions.h>
 #include <memDrive.h>
-#include <unistd.h>
+#include <unistdK.h>
 
 void writeStr(registerStruct * registers);
 void getDateInfo(uint8_t mode, uint8_t * target);
@@ -87,12 +87,14 @@ void syscallHandler(registerStruct * registers) {
     //rdi -> puntero a int para que devuelva el Error
     readError((uint64_t*)registers->rdi);
     break;
+
     case 13: //sbrk
     //rdi -> trae el size a pedir
-    sbrk((uint64_t) registers->rdi, (void *) registers->rsi);
+    sbrk((uint64_t) registers->rdi, (void (**)) registers->rsi);
     break;
-    case 14: //execv
 
+    case 14: //execv
+    createProcess((void (*)()) registers->rdi, (char **) registers->rsi);
     break;
   }
 }
