@@ -19,7 +19,6 @@ int MM_init(){
 }
 
 char* my_malloc(int num_of_Blocks){   
-    
     if ( (next+(BLOCK_SIZE*num_of_Blocks))-start <= MEM_SIZE ){
         char *result = next;
         next += BLOCK_SIZE * num_of_Blocks;

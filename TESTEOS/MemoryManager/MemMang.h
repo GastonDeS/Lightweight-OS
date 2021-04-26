@@ -11,6 +11,5 @@ void* my_malloc(size_t size);
 void my_free(void *ptr);
 
 //debugger
-void printMemoryBLock(void);
-void printAllMemory(void); 
-int checkMemory(void);
+void printMemoryBLock(int printFalg);
+int checkMemory(int ptintFlag);
