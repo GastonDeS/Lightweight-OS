@@ -10,6 +10,7 @@
 #include <exceptions.h>
 #include <memDrive.h>
 #include <unistdK.h>
+#include <scheduler.h>
 
 void writeStr(registerStruct * registers);
 void getDateInfo(uint8_t mode, uint8_t * target);
@@ -96,6 +97,8 @@ void syscallHandler(registerStruct * registers) {
     case 14: //execv
     createProcess((void (*)()) registers->rdi, (char **) registers->rsi);
     break;
+    case 15:
+    endProcess((uint64_t) registers->rdi);
   }
 }
 

@@ -13,8 +13,19 @@ GLOBAL isMayusSyscall
 GLOBAL getTicksSyscall
 GLOBAL sbrkSyscall
 GLOBAL createProcessSyscall
+GLOBAL endProcessSyscall
 section .text
 
+endProcessSyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 15 
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
 
 createProcessSyscall:
   push rbp
