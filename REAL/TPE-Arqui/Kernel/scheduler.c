@@ -1,47 +1,63 @@
 #include <scheduler.h>
 
-#define MAXPROCESS 10
+#define MAXPROCESS 100
 
 struct proces{
     uint64_t *SP;
+    uint64_t PID;
 };
 typedef struct proces *process;
 
-process processArray[MAXPROCESS];
-uint8_t current;
+process processArray[MAXPROCESS] = {0};
+uint8_t current=0;
 uint8_t load=0;
+uint64_t currentPID=0;
 
-uint8_t isPresent(uint64_t *currentProces);
-void changeProcess(uint64_t *currentProces);
+void changeProcess();
 void addProcess(uint64_t *currentProces);
 
 
 uint64_t * scheduler(uint64_t *currentProces){
-    if (!isPresent(currentProces)) {
-        addProcess(currentProces);
+    if (load == 0) {
+        return &currentProces;
     }
-    changeProcess(currentProces);
+    processArray[current]->SP = currentProces;
+    changeProcess();
     return processArray[current]->SP;
 }
 
-void changeProcess(uint64_t *currentProces){
-    current = (current+1)%load;
+void changeProcess(){
+    current  = (current+1)%load;
     return;
-}
-
-uint8_t isPresent(uint64_t *currentProces){
-    if (processArray[current]->SP == currentProces){
-        return 1;
-    }
-    return 0;
 }
 
 void addProcess(uint64_t *currentProces) {
     if (load == MAXPROCESS) {
         return ;
     } else {
-        processArray[load-1] = currentProces;
+        processArray[load]->SP = currentProces;
         load++;
+        processArray[load]->PID = currentPID++;
+        if (load==1) {
+            goToFirstProcess(currentProces);
+        }
+        
     }
     return;
+}
+
+void endProcess(uint64_t pid) {
+    int flag =1;
+    if (pid !=0) {
+        for (int i = 0; i < MAXPROCESS && flag; i++) {
+        if (processArray[i]->PID == pid) {
+            flag = 0;
+            for (int j= i+1; j < current; j++){
+                processArray[i] = processArray[j];
+                i++;
+            }
+            
+        }
+        
+    }
 }

@@ -15,16 +15,16 @@ void inforeg(char args[MAX_ARGS][MAX_ARG_LEN]){
   uint64_t registers[19];
   getRegisters(registers);
   putChar('\n');
-  print("R15: %X - R14: %X\n", registers[18], registers[17]);
-  print("R13: %X - R12: %X\n", registers[16], registers[15]);
-  print("R11: %X - R10: %X\n", registers[14], registers[13]);
-  print("R9: %X - R8: %X\n", registers[12], registers[11]);
-  print("RSI: %X - RDI: %X\n", registers[10], registers[9]);
-  print("RBP: %X - RDX: %X\n", registers[8], registers[7]);
-  print("RCX: %X - RBX: %X\n", registers[6], registers[5]);
-  print("RAX: %X - RIP: %X\n", registers[4], registers[3]);
-  print("CS: %X - FLAGS: %X\n", registers[2], registers[1]);
-  print("RSP: %X\n", registers[0]);
+  print("R15: %X - R14: %X\n", registers[0], registers[1]);
+  print("R13: %X - R12: %X\n", registers[2], registers[3]);
+  print("R11: %X - R10: %X\n", registers[4], registers[5]);
+  print("R9: %X - R8: %X\n", registers[6], registers[7]);
+  print("RSI: %X - RDI: %X\n", registers[8], registers[9]);
+  print("RBP: %X - RDX: %X\n", registers[10], registers[11]);
+  print("RCX: %X - RBX: %X\n", registers[12], registers[13]);
+  print("RAX: %X - RIP: %X\n", registers[14], registers[15]);
+  print("CS: %X - FLAGS: %X\n", registers[16], registers[17]);
+  print("RSP: %X\n", registers[18]);
 }
 
 void printmem(char args[MAX_ARGS][MAX_ARG_LEN]) {

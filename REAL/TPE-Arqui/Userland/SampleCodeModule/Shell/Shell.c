@@ -13,11 +13,13 @@
 #include <stdlib.h>
 #include <chess.h>
 #include <timer.h>
+#include <unistd.h>
 
 static char lines[TOTAL_LINES][MAX_LINE_LENGTH];// = {0};
 static uint8_t lineCursor = 0;
 static uint8_t currentLineNumber = 0;
 
+void exceptions();
 static void addLine();
 static void drawShellLines();
 static void clearShellLine(uint8_t line);
@@ -34,6 +36,11 @@ static int totalCommands = 10;
 void init_shell() {
   setConsoleUpdateFunction(updateShell);
   drawShellLines();
+  // exceptions();
+  while (1) {
+		int ch = getChar();
+		keyPressedShell(ch);
+	}
 }
 void writeToLines(char * buff, int dim) {
   for (int i = 0; i < dim && buff[i] != 0 && i < MAX_LINE_LENGTH; i++) {
@@ -145,6 +152,33 @@ void updateShell(char * buff, int dim) {
 void clearShell() {
   currentLineNumber = 0;
   clearShellLine(0);
+}
+
+void exceptions(){
+  uint64_t error = getError();
+    if (error < 32) {
+      uint64_t registers[19];
+      getRegistersSyscall(registers);
+      print("ERROR: EXCEPTION %x ", error);
+      switch (error) {
+        case 0: print("(DIVISION BY ZERO)\n");
+        break;
+        case 1: print("(INVALID OPCODE)\n");
+      }
+      print("REGISTERS STATUS:\n");
+      print("R15: %X - R14: %X\n", registers[18], registers[17]);
+      print("R13: %X - R12: %X\n", registers[16], registers[15]);
+      print("R11: %X - R10: %X\n", registers[14], registers[13]);
+      print("R9: %X - R8: %X\n", registers[12], registers[11]);
+      print("RSI: %X - RDI: %X\n", registers[10], registers[9]);
+      print("RBP: %X - RDX: %X\n", registers[8], registers[7]);
+      print("RCX: %X - RBX: %X\n", registers[6], registers[5]);
+      print("RAX: %X - RIP: %X\n", registers[4], registers[3]);
+      print("CS: %X - FLAGS: %X\n", registers[2], registers[1]);
+      print("RSP: %X\n", registers[0]);
+    } else {
+      print("What module would you like to run? (type \"help\" to see commands)\n");
+    }
 }
 
 #endif

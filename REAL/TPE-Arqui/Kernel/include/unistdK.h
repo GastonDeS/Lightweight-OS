@@ -1,7 +1,7 @@
-#ifndef UNISTD_H
-#define UNISTD
+#ifndef UNISTDK_H
+#define UNISTDK
 
-#include <syscallsASM.h>
+#include <scheduler.h>
 
 void createProcess(void (*function)(),char **argv);
 
