@@ -15,6 +15,7 @@ GLOBAL goToFirstProcess
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
 EXTERN scheduler
+EXTERN timeHandler
 
 SECTION .text
 
@@ -57,7 +58,7 @@ SECTION .text
 %macro irqHandlerMaster 1
 	pushState
 
-	;TODO
+
   	mov rsi, rsp ;puntero a los registros pone los registros en el segundo parametro
 
 	mov rdi, %1 ; pasaje de parametro
@@ -99,7 +100,7 @@ createProcessInt:
 	mov rbp, rsi ; apunto los SP al final de la memoria 
 	mov rsp, rsi			;es decir comienzo de stack
 	push 0x0 ;Ss = 0x0
-	push rsp ; rsp apuntar al final de la memoria pedida
+	push rbp ; rsp apuntar al final de la memoria pedida
 	push 0x202 ; rflags = 0x202
 	push 0x8 ; cs, 0x8
 	push rdi ; rpi, main
@@ -135,18 +136,11 @@ goToFirstProcess:
 	iretq
 
 notSoDummyHandler:
-	pushState
-
 	mov rdi,rsp
 	call scheduler
 	mov rsp, rax
 
-	; signal pic EOI (End of Interrupt)
-	mov al, 20h
-	out 20h, al
-
-	popState
-	iretq
+	ret
 
 
 _cli:
@@ -158,6 +152,7 @@ _sti:
 	sti
 	ret
 
+;timer
 _irq00Handler:
 	irqHandlerMaster 0
 

@@ -1,7 +1,7 @@
 #include <unistdK.h>
 #include <memDrive.h>
 
-#define PAGESIZE 4*1024 // 4KB
+#define PAGESIZE 4*8*1024 // 4KB
 #define NULL (void*) 0
 
 uint64_t countArgv(char **argv);
