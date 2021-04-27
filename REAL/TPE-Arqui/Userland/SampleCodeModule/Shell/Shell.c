@@ -35,7 +35,7 @@ static int totalCommands = 10;
 
 void init_shell() {
   createProcess(chess,(void *)0);
-  createProcess(chess,(void *)0);
+  // createProcess(chess,(void *)0);
   setConsoleUpdateFunction(updateShell);
   drawShellLines();
   exceptions();

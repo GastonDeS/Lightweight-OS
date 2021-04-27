@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "iterator": "c",
-        "ranges": "c"
+        "ranges": "c",
+        "__locale": "c"
     }
 }

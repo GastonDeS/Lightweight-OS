@@ -64,15 +64,15 @@ void addProcess(uint64_t *currentProces) {
 void endProcess(uint64_t pid) {
     int flag =1;
     if (pid !=0) {
-        for (int i = 0; i < MAXPROCESS && flag; i++) {
-        if (processArray[i].pid == pid) {
-            flag = 0;
-            for (int j= i+1; j < currentPID; j++){
-                processArray[i] = processArray[j];
-                i++;
+        for (int i = 0; i < load && flag; i++) {
+            if (processArray[i].pid == pid) {
+                flag = 0;
+                for (int j= i+1; j < load+1; j++){
+                    processArray[i] = processArray[j];
+                    i++;
+                }
+                load--;
             }
-
         }
-
     }
 }
