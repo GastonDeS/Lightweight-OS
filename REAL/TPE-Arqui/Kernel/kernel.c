@@ -6,6 +6,7 @@
 #include <idtLoader.h>
 #include <test.h>
 #include <interrupts.h>
+#include <unistdK.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
