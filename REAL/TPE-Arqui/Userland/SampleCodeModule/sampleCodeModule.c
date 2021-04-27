@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <unistd.h>
 #include <chess.h>
+// #include <testProces.h>
 
 #define NULL (void *) 0
 
@@ -20,6 +21,10 @@ int main() {
 
 	char **argv = NULL;
 	createProcess(init_shell,argv);
+  // createProcess(drawSomeSquare1,(void *)0);
+  // createProcess(drawSomeSquare2,(void *)0);
+  // createProcess(drawSomeSquare3,(void *)0);
+  // createProcess(drawSomeSquare4,(void *)0);
 
 	drawRect(0,0,100,100,0xff0000);
 

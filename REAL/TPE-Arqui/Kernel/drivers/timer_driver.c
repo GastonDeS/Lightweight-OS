@@ -10,7 +10,7 @@ static uint64_t ticks = 0;
 void timeHandler() {
   ticks++;
   // por ahora lo vamos a poner aca cada N tics
-  if ((ticks % 20 ) == 0){
+  if ((ticks % 90 ) == 0){
     notSoDummyHandler();
   }
 }
