@@ -99,6 +99,7 @@ void syscallHandler(registerStruct * registers) {
     break;
     case 15:
     endProcess((uint64_t) registers->rdi);
+    break;
   }
 }
 

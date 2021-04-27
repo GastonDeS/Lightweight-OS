@@ -23,23 +23,23 @@ uint64_t * scheduler(uint64_t *currentProces){
     if (load == 0) {
         return currentProces;
     }
-    processArray[current].SP = currentProces;
-    processArray[current].times++;
+    processArray[currentPID].SP = currentProces;
+    processArray[currentPID].times++;
     changeProcess();
-    processArray[current].times+=1;
+    processArray[currentPID].times+=1;
     if (isFirstTime()) {
-        goToFirstProcess(processArray[current].SP);
+        goToFirstProcess(processArray[currentPID].SP);
     }
 
-    return processArray[current].SP;
+    return processArray[currentPID].SP;
 }
 
 int isFirstTime(){
-    return processArray[current].times==1;
+    return processArray[currentPID].times==1;
 }
 
 void changeProcess(){
-    current  = (current+1)%load;
+    currentPID  = (currentPID+1)%load;
     return;
 }
 
@@ -51,10 +51,9 @@ void addProcess(uint64_t *currentProces) {
         processArray[load].pid = load;
         processArray[load].times =0;
         load++;
-        processArray[load].pid = currentPID++;
         if (load==1) {
             processArray[load].times++;
-            current=load-1;
+            currentPID=load-1;
             goToFirstProcess(currentProces);
         }
 
@@ -68,7 +67,7 @@ void endProcess(uint64_t pid) {
         for (int i = 0; i < MAXPROCESS && flag; i++) {
         if (processArray[i].pid == pid) {
             flag = 0;
-            for (int j= i+1; j < current; j++){
+            for (int j= i+1; j < currentPID; j++){
                 processArray[i] = processArray[j];
                 i++;
             }
