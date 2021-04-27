@@ -49,10 +49,9 @@ void printmem(char args[MAX_ARGS][MAX_ARG_LEN]) {
   }
 }
 
-void time(char args[MAX_ARGS][MAX_ARG_LEN]) {
-  endProcessSyscall(1);
-  // putChar('\n');
-  // print("%d:%d:%d %d/%d/%d", readHours(), readMinutes(), readSeconds(), readDays(), readMonths(), readYear());
+void time(char args[MAX_ARGS][MAX_ARG_LEN]) { 
+  putChar('\n');
+  print("%d:%d:%d %d/%d/%d", readHours(), readMinutes(), readSeconds(), readDays(), readMonths(), readYear());
 }
 
 void divZero(char args[MAX_ARGS][MAX_ARG_LEN]) {
