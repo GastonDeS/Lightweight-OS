@@ -75,4 +75,14 @@ void endProcess(uint64_t pid) {
             }
         }
     }
+    return;
+}
+
+void getPid(uint64_t *pid) {
+    (*pid) =  currentPID;
+    return;
+}
+
+void listAllProcess(char **ProcessList) {
+    *ProcessList = "Pid : 0 \t SP : 0x60ffb0";
 }

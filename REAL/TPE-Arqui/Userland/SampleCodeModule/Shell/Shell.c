@@ -29,13 +29,13 @@ static void exeCommand(char*);
 static int isCommand(char * name);
 void updateShell(char * buff, int dim);
 
-char commandsNames[][MAX_ARG_LEN]={"time","help","inforeg","chess","printmem","divZero","invalidOPCode","clear","echo","UWU"};
-void  (* run[])(char args[MAX_ARGS][MAX_ARG_LEN]) = {time,help,inforeg,chess,printmem,divZero,invalidOPCode,clear,echo,uwu};
-static int totalCommands = 10;
+char commandsNames[][MAX_ARG_LEN]={"printAllProcess","getPid","kill","time","help","inforeg","chess","printmem","divZero","invalidOPCode","clear","echo","UWU"};
+void  (* run[])(char args[MAX_ARGS][MAX_ARG_LEN]) = {listAllProcess,getPid,kill,time,help,inforeg,chess,printmem,divZero,invalidOPCode,clear,echo,uwu};
+static int totalCommands = 13;
 
 void init_shell() {
-  createProcess(chess,(void *)0);
-  createProcess(chess,(void *)0);
+  // createProcess(chess,(void *)0);
+  // createProcess(chess,(void *)0);
   setConsoleUpdateFunction(updateShell);
   drawShellLines();
   exceptions();

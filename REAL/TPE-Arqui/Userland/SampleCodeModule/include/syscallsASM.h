@@ -17,5 +17,7 @@ void getTicksSyscall(uint64_t *);
 void sbrkSyscall(uint64_t, void *);
 void createProcessSyscall(void (*)(),char **);
 void endProcessSyscall(uint64_t pid);
+void getPidSyscall(uint64_t *);
+void listAllProcessSyscall(char **);
 
 #endif

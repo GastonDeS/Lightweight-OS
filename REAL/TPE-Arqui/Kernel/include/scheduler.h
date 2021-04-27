@@ -7,5 +7,7 @@
 uint64_t * scheduler(uint64_t *);
 void addProcess(uint64_t *);
 void endProcess(uint64_t pid);
+void getPid(uint64_t *pid);
+void listAllProcess(char **ProcessList);
 
 #endif

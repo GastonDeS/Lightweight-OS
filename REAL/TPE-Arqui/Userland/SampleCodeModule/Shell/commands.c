@@ -49,6 +49,29 @@ void printmem(char args[MAX_ARGS][MAX_ARG_LEN]) {
   }
 }
 
+void listAllProcess(char args[MAX_ARGS][MAX_ARG_LEN]) {
+  char **allProcess;
+  listAllProcessSyscall(allProcess);
+  putChar('\n');
+  print("%s",*allProcess);
+}
+
+void getPid(char args[MAX_ARGS][MAX_ARG_LEN]) {
+  putChar('\n');
+  uint64_t *ans;
+  getPidSyscall(ans);
+  print("Pid: %d",*ans);
+  *ans = 5;
+}
+
+
+void kill(char args[MAX_ARGS][MAX_ARG_LEN]) {
+  putChar('\n');
+  print("kill pid: %s",args[1]);
+  int pid = atoi(args[1]);
+  endProcessSyscall(pid);
+}
+
 void time(char args[MAX_ARGS][MAX_ARG_LEN]) { 
   putChar('\n');
   print("%d:%d:%d %d/%d/%d", readHours(), readMinutes(), readSeconds(), readDays(), readMonths(), readYear());

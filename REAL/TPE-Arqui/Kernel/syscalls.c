@@ -100,6 +100,12 @@ void syscallHandler(registerStruct * registers) {
     case 15:
     endProcess((uint64_t) registers->rdi);
     break;
+    case 16: //getPid
+    getPid((uint64_t *) registers->rdi);
+    break;
+    case 17: //ListAllProcess
+    listAllProcess((char *)registers->rdi);
+    break;
   }
 }
 
