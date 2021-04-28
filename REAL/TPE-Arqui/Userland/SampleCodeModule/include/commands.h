@@ -3,6 +3,8 @@
 #define MAX_ARGS 10
 #define MAX_ARG_LEN 32
 
+void blockPid(char args[MAX_ARGS][MAX_ARG_LEN]);
+void unblockPid(char args[MAX_ARGS][MAX_ARG_LEN]);
 void listAllProcess(char args[MAX_ARGS][MAX_ARG_LEN]);
 void getPid(char args[MAX_ARGS][MAX_ARG_LEN]);
 void kill(char args[MAX_ARGS][MAX_ARG_LEN]);
