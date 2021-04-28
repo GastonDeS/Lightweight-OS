@@ -106,6 +106,9 @@ void syscallHandler(registerStruct * registers) {
     case 17: //ListAllProcess
     listAllProcess((char *)registers->rdi);
     break;
+    case 18: //blockPid
+    blockProcess((uint64_t) registers->rdi);
+    break;
   }
 }
 
