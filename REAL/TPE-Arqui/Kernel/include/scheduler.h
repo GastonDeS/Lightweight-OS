@@ -9,5 +9,7 @@ void addProcess(uint64_t *);
 void endProcess(uint64_t pid);
 void getPid(uint64_t *pid);
 void listAllProcess(char **ProcessList);
+void blockProcess(uint64_t pid);
+void unlockProcess(uint64_t pid);
 
 #endif
