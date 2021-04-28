@@ -3,16 +3,18 @@
 
 #define MAXPROCESS 100
 
+typedef enum {ERROR, BLOCKED, KILLED, READY}State;
+
 typedef struct {
     uint64_t *SP;
     uint64_t times;
     uint64_t pid;
+    State state;
 }process;
 
 process processArray[MAXPROCESS];
 uint32_t load=0;
 uint64_t currentPID=0;
-
 
 void changeProcess();
 void addProcess(uint64_t *currentProces);
@@ -40,6 +42,8 @@ int isFirstTime(){
 
 void changeProcess(){
     currentPID  = (currentPID+1)%load;
+    if(processArray[currentPID].state == BLOCKED)
+        currentPID  = (currentPID+1)%load;
     return;
 }
 
@@ -86,3 +90,26 @@ void getPid(uint64_t *pid) {
 void listAllProcess(char **ProcessList) {
     *ProcessList = "PID\tForeground\tname\tSP\tBP\tPriority\t\n.0  \t1      \tshell\t0x60ffb0\t0x600000\t1";
 }
+
+void blockProcess(uint64_t pid){
+    changeState(pid, BLOCKED);
+}
+
+void unlockProcess(uint64_t pid){
+    changeState(pid, READY);
+}
+
+void changeState(uint64_t pid , State state){
+     int flag = 1;
+     if (pid !=0) {
+        for (int i = 0; i < load && flag; i++) {
+            if (processArray[i].pid == pid) {
+                flag = 0;
+                processArray->state  = state;
+            }
+        }
+    }
+}
+
+
+
