@@ -91,6 +91,9 @@ void clear(char args[MAX_ARGS][MAX_ARG_LEN]) {
 
 void help(char args[MAX_ARGS][MAX_ARG_LEN]) {
   print("\nAVAILABLE COMMANDS: \n");
+  print("printAllProcess - Prints all the process pcb");
+  print("getPid - Prints the pid of the current process\n");
+  print("kill [Pid] - kills a process given a Pid\n");
   print("time - Displays current time and date\n");
   print("echo [...] - Prints the given arguments in the shell (%d words max)\n", MAX_ARGS);
   print("chess - Starts a chess game\n");

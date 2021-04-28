@@ -16,7 +16,19 @@ GLOBAL createProcessSyscall
 GLOBAL endProcessSyscall
 GLOBAL getPidSyscall
 GLOBAL listAllProcessSyscall
+GLOBAL blockPidSyscall
 section .text
+
+blockPidSyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 18
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
 
 listAllProcessSyscall:
   push rbp

@@ -84,5 +84,5 @@ void getPid(uint64_t *pid) {
 }
 
 void listAllProcess(char **ProcessList) {
-    *ProcessList = "Pid : 0 \t SP : 0x60ffb0";
+    *ProcessList = "PID\tForeground\tname\tSP\tBP\tPriority\t\n.0  \t1      \tshell\t0x60ffb0\t0x600000\t1";
 }
