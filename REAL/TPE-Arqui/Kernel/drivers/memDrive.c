@@ -10,12 +10,12 @@ void *currentMemoryLimit = (void *)0x600000;
 
 int availableMemCheck(uint64_t size);
 
-void sbrk(uint64_t size,void ** answer){ 
+void* sbrk(uint64_t size){ 
     if(availableMemCheck(size)){
         currentMemoryLimit+=size;
-        *answer = currentMemoryLimit;
+        return currentMemoryLimit;
     } else {
-        *answer =  NULL;
+        return  NULL;
     }
 }
 

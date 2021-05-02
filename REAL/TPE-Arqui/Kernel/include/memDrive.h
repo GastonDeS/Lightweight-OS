@@ -3,6 +3,6 @@
 
 #include <stdint.h>
 
-void sbrk(uint64_t size,void ** answer);
+void* sbrk(uint64_t size);
 
 #endif

@@ -2,7 +2,6 @@
 #include <MemMang.h>
 
 #define PAGESIZE 4*8*1024 // 4KB
-#define NULL (void*) 0
 
 uint64_t countArgv(char **argv);
 

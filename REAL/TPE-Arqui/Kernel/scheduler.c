@@ -16,7 +16,7 @@ typedef struct {
 }process;
 
 process* processArray;
-size_t processArrayDim = 0;
+uint64_t processArrayDim = 0;
 uint32_t load=0;
 uint64_t currentPID=0;
 

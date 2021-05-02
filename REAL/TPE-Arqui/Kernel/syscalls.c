@@ -89,10 +89,10 @@ void syscallHandler(registerStruct * registers) {
     readError((uint64_t*)registers->rdi);
     break;
 
-    case 13: //sbrk
-    //rdi -> trae el size a pedir
-    sbrk((uint64_t) registers->rdi, (void (**)) registers->rsi);
-    break;
+    // case 13: //sbrk
+    // //rdi -> trae el size a pedir
+    // sbrk((uint64_t) registers->rdi, (void (**)) registers->rsi);
+    // break;
 
     case 14: //execv
     createProcess((void (*)()) registers->rdi, (char **) registers->rsi);
@@ -106,9 +106,9 @@ void syscallHandler(registerStruct * registers) {
     getPid((uint64_t *) registers->rdi);
     break;
 
-    case 17: //ListAllProcess
-    listAllProcess((char *)registers->rdi);
-    break;
+    // case 17: //ListAllProcess
+    // listAllProcess((char *)registers->rdi);
+    // break;
 
     case 18: //blockPid
     blockProcess((uint64_t) registers->rdi);

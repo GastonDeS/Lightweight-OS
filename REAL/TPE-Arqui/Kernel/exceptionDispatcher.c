@@ -4,6 +4,7 @@
 #include <regi.h>
 #include <interrupts.h>
 #include <exceptions.h>
+#include <scheduler.h>
 
 void printException();
 
