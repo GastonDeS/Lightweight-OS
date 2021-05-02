@@ -8,7 +8,6 @@
 
 void drawString(int x, int y, char * buffer, int dim, uint64_t fontColor, uint64_t backgroundColor, int fontSize, int alphaBackground) {
   drawStringSysCall(buffer, (uint64_t)dim, (uint64_t)x, (uint64_t)y, fontColor, backgroundColor, (uint64_t)fontSize, (uint64_t)alphaBackground);
-  //drawStringSysCall("ASD", 4, 0, 0, 0xFFFFFF, 0xFF0000, 2, 0);
 }
 
 void clearScreen(uint64_t color) {

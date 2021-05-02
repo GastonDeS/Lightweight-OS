@@ -128,6 +128,15 @@ static uint8_t legalCoordinates(uint64_t x, uint64_t y) {
   return 1;
 }
 
+void writeStr(char *buffer,uint64_t size,uint64_t x,uint64_t y, uint64_t fontColor, uint64_t backgroundColor, uint64_t fontSize, uint64_t alphaBackground) {
+  uint64_t xOffset = 0;
+  for (uint64_t i = 0; i < size && buffer[i] != 0; i++) {
+    char ch = buffer[i];
+    drawChar(x + xOffset, y, ch, fontSize, fontColor, backgroundColor, alphaBackground);
+    xOffset += getCharWidth() * fontSize;
+  }
+}
+
 void drawChar(uint64_t x, uint64_t y, uint8_t character, uint64_t fontSize, color fontColor, color backgroundColor, uint8_t alphaBackground){
 	uint64_t aux_x = x;
 	uint64_t aux_y = y;

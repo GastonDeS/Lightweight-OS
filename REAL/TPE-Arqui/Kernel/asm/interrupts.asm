@@ -1,5 +1,6 @@
 GLOBAL _cli
 GLOBAL _sti
+GLOBAL _hlt
 GLOBAL picMasterMask
 GLOBAL picSlaveMask
 GLOBAL _irq00Handler
@@ -11,6 +12,7 @@ GLOBAL saveInitialConditions
 GLOBAL notSoDummyHandler
 GLOBAL createProcessInt
 GLOBAL goToFirstProcess
+
 
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
@@ -91,6 +93,11 @@ SECTION .text
 	popState
 	iretq
 %endmacro
+
+_hlt:
+    sti
+    hlt
+    ret
 
 createProcessInt:
 	;pusheo el bp y el sp del proceso que venia corriento antes
