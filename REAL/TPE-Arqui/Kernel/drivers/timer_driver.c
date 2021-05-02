@@ -18,7 +18,7 @@ void timeHandler() {
       notSoDummyHandler(); 
 }
 
-void delay(int cantTimerTick){ //se le pasa la cantidad de ciclos de 50ms
+void delay(int cantTimerTick){ //se le pasa la cantidad de ciclos de 55ms
   counter = 0;
   flag = 1;
   while (counter <= cantTimerTick){

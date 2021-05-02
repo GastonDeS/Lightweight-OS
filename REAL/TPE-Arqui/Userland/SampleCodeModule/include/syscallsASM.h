@@ -20,5 +20,6 @@ void endProcessSyscall(uint64_t pid);
 void getPidSyscall(uint64_t *);
 void listAllProcessSyscall(char **);
 void blockPidSyscall(uint64_t pid);
+void unblockPidSyscall(uint64_t pid);
 
 #endif

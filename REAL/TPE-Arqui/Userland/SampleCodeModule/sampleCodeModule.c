@@ -22,9 +22,6 @@ int main() {
 	char **argv = NULL;
 	createProcess(init_shell,argv);
 
-	drawRect(0,0,100,100,0xff0000);
-
-
 	while (1)
 	{
 		/* code */

@@ -17,6 +17,7 @@ GLOBAL endProcessSyscall
 GLOBAL getPidSyscall
 GLOBAL listAllProcessSyscall
 GLOBAL blockPidSyscall
+GLOBAL unblockPidSyscall
 GLOBAL mallocSyscall
 GLOBAL freeSyscall
 
@@ -26,13 +27,24 @@ freeSyscall:
   push rbp
   mov rbp, rsp
 
-  mov rax, 20
+  mov rax, 21
   int 80h
 
   mov rsp, rbp
   pop rbp
   ret
 mallocSyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 20
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
+
+unblockPidSyscall:
   push rbp
   mov rbp, rsp
 

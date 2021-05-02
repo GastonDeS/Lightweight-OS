@@ -46,7 +46,7 @@ int isFirstTime(){
 
 void changeProcess(){
     currentPID  = (currentPID+1)%load;
-    if(processArray[currentPID].state == BLOCKED)
+    while( processArray[currentPID].state == BLOCKED)
         currentPID  = (currentPID+1)%load;
     return;
 }
@@ -61,6 +61,7 @@ void addProcess(uint64_t *currentProces) {
         processArray[load].SP = currentProces;
         processArray[load].pid = load;
         processArray[load].times =0;
+        processArray[load].state = READY;
         load++;
         if (load==1) {
             processArray[load].times++;
@@ -129,7 +130,7 @@ void changeState(uint64_t pid , State state){
         for (int i = 0; i < load && flag; i++) {
             if (processArray[i].pid == pid) {
                 flag = 0;
-                processArray->state  = state;
+                processArray[i].state  = state;
             }
         }
     }

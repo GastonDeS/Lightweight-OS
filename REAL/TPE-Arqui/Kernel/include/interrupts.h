@@ -5,6 +5,7 @@
 
 void _cli();
 void _sti();
+void _hlt();
 void picSlaveMask(uint8_t mask);
 void picMasterMask(uint8_t mask);
 

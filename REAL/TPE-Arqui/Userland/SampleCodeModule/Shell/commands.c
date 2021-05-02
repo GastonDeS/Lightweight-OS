@@ -49,6 +49,18 @@ void printmem(char args[MAX_ARGS][MAX_ARG_LEN]) {
   }
 }
 
+void blockPid(char args[MAX_ARGS][MAX_ARG_LEN]){
+  putChar('\n');
+  int pid = atoi(args[1]);
+  blockPidSyscall(pid);
+}
+
+void unblockPid(char args[MAX_ARGS][MAX_ARG_LEN]){
+  putChar('\n');
+  int pid = atoi(args[1]);
+  unblockPidSyscall(pid);
+}
+
 void listAllProcess(char args[MAX_ARGS][MAX_ARG_LEN]) {
   char **allProcess;
   listAllProcessSyscall(allProcess);
@@ -91,6 +103,8 @@ void clear(char args[MAX_ARGS][MAX_ARG_LEN]) {
 
 void help(char args[MAX_ARGS][MAX_ARG_LEN]) {
   print("\nAVAILABLE COMMANDS: \n");
+  print("unblockPid [Pid] - unblocks a process given a pid");
+  print("blockPid [Pid] - blocks a process given a pid");
   print("printAllProcess - Prints all the process pcb");
   print("getPid - Prints the pid of the current process\n");
   print("kill [Pid] - kills a process given a Pid\n");

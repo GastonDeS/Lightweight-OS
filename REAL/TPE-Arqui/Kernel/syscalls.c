@@ -13,7 +13,6 @@
 #include <scheduler.h>
 #include <MemMang.h>
 
-void writeStr(registerStruct * registers);
 void getDateInfo(uint8_t mode, uint8_t * target);
 
 void syscallHandler(registerStruct * registers) {
@@ -37,7 +36,7 @@ void syscallHandler(registerStruct * registers) {
     //r9 -> backgroundColor
     //r10 -> fontSize
     //r11 -> alphaBackground
-    writeStr(registers);
+    writeStr((char *) registers->rdi,(uint64_t) registers->rsi,(uint64_t) registers->rdx,(uint64_t) registers->rcx,(uint64_t) registers->r8,(uint64_t) registers->r9,(uint64_t) registers->r10,(uint64_t) registers->r11);
     break;
 
     case 2:
@@ -115,13 +114,17 @@ void syscallHandler(registerStruct * registers) {
     blockProcess((uint64_t) registers->rdi);
     break;
 
-    case 19: //malloc
+    case 19: // unlockProcess
+    unlockProcess((uint64_t) registers->rdi);
+    break;
+
+    case 20: //malloc
     malloc((uint64_t)registers->rdi);
     break;
 
-    case 20: //free
+    case 21: //free
     free((uint64_t)registers->rdi);
-    break;
+    
   }
 }
 
@@ -142,15 +145,6 @@ void getDateInfo(uint8_t mode, uint8_t * target) {
   }
 }
 
-void writeStr(registerStruct * registers) {
-  uint64_t xOffset = 0;
-  char * buffer = (char *)registers->rdi;
-  for (uint64_t i = 0; i < registers->rsi && buffer[i] != 0; i++) {
-    char ch = ((char *)registers->rdi)[i];
-    drawChar(registers->rdx + xOffset, registers->rcx, ch, registers->r10, registers->r8, registers->r9, registers->r11);
-    xOffset += getCharWidth() * registers->r10;
-  }
-  //drawChar(0, 0, 'A',1, 0xFFFFFF, 0, 0);
-}
+
 
 #endif
