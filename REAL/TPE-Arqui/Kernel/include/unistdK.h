@@ -4,5 +4,6 @@
 #include <scheduler.h>
 
 void createProcess(void (*function)(),char **argv);
+void exceptionProcess();
 
 #endif

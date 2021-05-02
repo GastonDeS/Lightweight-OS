@@ -19,6 +19,6 @@ void saveInitialConditions(void* address);
 void notSoDummyHandler(void);
 
 uint64_t * createProcessInt(void (*)(),uint64_t *,uint64_t,char **);
-void goToFirstProcess(uint64_t *);
+void goToProcess(uint64_t *);
 
 #endif

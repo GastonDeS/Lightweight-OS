@@ -15,7 +15,6 @@ struct infoBlock{
 typedef struct infoBlock *infoBlockPtr;
 
 //private:
-void *sbrk(uint64_t size);
 infoBlockPtr findFreeBlock(infoBlockPtr *last, uint64_t size);
 infoBlockPtr requestSpace(infoBlockPtr last, uint64_t size);
 void splitBlock(infoBlockPtr block, uint64_t size);
@@ -41,7 +40,7 @@ void *malloc(uint64_t size){
                 return NULL;
         }else{ //se encontro un boque
             block->free = 0;
-            if((int)block->size-(int)size-(int)INFO_BLOCK_SIZE > (int)MAX_DIFF_SIZE)//si es muy grande lo divido  ------------------------------------------------  CAMBIO!!!!!!
+            if((int)block->size-(int)size-(int)INFO_BLOCK_SIZE > (int)MAX_DIFF_SIZE)//si es muy grande lo divido  
                 splitBlock(block, size); //no esta testiado
         }
     }
@@ -148,16 +147,4 @@ void free(void *ptr){
         current->previous = NULL;
     }
     return;
-}
-
-void *sbrk(uint64_t size){
-    void * answer = NULL;
-    sbrkSyscall(size, &answer);
-    if (answer==NULL){
-        drawRectSyscall(150,150,150,150,0xff00ff);
-    } else {
-        drawRectSyscall(150,300,150,150,0xff00ff);
-    }
-    
-    return answer;
 }

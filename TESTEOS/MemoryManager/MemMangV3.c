@@ -39,13 +39,6 @@ void splitBlock(infoBlockPtr block, size_t size);
 infoBlockPtr getBlockPtr(void *ptr);
 void *syscallManager(size_t size);
 
-/*----------------------------------------------------------------*/
-/**
- * @brief 
- * 
- * @param size 
- * @return void* 
- */
 void *my_malloc(size_t size) {
   if (size <= 0)
     return NULL;

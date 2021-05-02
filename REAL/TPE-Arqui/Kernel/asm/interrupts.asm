@@ -10,7 +10,7 @@ GLOBAL _exc06Handler
 GLOBAL saveInitialConditions
 GLOBAL notSoDummyHandler
 GLOBAL createProcessInt
-GLOBAL goToFirstProcess
+GLOBAL goToProcess
 
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
@@ -126,7 +126,7 @@ createProcessInt:
 	mov rbp, r8
 	ret
 	
-goToFirstProcess:
+goToProcess:
 	mov rsp, rdi
 	; signal pic EOI (End of Interrupt)
 	mov al, 20h

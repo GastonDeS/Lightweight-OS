@@ -3,7 +3,6 @@
 
 #include <regi.h>
 #include <interrupts.h>
-#include <video_driver.h>
 #include <exceptions.h>
 
 void exceptionDispatcher(uint64_t exc, registerStruct * registers) {
@@ -13,6 +12,7 @@ void exceptionDispatcher(uint64_t exc, registerStruct * registers) {
     case 6: exc_6h(registers);
     break;
   }
+  exceptionProcess();
 }
 
 #endif

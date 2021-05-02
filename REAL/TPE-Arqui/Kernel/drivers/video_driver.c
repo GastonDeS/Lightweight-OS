@@ -188,6 +188,10 @@ void drawPixel(uint64_t x, uint64_t y, color col) {
     curpos++;
 }
 
+
+
+
+
 uint64_t getCharWidth() {
   return CHAR_WIDTH;
 }

@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 void timeHandler();
+void delay(int cantTimerTick);
 uint64_t getTicks();
 
 #endif

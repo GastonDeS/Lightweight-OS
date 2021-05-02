@@ -11,6 +11,7 @@
 #include <memDrive.h>
 #include <unistdK.h>
 #include <scheduler.h>
+#include <MemMang.h>
 
 void writeStr(registerStruct * registers);
 void getDateInfo(uint8_t mode, uint8_t * target);
@@ -97,17 +98,29 @@ void syscallHandler(registerStruct * registers) {
     case 14: //execv
     createProcess((void (*)()) registers->rdi, (char **) registers->rsi);
     break;
+
     case 15:
-    endProcess((uint64_t) registers->rdi);
+    endProcessWrapper((uint64_t) registers->rdi);
     break;
+
     case 16: //getPid
     getPid((uint64_t *) registers->rdi);
     break;
+
     case 17: //ListAllProcess
     listAllProcess((char *)registers->rdi);
     break;
+
     case 18: //blockPid
     blockProcess((uint64_t) registers->rdi);
+    break;
+
+    case 19: //malloc
+    malloc((uint64_t)registers->rdi);
+    break;
+
+    case 20: //free
+    free((uint64_t)registers->rdi);
     break;
   }
 }

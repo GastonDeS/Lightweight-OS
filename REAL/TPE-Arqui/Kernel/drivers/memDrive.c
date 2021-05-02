@@ -1,10 +1,10 @@
 #include <stdint.h>
 #include <memDrive.h>
 #include <video_driver.h>
-
-#define NULL (void *)0
+#include <stddef.h>
 
 #define HEAP_SIZE 1024*1014*4  // 4Mb entran aprox 1024 4kb sirve masomenos 
+
 void *startMemory = (void *)0x600000;
 void *currentMemoryLimit = (void *)0x600000;
 
@@ -22,3 +22,4 @@ void sbrk(uint64_t size,void ** answer){
 int availableMemCheck(uint64_t size){
     return (currentMemoryLimit-startMemory+size) <= HEAP_SIZE;
 }
+

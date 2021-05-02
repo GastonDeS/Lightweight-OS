@@ -1,7 +1,10 @@
 #include <scheduler.h>
 #include <video_driver.h>
+#include <MemMang.h>
+#include <stddef.h>
 
 #define MAXPROCESS 100
+#define PROCESS_SIZE 
 
 typedef enum {ERROR, BLOCKED, KILLED, READY}State;
 
@@ -12,7 +15,8 @@ typedef struct {
     State state;
 }process;
 
-process processArray[MAXPROCESS];
+process* processArray;
+size_t processArrayDim = 0;
 uint32_t load=0;
 uint64_t currentPID=0;
 
@@ -30,7 +34,7 @@ uint64_t * scheduler(uint64_t *currentProces){
     changeProcess();
     processArray[currentPID].times+=1;
     if (isFirstTime()) {
-        goToFirstProcess(processArray[currentPID].SP);
+        goToProcess(processArray[currentPID].SP);
     }
 
     return processArray[currentPID].SP;
@@ -49,8 +53,11 @@ void changeProcess(){
 
 void addProcess(uint64_t *currentProces) {
     if (load == MAXPROCESS) {
-        return ;
-    } else {
+        return;
+    }else if( load == 0){
+        if((processArray = malloc(MAXPROCESS) == NULL))
+             return;
+    }else{
         processArray[load].SP = currentProces;
         processArray[load].pid = load;
         processArray[load].times =0;
@@ -58,25 +65,42 @@ void addProcess(uint64_t *currentProces) {
         if (load==1) {
             processArray[load].times++;
             currentPID=load-1;
-            goToFirstProcess(currentProces);
+            goToProcess(currentProces);
         }
-
     }
     return;
 }
 
+
+void exceptionProcess(){
+    if(currentPID != 0){
+        endProcess(processArray[currentPID].pid);
+        return;
+    }
+    free(processArray);
+    processArrayDim = 0;
+    load=0;
+    currentPID=0;
+}
+
+void endProcessWrapper(uint64_t pid){
+    if(pid > 0){
+        if(processArray[currentPID].pid == pid)
+            goToProcess(scheduler(currentPID));
+        endProcess(pid);
+    }
+}
+
 void endProcess(uint64_t pid) {
     int flag =1;
-    if (pid !=0) {
-        for (int i = 0; i < load && flag; i++) {
-            if (processArray[i].pid == pid) {
-                flag = 0;
-                for (int j= i+1; j < load+1; j++){
-                    processArray[i] = processArray[j];
-                    i++;
-                }
-                load--;
+    for (int i = 0; i < load && flag; i++) {
+        if (processArray[i].pid == pid) {
+            flag = 0;
+            for (int j= i+1; j < load+1; j++){
+                processArray[i] = processArray[j];
+                i++;
             }
+            load--;
         }
     }
     return;
