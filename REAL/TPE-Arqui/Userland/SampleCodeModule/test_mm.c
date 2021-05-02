@@ -1,7 +1,8 @@
 #include <test_util.h>
-#include <MemMang.h>
 #include <stdio.h>
 #include <stdGraphics.h>
+#include <stdlib.h>
+#include <stddef.h>
 
 #define MAX_BLOCKS 128
 #define MAX_MEMORY 5000 //Should be around 80% of memory managed by the MM
@@ -34,7 +35,7 @@ void test_mm(){
     // Request as many blocks as we can
     while(rq < MAX_BLOCKS && total < MAX_MEMORY){
       mm_rqs[rq].size = GetUniform(MAX_MEMORY - total - 1) + 1;
-      mm_rqs[rq].address = malloc(mm_rqs[rq].size); 
+      mm_rqs[rq].address = malloc(mm_rqs[rq].size);
       if(mm_rqs[rq].address == NULL)
         drawRect(11,0,10,10,0x00ff00);
         // printf("la direccion: %d\n es NULL", rq);

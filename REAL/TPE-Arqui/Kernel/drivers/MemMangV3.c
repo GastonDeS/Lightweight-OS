@@ -148,3 +148,7 @@ void free(void *ptr){
     }
     return;
 }
+
+void mallocSyscall(uint64_t size, void* result){
+    result = malloc(size);
+}

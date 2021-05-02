@@ -52,22 +52,22 @@ void changeProcess(){
 }
 
 void addProcess(uint64_t *currentProces) {
-    if (load == MAXPROCESS) {
+    if (load == MAXPROCESS)
         return;
-    }else if( load == 0){
-        if((processArray = malloc(MAXPROCESS) == NULL))
-             return;
-    }else{
-        processArray[load].SP = currentProces;
-        processArray[load].pid = load;
-        processArray[load].times =0;
-        processArray[load].state = READY;
-        load++;
-        if (load==1) {
-            processArray[load].times++;
-            currentPID=load-1;
-            goToProcess(currentProces);
-        }
+    if(load == 0){
+        processArray = malloc(MAXPROCESS*100);
+        if(processArray == NULL)
+            return;
+    }
+    processArray[load].SP = currentProces;
+    processArray[load].pid = load;
+    processArray[load].times =0;
+    processArray[load].state = READY;
+    load++;
+    if (load==1) {
+        processArray[load].times++;
+        currentPID=load-1;
+        goToProcess(currentProces);
     }
     return;
 }

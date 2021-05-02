@@ -1,6 +1,9 @@
 #ifndef STD_LIB_C
 #define STD_LIB_C value
+
 #include <stdlib.h>
+#include <syscallsASM.h>
+#include <stddef.h>
 
 int atoi(char * str);
 // double strToDouble(char * str);
@@ -118,5 +121,22 @@ char * strcpy(char * dest, char * src) {
   }
   return dest;
 }
+
+void* malloc(long int size){
+  void* result = NULL; 
+  mallocSyscall(size, result);
+  return result;
+}
+
+void free(void *ptr){
+  freeSyscall(ptr);
+}
+
+void* sbrk(long int size){
+  void* result = NULL; 
+  sbrkSyscall(size, result);
+  return result;
+}
+
 
 #endif

@@ -10,5 +10,6 @@
 
 void* malloc(uint64_t size);
 void free(void *ptr);
+void mallocSyscall(uint64_t size, void* result);
 
 #endif

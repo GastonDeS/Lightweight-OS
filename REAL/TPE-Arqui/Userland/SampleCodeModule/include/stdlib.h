@@ -11,4 +11,9 @@ char * strcpy(char * dest, char * src);
 int atohex(char * str);
 char toUpper(char letter);
 char toLower(char letter);
+
+void* malloc(long int size);
+void free(void *ptr);
+void* sbrk(long int size);
+
 #endif

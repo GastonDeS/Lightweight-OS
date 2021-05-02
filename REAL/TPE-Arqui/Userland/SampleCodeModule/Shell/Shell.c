@@ -34,8 +34,8 @@ void  (* run[])(char args[MAX_ARGS][MAX_ARG_LEN]) = {unblockPid,blockPid,listAll
 static int totalCommands = 15;
 
 void init_shell() {
-  // createProcess(chess,(void *)0);
-  // createProcess(chess,(void *)0);
+  createProcess(chess,(void *)0);
+  //createProcess(chess,(void *)0);
   setConsoleUpdateFunction(updateShell);
   drawShellLines();
   exceptions();
