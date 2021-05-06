@@ -18,7 +18,7 @@ int equals(void *e1, void *e2){
     return element2.semId == element1.semId;
 };
 
-listADT semList = newList(sizeof(semData), equals);
+listADT semList = NULL;
 
 //devuleve el id del semaforo
 int createSem();

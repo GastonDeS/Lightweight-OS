@@ -7,6 +7,9 @@ int removeToBlockList(int semId);
 
 int createSem(){
 
+    if(semList == NULL)
+        semList = newList(sizeof(semData), equals);
+
     semData newSem = {maxId++,NULL}; 
     newSem.processQueue = newList(sizeof(int),NULL);
 
@@ -15,7 +18,8 @@ int createSem(){
 }
 
 void semSleep(int semId, int* flag){
-    int pid = getpid();
+    int pid;
+    getPid(&pid);
 
     *flag = addToBlockList(pid, semId);
 
@@ -55,7 +59,7 @@ void semWakeUp(int semId, int* flag){
 int removeToBlockList(int semId){
     //en aux esta el semData con el semId buscado
     semData aux = {semId, NULL};
-    aux = *((semData *)listSearch(semList, &aux));
+    aux = *((semData *)getElem(semList, &aux));
 
     //cheque que exista un semData con el id buscado
     if(&aux == NULL)
