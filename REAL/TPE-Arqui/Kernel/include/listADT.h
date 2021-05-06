@@ -4,17 +4,18 @@
 typedef struct listCDT *listADT;
 
 
-listADT newList(int elemSize, int (*cmp)(void* elem1, void* elem2));
+listADT newList(int elemSize, int (*equals)(void* elem1, void* elem2));
 
 
 int insertBeforeNext(listADT list, void* element);
 
 int addToTheEnd(listADT list, void* element);
 
+//inserta los elementos al principio de la lista
 int insert(listADT  list, void* element);
 
 
-void* getFirstElem(listADT list);
+void* pop(listADT list);
 
 
 int deleteCurrentElem(listADT list);
@@ -26,9 +27,14 @@ int isEmpty(const listADT list);
 
 int size(const listADT list);
 
+void freeList(listADT list);
+
+
 int elementBelongs(const listADT list, void* element);
 
-void freeList(listADT list);
+void* getElem(const listADT list, void* element);
+
+
 
 
 /**

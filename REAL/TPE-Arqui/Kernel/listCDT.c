@@ -1,4 +1,4 @@
-#include "listADT.h"
+#include <listADT.h>
 #include <stddef.h>
 #include <MemMang.h>
 #include <lib.h>
@@ -14,18 +14,18 @@ typedef struct listCDT{
 	nodeP first;
     nodeP iteradorNext; 
 	int valueBytes;
-    int (*cmp)(void* elem1, void* elem2);
+    int (*equals)(void* elem1, void* elem2);
     unsigned int size;
 }listCDT;
 
 //prtivate:
 int search(nodeP current, void* element, int (*comparator)(void*, void*));
 
-listADT newList(int elemSize, int (*cmp)(void* elem1, void* elem2)){
+listADT newList(int elemSize, int (*equals)(void* elem1, void* elem2)){
     listADT list = malloc(sizeof(struct listCDT));
     list->first = NULL;
     list->valueBytes = elemSize;
-    list->cmp = cmp;
+    list->equals = equals;
     list->size = 0;
     list->iteradorNext = NULL;
     return list;
@@ -87,7 +87,7 @@ int insert(listADT list, void* element){
 
 
 //si hubo un error devulve NULL
-void* getFirstElem(listADT list){
+void* pop(listADT list){
     if(isEmpty(list))
         return NULL;
     
@@ -135,7 +135,7 @@ int deleteCurrentElem(listADT list){
 //retorna 1 si lo elimino y 0 si no lo encontro 
 int delete(listADT list, void* element){
     nodeP current = list->first;
-    if(!search(current, element, list->cmp))
+    if(!search(current, element, list->equals))
         return 0;
 
     if(current->next != NULL)
@@ -159,7 +159,14 @@ int size(const listADT list) {
 }
 
 int elementBelongs(const listADT list, void* element){
-	return search(list->first, element, list->cmp);
+	return search(list->first, element, list->equals);
+}
+
+void* getElem(const listADT list, void* element){
+    nodeP elem = list->first;
+    if(search(elem, element, list->equals))
+        return elem;
+    return NULL;
 }
 
 void freeList( listADT list){
@@ -172,8 +179,6 @@ void freeList( listADT list){
 	}
     free(list);
 }
-
-
 
 //   ITERADOR
 void toBegin(listADT list) {
@@ -198,9 +203,8 @@ void* next(listADT list) {
 //si retorna 1 lo encontro sino -1 y en current esta el nodo buscado
 int search(nodeP current, void* element, int (*comparator)(void*, void*)) {
     while (current != NULL){
-        if(comparator(current->value, element) == 0){
+        if(comparator(current->value, element) == 0)
             return 1;
-        }
         current = current->next;
     }
     return -1;     
