@@ -1,13 +1,7 @@
 #ifndef LISTADT_H_
 #define LISTADT_H_
 
-#include <stddef.h>
-#include <MemMang.h>
-#include <lib.h>
-
-
 typedef struct listCDT *listADT;
-
 
 //crea una nueva lista
 listADT newList(int elemSize, int (*equals)(void* elem1, void* elem2));
@@ -53,5 +47,9 @@ void toBegin(listADT list);
 int hasNext(listADT list);
 
 void* next(listADT list);
+
+
+//debugger
+void printList(listADT list,void (*print)(void* n));
 
 #endif 

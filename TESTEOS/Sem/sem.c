@@ -1,27 +1,12 @@
 #include <sem.h>
 
-int maxId = 0;
-
-typedef struct{
-    int semId;
-    listADT processQueue;
-}semData;
-
-int equals(void *e1, void *e2){
-    semData element1 = *((semData *)e1);
-    semData element2 = *((semData *)e2);
-    return element2.semId == element1.semId;
-};
-
-listADT semList = NULL;
 
 //private:
 int addToBlockList(int pid, int id);
 int removeToBlockList(int semId);
 
+int createSem(){
 
-
-void createSem(int* semId){
     if(semList == NULL)
         semList = newList(sizeof(semData), equals);
 
@@ -29,11 +14,7 @@ void createSem(int* semId){
     newSem.processQueue = newList(sizeof(int),NULL);
 
     insert(semList, &newSem);    
-    *semId = maxId;
-}
-
-void removeSem(int semId){
-    //implementar
+    return maxId;
 }
 
 void semSleep(int semId, int* flag){
