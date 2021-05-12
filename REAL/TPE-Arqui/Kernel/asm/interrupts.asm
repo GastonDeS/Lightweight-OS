@@ -142,12 +142,19 @@ goToProcess:
 	popState
 	iretq
 
-notSoDummyHandler:
-	mov rdi,rsp
-	call scheduler
-	mov rsp, rax
+; notSoDummyHandler:
+; 	pushState
 
-	ret
+; 	mov rdi,rsp
+; 	call scheduler
+; 	mov rsp, rax
+
+; 	mov al, 20h
+; 	out 20h, al
+
+; 	popState
+; 	iretq
+; 	; ret
 
 
 _cli:
@@ -161,7 +168,18 @@ _sti:
 
 ;timer
 _irq00Handler:
-	irqHandlerMaster 0
+	call timeHandler
+	pushState
+
+	mov rdi,rsp
+	call scheduler
+	mov rsp, rax
+
+	mov al, 20h
+	out 20h, al
+
+	popState
+	iretq
 
 ;Keyboard
 _irq01Handler:

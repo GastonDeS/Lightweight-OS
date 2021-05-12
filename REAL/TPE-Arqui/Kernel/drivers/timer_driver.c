@@ -13,9 +13,7 @@ void timeHandler() {
   ticks++;// por ahora lo vamos a poner aca cada N tics
   if(flag){
     counter++;
-  }else
-    if((ticks % 90) == 0)
-      notSoDummyHandler(); 
+  }
 }
 
 void delay(int cantTimerTick){ //se le pasa la cantidad de ciclos de 55ms

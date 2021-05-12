@@ -6,11 +6,13 @@
 #include <exceptions.h>
 #include <scheduler.h>
 #include <video_driver.h>
+#include <timer_driver.h>
 
 
 void printException();
 
 void exceptionDispatcher(uint64_t exc, registerStruct * registers) {
+  exceptionProcess();
   switch(exc) {
     case 0: exc_0h(registers);
     printException("00");
@@ -19,7 +21,6 @@ void exceptionDispatcher(uint64_t exc, registerStruct * registers) {
     printException("06");
     break;
   }
-  exceptionProcess();
 }
 
 void printException(char *exception){

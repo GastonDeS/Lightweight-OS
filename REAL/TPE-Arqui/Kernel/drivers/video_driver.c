@@ -50,7 +50,7 @@ struct vbe_mode_info_structure * screenData = (struct vbe_mode_info_structure *)
 
 void clearDisplay(color col) {
   uint64_t totalPixels = screenData->width*screenData->height;
-  uint8_t * curpos = screenData->framebuffer;
+  uint32_t * curpos = screenData->framebuffer;
   uint8_t b = col & 0x0000FF;
 	uint8_t g = (col >> 8) & 0x0000FF;
 	uint8_t r = (col >> 16) & 0x0000FF;
@@ -182,7 +182,7 @@ void drawMatrix(uint64_t x, uint64_t y, color *mat, uint64_t width, uint64_t hei
 
 void drawPixel(uint64_t x, uint64_t y, color col) {
 		if (!legalCoordinates(x, y)) return;
-    uint8_t * curpos = screenData->framebuffer;
+    uint32_t * curpos = screenData->framebuffer;
     curpos+=(x+screenData->width*y)*3;
 
     uint8_t b = col & 0x0000FF;

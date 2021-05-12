@@ -18,7 +18,7 @@ typedef struct {
 process* processArray;
 uint64_t processArrayDim = 0;
 uint32_t load=0;
-uint64_t currentPID=0;
+uint64_t currentPID=-1;
 
 void changeProcess();
 void addProcess(uint64_t *currentProces);
@@ -29,13 +29,10 @@ uint64_t * scheduler(uint64_t *currentProces){
     if (load == 0) {
         return currentProces;
     }
-    processArray[currentPID].SP = currentProces;
-    processArray[currentPID].times++;
-    changeProcess();
-    processArray[currentPID].times+=1;
-    if (isFirstTime()) {
-        goToProcess(processArray[currentPID].SP);
+    if ( currentPID!=-1) {
+        processArray[currentPID].SP = currentProces;
     }
+    changeProcess();
 
     return processArray[currentPID].SP;
 }
@@ -64,11 +61,6 @@ void addProcess(uint64_t *currentProces) {
     processArray[load].times =0;
     processArray[load].state = READY;
     load++;
-    if (load==1) {
-        processArray[load].times++;
-        currentPID=load-1;
-        goToProcess(currentProces);
-    }
     return;
 }
 
@@ -81,7 +73,7 @@ void exceptionProcess(){
     free(processArray);
     processArrayDim = 0;
     load=0;
-    currentPID=0;
+    currentPID=-1;
 }
 
 void endProcessWrapper(uint64_t pid){

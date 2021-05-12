@@ -8,7 +8,6 @@ uint64_t countArgv(char **argv);
 void createProcess(void (*function)(),char **argv){
     void *answer;
     answer = malloc(PAGESIZE);
-    //sbrk(PAGESIZE,&answer); //TODO pasar a kmalloc y luego en addProcess guardarlo
     answer+=PAGESIZE;
     uint64_t argc = countArgv(argv);
     uint64_t *SP = (uint64_t *) createProcessInt(function,answer,argc,argv);

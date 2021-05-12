@@ -14,7 +14,7 @@ void drawMatrixSyscall(uint64_t x, uint64_t y, uint64_t *mat, uint64_t width, ui
 void getMemSyscall(uint64_t, uint64_t*);
 void readErrorSyscall(uint64_t *);
 void getTicksSyscall(uint64_t *);
-void sbrSyscall(uint64_t size, void* result);
+void sbrkSyscall(uint64_t size, void* result);
 void createProcessSyscall(void (*)(),char **);
 void endProcessSyscall(uint64_t pid);
 void getPidSyscall(uint64_t *);
@@ -22,6 +22,6 @@ void listAllProcessSyscall(char **);
 void blockPidSyscall(uint64_t pid);
 void unblockPidSyscall(uint64_t pid);
 void mallocSyscall(uint64_t size, void* result);
-void free(void *ptr);
+void freeSyscall(void *ptr);
 
 #endif

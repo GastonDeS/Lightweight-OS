@@ -62,7 +62,7 @@ void unblockPid(char args[MAX_ARGS][MAX_ARG_LEN]){
 }
 
 void listAllProcess(char args[MAX_ARGS][MAX_ARG_LEN]) {
-  char **allProcess;
+  char **allProcess = (void *)0;
   listAllProcessSyscall(allProcess);
   putChar('\n');
   print("%s",*allProcess);
@@ -70,7 +70,7 @@ void listAllProcess(char args[MAX_ARGS][MAX_ARG_LEN]) {
 
 void getPid(char args[MAX_ARGS][MAX_ARG_LEN]) {
   putChar('\n');
-  uint64_t *ans;
+  uint64_t *ans = (void *) 0;
   getPidSyscall(ans);
   print("Pid: %d",*ans);
   *ans = 5;

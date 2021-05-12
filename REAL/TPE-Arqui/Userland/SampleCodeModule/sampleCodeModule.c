@@ -21,7 +21,6 @@ int main() {
 
 	char **argv = NULL;
 	createProcess(init_shell,argv);
-
 	while (1)
 	{
 		/* code */
