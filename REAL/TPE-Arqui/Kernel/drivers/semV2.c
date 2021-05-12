@@ -1,3 +1,4 @@
+/*
 #include <semV2.h>
 
 #define BLOCK 20
@@ -74,3 +75,4 @@ void semWakeUp(int semId, int* returnValue){
     return;
 }
 
+*/

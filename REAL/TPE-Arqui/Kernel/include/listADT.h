@@ -27,6 +27,8 @@ void* pop(listADT list);
 //se obtiene un puntero del elemento que se puede modificar y cambiar el elemento en la lista
 void* getElem(const listADT list, void* element);
 
+void* getCurrentElem(const listADT list);
+
 
 int deleteCurrentElem(listADT list);
 

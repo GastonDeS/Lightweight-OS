@@ -1,111 +1,89 @@
 #include <scheduler.h>
-#include <video_driver.h>
-#include <MemMang.h>
+//#include <video_driver.h>
+//#include <MemMang.h>
+#include <listADT.h> 
 #include <stddef.h>
 
-#define MAXPROCESS 100
-#define PROCESS_SIZE 
+//#define MAXPROCESS 100
+//#define PROCESS_SIZE 
+
 
 typedef enum {ERROR, BLOCKED, KILLED, READY}State;
 
 typedef struct {
     uint64_t *SP;
-    uint64_t times;
     uint64_t pid;
     State state;
 }process;
 
-process* processArray;
-uint64_t processArrayDim = 0;
-uint32_t load=0;
-uint64_t currentPID=-1;
 
+
+int equals(void* n1, void* n2){
+    process aux1 = *((process*)n1);
+    process aux2 = *((process*)n2);
+    return aux1.pid == aux2.pid;
+}
+
+listADT processList = NULL;
+
+
+//private:
 void changeProcess();
-void addProcess(uint64_t *currentProces);
-int isFirstTime();
 
 
 uint64_t * scheduler(uint64_t *currentProces){
-    if (load == 0) {
+    if (processList == NULL)
         return currentProces;
-    }
-    if ( currentPID!=-1) {
-        processArray[currentPID].SP = currentProces;
-    }
+    
+    process *current = (process*)getCurrentElem(processList);
+    (*current).SP = currentProces;
+
     changeProcess();
 
-    return processArray[currentPID].SP;
-}
+    current = (process*)getCurrentElem(processList);
 
-int isFirstTime(){
-    return processArray[currentPID].times==1;
+    return (*current).SP;
 }
 
 void changeProcess(){
-    currentPID  = (currentPID+1)%load;
-    while( processArray[currentPID].state == BLOCKED)
-        currentPID  = (currentPID+1)%load;
-    return;
+    next(processList);
 }
 
 void addProcess(uint64_t *currentProces) {
-    if (load == MAXPROCESS)
-        return;
-    if(load == 0){
-        processArray = malloc(MAXPROCESS*100);
-        if(processArray == NULL)
+    if(processList == NULL){
+        processList = newList(sizeof(process),equals);
+        if(processList == NULL)
             return;
     }
-    processArray[load].SP = currentProces;
-    processArray[load].pid = load;
-    processArray[load].times =0;
-    processArray[load].state = READY;
-    load++;
+    process newProcess;
+    newProcess.SP = currentProces;
+    newProcess.pid = size(processList);
+    newProcess.state = READY;
+    
+    insertBeforeNext(processList, &newProcess);
     return;
 }
 
-
 void exceptionProcess(){
-    if(currentPID != 0){
-        endProcess(processArray[currentPID].pid);
-        return;
-    }
-    free(processArray);
-    processArrayDim = 0;
-    load=0;
-    currentPID=-1;
+    freeList(processList);
 }
 
 void endProcessWrapper(uint64_t pid){
     if(pid > 0){
-        if(processArray[currentPID].pid == pid)
-            goToProcess(scheduler(currentPID));
-        endProcess(pid);
+        process aux;
+        aux.pid = pid;
+        delete(processList, &aux);
     }
-}
-
-void endProcess(uint64_t pid) {
-    int flag =1;
-    for (int i = 0; i < load && flag; i++) {
-        if (processArray[i].pid == pid) {
-            flag = 0;
-            for (int j= i+1; j < load+1; j++){
-                processArray[i] = processArray[j];
-                i++;
-            }
-            load--;
-        }
-    }
-    return;
 }
 
 void getPid(uint64_t *pid) {
-    (*pid) =  currentPID;
+    process current = *((process*)getCurrentElem(processList));
+    (*pid) =  current.pid;
     return;
 }
 
 void listAllProcess(char **ProcessList) {
-    *ProcessList = "PID\tForeground\tname\tSP\tBP\tPriority\t\n.0  \t1      \tshell\t0x60ffb0\t0x600000\t1";
+    //*ProcessList = "PID\tForeground\tname\tSP\tBP\tPriority\t\n.0  \t1      \tshell\t0x60ffb0\t0x600000\t1";
 }
 
 void blockProcess(uint64_t pid){
@@ -117,15 +95,10 @@ void unlockProcess(uint64_t pid){
 }
 
 void changeState(uint64_t pid , State state){
-     int flag = 1;
-     if (pid !=0) {
-        for (int i = 0; i < load && flag; i++) {
-            if (processArray[i].pid == pid) {
-                flag = 0;
-                processArray[i].state  = state;
-            }
-        }
-    }
+    process *current;
+    (*current).pid = pid;
+    current = (process*)getElem(processList, &current);
+    (*current).state = state;
 }
 
 

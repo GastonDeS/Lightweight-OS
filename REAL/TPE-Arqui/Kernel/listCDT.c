@@ -94,7 +94,7 @@ void* pop(listADT list){
     void* result = malloc(list->valueBytes);
     memcpy(result, list->first->value, list->valueBytes);
 
-    deletFistElem(list);
+    deleteFirstElem(list);
     return result;
 }
 
@@ -159,7 +159,7 @@ int deleteElem(listADT list, void* element, void (*deleteElemValue)(void* value)
         list->first = current->next;
     list->size --;
 
-    freeInnerList(current->value);
+    deleteElemValue(current->value);
     free(current);
 
     return 1;
@@ -198,6 +198,10 @@ void* getElem(const listADT list, void* element){
     if(search(&elem, element, list->equals))
         return elem->value;
     return NULL;
+}
+
+void* getCurrentElem(const listADT list){
+    return list->iteradorNext;
 }
 
 void cleanList(listADT list){

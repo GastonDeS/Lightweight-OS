@@ -1,3 +1,4 @@
+/*
 #include <semUserlandV2.h>
 #include <semAsm.h>
 
@@ -16,7 +17,7 @@ void reallocVec();
 **  ->que se achique el vector a medida que se liberen los sem 
 **  ->testear     
 */
-
+/*
 int newSem(int initialValue){
     if(initialValue >= 0)
         return -1;
@@ -109,3 +110,4 @@ int findFreeSpace(){
     semVecSize++;
     return i;
 }
+*/
