@@ -1,4 +1,7 @@
-#include <listADT.h>
+#include "listADT.h"
+#include <stdlib.h>
+#include <stddef.h>
+#include <string.h>
 
 typedef struct node {
 	void* value;
@@ -243,3 +246,15 @@ nodeP createNode(int valueBytes, void* element){
     memcpy(aux->value, element, valueBytes);
     return aux;
 }
+
+//----------------------------------------------debugger---------------------------------------------------
+
+void printList(listADT list,void (*print)(void* n)){
+    
+    nodeP current = list->first;
+    while(current != NULL){
+        print(current->value);
+        current = current->next;
+    }
+}
+

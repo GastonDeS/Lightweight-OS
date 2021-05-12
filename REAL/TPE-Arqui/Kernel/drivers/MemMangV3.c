@@ -124,7 +124,7 @@ infoBlockPtr getBlockPtr(void *ptr) {
 }
 
 void free(void *ptr){
-    if (!ptr)
+    if (ptr == NULL)
         return;
     infoBlockPtr current = getBlockPtr(ptr);
     current->free = 1;
