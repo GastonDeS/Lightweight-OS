@@ -12,6 +12,7 @@ permite imprimir falta:
 */
 #include "MemMang.h"
 
+
 // INFO_BLOCK_SIZE = 32 bytes
 void *firstInfoBlock = NULL;
 void *memorySize = NULL; //(memorySize-firstInfoBlock) tamaño total de la memoria
@@ -28,7 +29,6 @@ struct infoBlock {
   struct infoBlock *next;
   struct infoBlock *previous;
 };
-
 typedef struct infoBlock *infoBlockPtr;
 
 // private:
@@ -38,6 +38,8 @@ infoBlockPtr requestSpace(infoBlockPtr last, size_t size);
 void splitBlock(infoBlockPtr block, size_t size);
 infoBlockPtr getBlockPtr(void *ptr);
 void *syscallManager(size_t size);
+void joinNextBlock(infoBlockPtr current);
+void* joinPreviousBlock(infoBlockPtr current);
 
 void *my_malloc(size_t size) {
   if (size <= 0)
@@ -59,17 +61,21 @@ void *my_malloc(size_t size) {
         return NULL;
     } else { // se encontro un boque
       block->free = 0;
-      if ((int)block->size - (int)size - (int)INFO_BLOCK_SIZE >
-          (int)MAX_DIFF_SIZE)
-        splitBlock(block, size);
+
+      //if ((int)block->size - (int)size - (int)INFO_BLOCK_SIZE >(int)MAX_DIFF_SIZE )
+      splitBlock(block, size);
     }
   }
   return (block + 1); // la direccion justo despues de infoBlock
 }
 
 /*----------------------------------------------------------------*/
-void splitBlock(infoBlockPtr block, size_t size) {
-  infoBlockPtr newBlock = (void *)(block + 1) + size;
+//solo lo divide si sobran MAX_DIFF_SIZE bytes no usados
+void splitBlock(infoBlockPtr block, size_t size){
+  if ( !((int)block->size - (int)size - (int)INFO_BLOCK_SIZE > (int)MAX_DIFF_SIZE))
+    return;
+
+  infoBlockPtr newBlock = (void*)(block + 1) + size;
   newBlock->free = 1;
   newBlock->size = (block->size) - size - INFO_BLOCK_SIZE;
   newBlock->previous = block;
@@ -105,7 +111,24 @@ infoBlockPtr findFreeBlock(infoBlockPtr *last, size_t size) {
 
 /*----------------------------------------------------------------*/
 infoBlockPtr requestSpace(infoBlockPtr last, size_t size) {
-  infoBlockPtr block = syscallManager(size + INFO_BLOCK_SIZE);
+  void* ptr = syscallManager(size + INFO_BLOCK_SIZE);
+
+  long intPtr = (long) ptr;
+  long align = (intPtr+INFO_BLOCK_SIZE)%64;
+  if(align != 0){
+    if(align < (64-INFO_BLOCK_SIZE))
+      align += (64-INFO_BLOCK_SIZE) - align;
+    else
+      align += 64-align;
+  }
+
+  void* newPtr = (void*)(intPtr+align); 
+
+  //en align queda guardad la cantidad de bits/bytes que se movio el bloque hacia a delante
+  //newPtr es el puntero que hay que usar 
+  
+
+  infoBlockPtr block = newPtr;
   if (block == NULL) // no hay mas espacio en el heap
     return NULL;
 
@@ -126,10 +149,11 @@ void *syscallManager(size_t size) {
     memorySize = sysCall(0);
     memoryDim = memorySize;
   }
+
   void *resutl = memoryDim;
   if (memorySize - memoryDim < size) {
     void *check = NULL;
-    if (size <= MIN_BYTES_REQUEST) {
+    if (size <= MIN_BYTES_REQUEST){
       check = sysCall(MIN_BYTES_REQUEST);
     } else {
       check = sysCall(size + MIN_BYTES_REQUEST);
@@ -137,9 +161,10 @@ void *syscallManager(size_t size) {
     if (check == NULL)
       return NULL; // no hay mas espacio en el heap
     memorySize = check;
-    memoryDim += size; // ver si funciona bien
-  } else
     memoryDim += size;
+  }else
+    memoryDim += size;
+  
   return resutl;
 }
 
@@ -152,8 +177,19 @@ void my_free(void *ptr) {
     return;
   infoBlockPtr current = getBlockPtr(ptr);
   current->free = 1;
+  //si es posible lo uno con el siguiente bloque 
+  joinNextBlock(current);
+
+  //si es posible lo uno con el bloque anterior
+  joinPreviousBlock(current);
+  
+  return;
+}
+
+/*----------------------------------------------------------------*/
+void joinNextBlock(infoBlockPtr current){
   infoBlockPtr aux = current->next;
-  if (aux != NULL && aux->free) { // el siguiente esta libre
+  if (aux != NULL && aux->free){ // el siguiente esta libre
     current->size += aux->size + INFO_BLOCK_SIZE;
     if (aux->next != NULL)
       aux->next->previous = current;
@@ -161,17 +197,58 @@ void my_free(void *ptr) {
     aux->next = NULL;
     aux->previous = NULL;
   }
-  aux = current->previous;
-  if (aux != NULL && aux->free) { // el anterior esta libre
+}
+
+/*----------------------------------------------------------------*/
+void* joinPreviousBlock(infoBlockPtr current){
+  infoBlockPtr aux = current->previous;
+  if (aux != NULL && aux->free){ // el anterior esta libre
     aux->size += current->size + INFO_BLOCK_SIZE;
     if (current->next != NULL)
       current->next->previous = aux;
     aux->next = current->next;
     current->next = NULL;
     current->previous = NULL;
+    return aux;
   }
-  return;
+  return NULL; //no se union 
 }
+
+/*----------------------------------------------------------------*/
+void* my_realloc(void *ptr, size_t newSize){
+  if (!ptr)
+    return NULL;
+  infoBlockPtr current = getBlockPtr(ptr);
+  
+  if(current->size >= newSize) //entra en el bloque actual
+    return ptr;
+
+  //veo si hay espacio despues
+  joinNextBlock(current);
+  if(current->size >= newSize){
+    splitBlock(current, newSize);
+    return (current+1);
+  }
+   
+  /*
+  por la dificultad de la implementacion, si el bloque anterior esta libre no se unen
+
+  infoBlockPtr newCurrent = joinPreviousBlock(current);
+  if (current->size >= newSize){
+    splitBlock(current, newSize);
+    return (current + 1);
+  }
+  */
+
+  //no se puede amplear el tamaño actual, se crea un nuevo bloque
+  void* newPtr = malloc(newSize);
+  if(newPtr == NULL)//si no hay espacio se devulve null y no se modifica ptr
+    return NULL;
+  memcpy(newPtr, ptr, current->size);
+  free(ptr);
+  return newPtr;
+}
+
 
 //----------------------------------------------debugger---------------------------------------------------
 struct data {
@@ -234,6 +311,7 @@ void printData(struct data data) {
   (*) totalBytes es igual a la suma de bytesUsedByBLocks, bytesUsedByUser,
   unusedBytes y bytesUsedByAlign
   (*) numeberOfBlocks es igual a los bloque libre y usados
+  (*) los punteros devueltos por malloc tienen que estar alineados a 64 bit
 */
 int checkMemory(int ptintFlag) {
   infoBlockPtr current = firstInfoBlock;
@@ -258,15 +336,16 @@ int checkMemory(int ptintFlag) {
         freeFlag = 1;
     } else
       freeFlag = 0;
+    
+    long ptr = (long)(current+1);
+    if(ptr % 63 != 0) 
+       printf("(*) En bloque %d; no esta alineado a 64 bits (%p)",blockIndex,(current+1));
 
     if (current->next != NULL) {
-      long notUsed = (long)current->next - (long)current - (int)current->size -
-                     INFO_BLOCK_SIZE;
+      long notUsed = (long)current->next - (long)current - (int)current->size - INFO_BLOCK_SIZE;
       if (notUsed > MAX_DIFF_SIZE) {
         if (ptintFlag)
-          printf("(*) Entre los bloque %d y %d hay %ld bytes no usados (limite "
-                 "permitido: %d)\n",
-                 blockIndex, blockIndex + 1, notUsed, MAX_DIFF_SIZE);
+          printf("(*) Entre los bloque %d y %d hay %ld bytes no usados (limite permitido: %d)\n", blockIndex, blockIndex + 1, notUsed, MAX_DIFF_SIZE);
         numError++;
       }
       if (current != current->next->previous) {

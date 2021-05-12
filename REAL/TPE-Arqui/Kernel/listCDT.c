@@ -98,16 +98,11 @@ void* pop(listADT list){
     return result;
 }
 
-int deletFistElem(listADT list){
+int deleteFirstElem(listADT list){
     if(isEmpty(list))
         return -1;
-    
-    nodeP aux = list->first;
-    list->first = aux->next;
-    list->first->previous = NULL;
-    list->size--;
-    free(aux->value);
-    free(aux);
+
+    removeNode(list->first, list);
 
     return 0;
 }
@@ -150,7 +145,30 @@ int delete(listADT list, void* element){
     return 1;
 }
 
+int deleteElem(listADT list, void* element, void (*deleteElemValue)(void* value)){
+    
+    nodeP current = list->first;
+    if(!search(&current, element, list->equals))
+        return 0;
+    
+    if(current->next != NULL)
+        current->next->previous = current->previous;
+    if(current->previous != NULL)
+        current->previous->next = current->next;
+    else
+        list->first = current->next;
+    list->size --;
+
+    freeInnerList(current->value);
+    free(current);
+
+    return 1;
+}
+
 void removeNode(nodeP current, listADT list){
+
+    if(current == NULL)
+        return;
 
     if(current->next != NULL)
         current->next->previous = current->previous;
@@ -161,7 +179,6 @@ void removeNode(nodeP current, listADT list){
     list->size --;
     free(current->value);
     free(current);
-
 }
 
 int isEmpty(const listADT list){

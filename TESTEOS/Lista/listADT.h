@@ -3,9 +3,15 @@
 
 typedef struct listCDT *listADT;
 
+
+/*return: -1 si hubo un error
+**         1 si lo encotro (en la funciones que coresponda)
+**         0 no lo encontro / funciono bien
+*/
+
+
 //crea una nueva lista
 listADT newList(int elemSize, int (*equals)(void* elem1, void* elem2));
-
 
 int insertBeforeNext(listADT list, void* element);  
 
@@ -13,7 +19,6 @@ int addToTheEnd(listADT list, void* element);
 
 //inserta los elementos al principio de la lista
 int insert(listADT  list, void* element);
-
 
 void* pop(listADT list);
 

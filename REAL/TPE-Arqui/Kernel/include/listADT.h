@@ -21,12 +21,22 @@ int addToTheEnd(listADT list, void* element);
 int insert(listADT  list, void* element);
 
 
+//devuleve le primer elemento y lo elimina de la lista
 void* pop(listADT list);
+
+//se obtiene un puntero del elemento que se puede modificar y cambiar el elemento en la lista
+void* getElem(const listADT list, void* element);
 
 
 int deleteCurrentElem(listADT list);
 
+int deleteFirstElem(listADT list);
+
 int delete(listADT list, void* element);
+
+//en el caso que el elemento guarde un tipo de dato que necesite un free, solo
+//se pude usar este funcion para borrar 
+int deleteElem(listADT list, void* element, void (*deleteElemValue)(void* value)); //falta testear
 
 
 int isEmpty(const listADT list);
@@ -42,7 +52,7 @@ void freeList(listADT list);
 
 int elementBelongs(const listADT list, void* element); 
 
-void* getElem(const listADT list, void* element);
+
 
 
 /**

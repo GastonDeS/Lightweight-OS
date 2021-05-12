@@ -54,6 +54,7 @@ int insertBeforeNext(listADT list, void* element){
     return 0;
 }
 
+
 int addToTheEnd(listADT list, void* element){
     
     if(isEmpty(list))//es el primer elemento

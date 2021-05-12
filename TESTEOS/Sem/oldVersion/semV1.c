@@ -32,18 +32,69 @@ void createSem(int* semId){
     *semId = maxId;
 }
 
-void removeSem(int semId){
-    //implementar
+void removeSem(int semId, int* returnValue){
+    if(semId >= maxId)
+        return;
+    
+    semData aux = {semId,NULL};
+    aux = *((semData*)getElem(semList, &aux));
+    
+    /*//si el semaforo tenia los desbloqueo
+    while(!isEmpty(aux.processQueue))
+        unlockProcess( *((int*)next(aux.processQueue)) );
+        eliminar proceso de la cola
+    */
+
+    //si el semaforo tiene proceso bloqueados no se puede eliminar
+    if(!isEmpty(aux.processQueue)){
+        *returnValue = 0;
+        return;
+    }
+
+    deleteElem(semList, &aux, deleteElemValue);
+    *returnValue = 1;
+    return;
 }
 
-void semSleep(int semId, int* flag){
+void semSleep(int semId, int* returnValue){
+    if(semId >= maxId)
+        return;
+
     int pid;
     getPid(&pid);
 
-    *flag = addToBlockList(pid, semId);
+    *returnValue = addToBlockList(pid, semId);
 
     blockProcess(pid); 
     return;
+}
+
+
+
+void semWakeUp(int semId, int* returnValue){
+    if(semId >= maxId)
+        return;
+
+    //busaco el pid el proceso a despertar
+    int pid = removeToBlockList(semId);
+    
+    //chequeo que exista
+    *returnValue = pid;
+    if(pid == -1)
+        return;
+        
+    //lo despierto
+    unlockProcess(pid);
+    return;
+}
+
+
+
+
+//privare:
+
+void deleteElemValue(void* innerList){
+    freeList((listADT)innerList);
 }
 
 int addToBlockList(int pid, int semId){
@@ -58,21 +109,6 @@ int addToBlockList(int pid, int semId){
     //agrego al final de la cola el pid del proceso que espea entrar al shMem
     return addToTheEnd(aux.processQueue, &pid);
     
-}
-
-void semWakeUp(int semId, int* flag){
-
-    //busaco el pid el proceso a despertar
-    int pid = removeToBlockList(semId);
-    
-    //chequeo que exista
-    *flag = pid;
-    if(pid == -1)
-        return;
-        
-    //lo despierto
-    unlockProcess(pid);
-    return;
 }
 
 int removeToBlockList(int semId){
