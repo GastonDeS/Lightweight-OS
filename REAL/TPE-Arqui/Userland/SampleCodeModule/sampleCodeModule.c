@@ -21,7 +21,7 @@ int main() {
 
 	char **argv = NULL;
 	createProcess(init_shell,argv);
-	createProcess(chess,argv);
+	// createProcess(chess,argv);
 	while (1)
 	{
 		/* code */
