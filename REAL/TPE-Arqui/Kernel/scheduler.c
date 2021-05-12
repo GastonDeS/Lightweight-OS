@@ -26,6 +26,7 @@ int equals(void* n1, void* n2){
 
 listADT processList = NULL;
 
+process *current = NULL;
 
 //private:
 void changeProcess();
@@ -35,18 +36,24 @@ uint64_t * scheduler(uint64_t *currentProces){
     if (processList == NULL)
         return currentProces;
     
-    process *current = (process*)getCurrentElem(processList);
+    if (current==NULL) {
+        current = (process *)next(processList);
+        return (*current).SP;
+    }
+    
     (*current).SP = currentProces;
 
     changeProcess();
-
-    current = (process*)getCurrentElem(processList);
 
     return (*current).SP;
 }
 
 void changeProcess(){
-    next(processList);
+    current = (process *)next(processList);
+    while ((*current).state==BLOCKED) {
+        current = (process *)next(processList);
+    }
+    
 }
 
 void addProcess(uint64_t *currentProces) {
@@ -66,6 +73,7 @@ void addProcess(uint64_t *currentProces) {
 
 void exceptionProcess(){
     freeList(processList);
+    processList = NULL;
 }
 
 void endProcessWrapper(uint64_t pid){
@@ -77,8 +85,7 @@ void endProcessWrapper(uint64_t pid){
 }
 
 void getPid(uint64_t *pid) {
-    process current = *((process*)getCurrentElem(processList));
-    (*pid) =  current.pid;
+    (*pid) =  (*current).pid;
     return;
 }
 
@@ -87,6 +94,7 @@ void listAllProcess(char **ProcessList) {
 }
 
 void blockProcess(uint64_t pid){
+    if (pid==0) return;
     changeState(pid, BLOCKED);
 }
 
@@ -95,10 +103,12 @@ void unlockProcess(uint64_t pid){
 }
 
 void changeState(uint64_t pid , State state){
-    process *current;
-    (*current).pid = pid;
-    current = (process*)getElem(processList, &current);
-    (*current).state = state;
+    process *processAux;
+    (*processAux).pid = pid;
+    processAux = (process*)getElem(processList, processAux);
+    if (processAux!=NULL) {
+        (*processAux).state = state;   
+    }    
 }
 
 

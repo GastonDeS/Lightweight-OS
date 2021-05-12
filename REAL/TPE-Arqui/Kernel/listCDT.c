@@ -201,7 +201,7 @@ void* getElem(const listADT list, void* element){
 }
 
 void* getCurrentElem(const listADT list){
-    return list->iteradorNext;
+    return list->iteradorNext->value;
 }
 
 void cleanList(listADT list){
@@ -235,8 +235,7 @@ void* next(listADT list) {
 	if(!hasNext(list))
 		toBegin(list);
 
-    void* result = malloc(list->valueBytes);
-    memcpy(result, list->iteradorNext->value, list->valueBytes);
+    void* result = list->iteradorNext->value;
 	
     list->iteradorNext = list->iteradorNext->next;
 
@@ -246,18 +245,19 @@ void* next(listADT list) {
 //private:
 //si retorna 1 lo encontro sino -1 y en current esta el nodo buscado
 int search(nodeP* current, void* element, int (*equals)(void*, void*)) {
-    while (current != NULL){
+    while (*current != NULL){
         if(equals((*current)->value, element))
             return 1;
         *current = (*current)->next;
     }
-    return -1;     
+    return 0;     
 }
 
 nodeP createNode(int valueBytes, void* element){
     nodeP aux = malloc(sizeof(struct node));
     if(aux == NULL)
         return NULL;
+    aux->next = NULL;
     aux->value = malloc(valueBytes);
     if(aux->value == NULL)
         return NULL;
