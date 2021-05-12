@@ -62,7 +62,7 @@ void unblockPid(char args[MAX_ARGS][MAX_ARG_LEN]){
 }
 
 void listAllProcess(char args[MAX_ARGS][MAX_ARG_LEN]) {
-  char **allProcess;
+  char **allProcess = (void *)0;
   listAllProcessSyscall(allProcess);
   putChar('\n');
   print("%s",*allProcess);
@@ -70,7 +70,7 @@ void listAllProcess(char args[MAX_ARGS][MAX_ARG_LEN]) {
 
 void getPid(char args[MAX_ARGS][MAX_ARG_LEN]) {
   putChar('\n');
-  uint64_t *ans;
+  uint64_t *ans = (void *) 0;
   getPidSyscall(ans);
   print("Pid: %d",*ans);
   *ans = 5;
@@ -103,9 +103,9 @@ void clear(char args[MAX_ARGS][MAX_ARG_LEN]) {
 
 void help(char args[MAX_ARGS][MAX_ARG_LEN]) {
   print("\nAVAILABLE COMMANDS: \n");
-  print("unblockPid [Pid] - unblocks a process given a pid");
-  print("blockPid [Pid] - blocks a process given a pid");
-  print("printAllProcess - Prints all the process pcb");
+  print("unblockPid [Pid] - unblocks a process given a pid\n");
+  print("blockPid [Pid] - blocks a process given a pid\n");
+  print("printAllProcess - Prints all the process pcb\n");
   print("getPid - Prints the pid of the current process\n");
   print("kill [Pid] - kills a process given a Pid\n");
   print("time - Displays current time and date\n");
