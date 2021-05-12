@@ -3,7 +3,7 @@
 #include <video_driver.h>
 #include <stddef.h>
 
-#define HEAP_SIZE 1024*1014*4  // 4Mb entran aprox 1024 4kb sirve masomenos 
+#define HEAP_SIZE 1024*1024*4  // 4Mb entran aprox 1024 4kb sirve masomenos 
 
 void *startMemory = (void *)0x600000;
 void *currentMemoryLimit = (void *)0x600000;
