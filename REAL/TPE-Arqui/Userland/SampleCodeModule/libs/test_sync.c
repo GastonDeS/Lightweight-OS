@@ -1,4 +1,4 @@
-#include <semaphore.h>
+/*#include <semaphore.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <stddef.h>
@@ -88,3 +88,4 @@ int main(){
   test_sync();
   return 0;
 }
+*/

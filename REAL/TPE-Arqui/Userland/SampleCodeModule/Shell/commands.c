@@ -70,10 +70,9 @@ void listAllProcess(char args[MAX_ARGS][MAX_ARG_LEN]) {
 
 void getPid(char args[MAX_ARGS][MAX_ARG_LEN]) {
   putChar('\n');
-  uint64_t *ans = (void *) 0;
-  getPidSyscall(ans);
-  print("Pid: %d",*ans);
-  *ans = 5;
+  uint64_t pid ;
+  getPidSyscall(&pid);
+  print("Pid: %d",pid);
 }
 
 

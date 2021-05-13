@@ -12,5 +12,6 @@ void listAllProcess(char **ProcessList);
 void blockProcess(uint64_t pid);
 void unlockProcess(uint64_t pid);
 void exceptionProcess();
+void ps(void (*print)(void* n));
 
 #endif
