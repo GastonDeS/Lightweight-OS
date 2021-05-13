@@ -138,5 +138,11 @@ void* sbrk(long int size){
   return result;
 }
 
+void* realloc(void *ptr, long int newSize){
+  void* result = NULL; 
+  reallocSyscall(ptr, newSize, result);
+  return result;
+}
+
 
 #endif

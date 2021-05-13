@@ -1,11 +1,11 @@
-#ifndef SEMUSERLANDV2_H
-#define SEMUSERLANDV2_H
+#ifndef SEMAPHORE_H
+#define SEMAPHORE_H
 
-//#include <MemMang.h>
-//#include <stddef.h>
+#include <stddef.h>
+#include <semAsm.h>
+#include <stdlib.h> 
+#include <syscallsASM.h>
 
-#include <stdio.h>
-#include <stdlib.h>
 
 //crea un nuevo semaforo
 //se le pasa el valor inicial y devulve el id del semaforo

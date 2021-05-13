@@ -20,8 +20,67 @@ GLOBAL blockPidSyscall
 GLOBAL unblockPidSyscall
 GLOBAL mallocSyscall
 GLOBAL freeSyscall
+GLOBAL reallocSyscall
+GLOBAL createSemSyscall
+GLOBAL removeSemSyscall
+GLOBAL semSleepSyscall
+GLOBAL semWakeUpSyscall
 
 section .text
+
+semWakeUpSyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 26
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
+semSleepSyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 25
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
+
+removeSemSyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 24
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
+
+createSemSyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 23
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
+
+reallocSyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 22
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
 
 freeSyscall:
   push rbp

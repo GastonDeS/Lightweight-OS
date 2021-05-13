@@ -1,5 +1,5 @@
-/*
-#include <semV2.h>
+#include <sem.h>
+
 
 #define BLOCK 20
 
@@ -17,7 +17,7 @@ void createSem(int semId, int* returnValue){
     }
     
     if(semVecDim < semId){ 
-        semVec = (int*) realloc(semVec, sizeof(int)*(semVecDim+BLOCK));
+        semVec = realloc(semVec, sizeof(int)*(semVecDim+BLOCK));
         //chequear 
         semVecDim += BLOCK;
     }
@@ -47,7 +47,7 @@ void semSleep(int semId, int* returnValue){
     }   
 
     //obtengo el pid del proceso actual
-    int pid;
+    uint64_t pid;
     getPid(&pid);
 
     //lo agrego a la cola de espera para entrar al shMem
@@ -75,4 +75,3 @@ void semWakeUp(int semId, int* returnValue){
     return;
 }
 
-*/

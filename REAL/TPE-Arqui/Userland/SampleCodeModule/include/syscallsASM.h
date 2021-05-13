@@ -23,5 +23,10 @@ void blockPidSyscall(uint64_t pid);
 void unblockPidSyscall(uint64_t pid);
 void mallocSyscall(uint64_t size, void* result);
 void freeSyscall(void *ptr);
+void reallocSyscall(void *ptr, uint64_t newSize, void* result);
+void createSemSyscall(int semId, int* returnValue);
+void removeSemSyscall(int semId, int* returnValue);
+void semSleepSyscall(int semId, int* returnValue);
+void semWakeUpSyscall(int semId, int* returnValue);
 
 #endif

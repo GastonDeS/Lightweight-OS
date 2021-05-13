@@ -1,5 +1,5 @@
 #include <MemMang.h>
-#include <memDrive.h>
+
 
 //INFO_BLOCK_SIZE = 32 bytes
 void *firstInfoBlock = NULL; 
@@ -149,6 +149,30 @@ void free(void *ptr){
     return;
 }
 
+
+void *realloc(void *ptr, uint64_t newSize){
+    if (!ptr)
+        return NULL;
+    infoBlockPtr current = getBlockPtr(ptr);
+
+    if(current->size > newSize)
+        return ptr;
+    
+    void* newPtr = malloc(newSize);
+    if(newPtr == NULL)//si no hay espacio se devulve null y no se modifica ptr
+        return NULL;
+    memcpy(newPtr, ptr, current->size);
+    free(ptr);
+    return newPtr;
+}
+
+
+
+void reallocSyscall(void *ptr, uint64_t newSize, void* result){
+    result = realloc(ptr, newSize);
+}
+
 void mallocSyscall(uint64_t size, void* result){
     result = malloc(size);
 }
+

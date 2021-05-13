@@ -30,6 +30,7 @@ process *current = NULL;
 
 //private:
 void changeProcess();
+void changeState(uint64_t pid , State state);
 
 
 uint64_t * scheduler(uint64_t *currentProces){

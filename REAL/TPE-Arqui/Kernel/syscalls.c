@@ -12,6 +12,7 @@
 #include <unistdK.h>
 #include <scheduler.h>
 #include <MemMang.h>
+#include <sem.h>
 
 void getDateInfo(uint8_t mode, uint8_t * target);
 
@@ -123,8 +124,29 @@ void syscallHandler(registerStruct * registers) {
     break;
 
     case 21: //free
-    free((uint64_t)registers->rdi);
-    
+    free((uint64_t*)registers->rdi);
+    break;
+
+    case 22:
+    reallocSyscall((void*) registers->rdi, (uint64_t) registers->rsi, (void*) registers->rdx);
+    break;
+
+    case 23:
+    createSem((int) registers->rdi, (int *) registers->rsi);
+    break;
+
+    case 24:
+    removeSem((int) registers->rdi, (int *) registers->rsi);
+    break;
+
+    case 25:
+    semSleep((int) registers->rdi, (int *) registers->rsi);
+    break;
+
+    case 26:
+    semWakeUp((int) registers->rdi, (int *) registers->rsi);
+    break;
+
   }
 }
 

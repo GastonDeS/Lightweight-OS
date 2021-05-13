@@ -1,7 +1,4 @@
-/*
-#include <semUserlandV2.h>
-#include <semAsm.h>
-
+#include <semaphore.h>
 #define BLOCK 20
 
 int* semVec = NULL;
@@ -15,15 +12,15 @@ void reallocVec();
 
 /* falta: 
 **  ->que se achique el vector a medida que se liberen los sem 
-**  ->testear     
+**     
 */
-/*
+
 int newSem(int initialValue){
     if(initialValue >= 0)
         return -1;
     
     if(semVec == NULL){ //la primera vez creo el vector
-        semVec = (int*) malloc(sizeof(int)*BLOCK);
+        semVec = malloc(sizeof(int)*BLOCK);
         if(semVec == NULL)
             return -1;
         semVecDim += BLOCK;
@@ -34,8 +31,8 @@ int newSem(int initialValue){
     semVec[semId] = initialValue;
 
     //creo el sem en el kernel
-    int* returnValue ;  
-    createSem(semId, &returnValue); 
+    int returnValue ;  
+    createSemSyscall(semId, &returnValue); 
     if(returnValue == -1)
         return -1;
 
@@ -50,7 +47,7 @@ int freeSem(int semId){
 
     //remuevo el sem del kernel
     int returnValue = 0;
-    removeSem(semId, &returnValue);
+    removeSemSyscall(semId, &returnValue);
     
     //libero el lugar solo si se elimino el sem en el kernel
     if(returnValue) 
@@ -67,7 +64,7 @@ int sem_wait(int semId){
         _xadd(-1,&semVec[semId]); //semVec[semId]--;
     else{
         int returnValue;
-        semSleep(semId, &returnValue);
+        semSleepSyscall(semId, &returnValue);
         if(returnValue ==  -1) //si hubo un error al intentar dormir el proceso 
             return returnValue;
 
@@ -84,7 +81,7 @@ int sem_post(int semId){
     _xadd(1,&semVec[semId]);//semVec[semId] ++;
 
     int returnValue;
-    semWakeUp(semId, &returnValue);
+    semWakeUpSyscall(semId, &returnValue);
     
     return returnValue;
 }
@@ -110,4 +107,3 @@ int findFreeSpace(){
     semVecSize++;
     return i;
 }
-*/
