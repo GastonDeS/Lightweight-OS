@@ -1,41 +1,46 @@
-#include <stdint.h>
+#include <semaphore.h>
+#include <stdlib.h>
 #include <stdio.h>
+#include <stddef.h>
 
-uint64_t my_create_process(char * name){
+int my_create_process(char * name){
   return 0;
 }
 
-uint64_t my_sem_open(char *sem_id, uint64_t initialValue){
-  
-  
-}
-
-uint64_t my_sem_wait(char *sem_id){
+int my_sem_open(char *sem_id, int initialValue){
+  int aux = newSem(initialValue);
+  if(aux = -1)
+    return aux;
+  *sem_id = aux;
   return 0;
 }
 
-uint64_t my_sem_post(char *sem_id){
-  return 0;
+int my_sem_wait(char *sem_id){
+  return sem_wait(*sem_id);
 }
 
-uint64_t my_sem_close(char *sem_id){
-  return 0;
+int my_sem_post(char *sem_id){
+  return sem_post(*sem_id);
+}
+
+int my_sem_close(char *sem_id){
+  return freeSem(*sem_id);
 }
 
 #define TOTAL_PAIR_PROCESSES 2
 #define SEM_ID "sem"
 
-int64_t global;  //shared memory
+int global;  //shared memory
 
-void slowInc(int64_t *p, int64_t inc){
-  int64_t aux = *p;
+void slowInc(int *p, int inc){
+  int aux = *p;
   aux += inc;
   yield();
   *p = aux;
 }
 
-void inc(uint64_t sem, int64_t value, uint64_t N){
-  uint64_t i;
+void inc(int sem, int value, int N){
+  int i;
 
   if (sem && !my_sem_open(SEM_ID, 1)){
     printf("ERROR OPENING SEM\n");
@@ -54,7 +59,7 @@ void inc(uint64_t sem, int64_t value, uint64_t N){
 }
 
 void test_sync(){
-  uint64_t i;
+  int i;
 
   global = 0;
 
@@ -67,7 +72,7 @@ void test_sync(){
 }
 
 void test_no_sync(){
-  uint64_t i;
+  int i;
 
   global = 0;
 

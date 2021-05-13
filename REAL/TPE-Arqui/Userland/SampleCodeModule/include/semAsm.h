@@ -1,7 +1,7 @@
 #ifndef SEM_ASM_H
 #define SEM_ASM_H
 
-
-void _xadd(int add, int *num);
+//resta uno en num y devuelve el valor anterior de num
+int _xadd(int add, int *num);
 
 #endif
