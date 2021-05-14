@@ -1,5 +1,5 @@
-#ifndef SEMAPHORE_H
-#define SEMAPHORE_H
+#ifndef MYSEMAPHORE_H
+#define MYSEMAPHORE_H
 
 #include <stddef.h>
 #include <semAsm.h>

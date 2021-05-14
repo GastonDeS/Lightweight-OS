@@ -1,4 +1,4 @@
-#include <semaphore.h>
+#include <mySemaphore.h>
 #define BLOCK 20
 
 typedef struct elem{
