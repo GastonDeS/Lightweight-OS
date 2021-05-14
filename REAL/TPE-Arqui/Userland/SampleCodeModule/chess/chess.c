@@ -1,4 +1,5 @@
 #include <chess.h>
+#include <unistd.h>
 
 static char *figures[PIECES_AMOUNT]={"king","queen","bishop","knight","rook","pawn"};
 
@@ -148,7 +149,7 @@ void chess(){
             }
         }
     } else if (play == 2){
-        return ;
+        myExit();
     }
     console();
 }
@@ -768,7 +769,7 @@ static void endGame(int winner, int by){
                 chess();
                 return;
             } else if (buf[0]=='X'){
-                return;
+                myExit();
             }
             if (buf[0]=='P'){
                 console();

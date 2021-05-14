@@ -31,6 +31,15 @@ listADT newList(int elemSize, int (*equals)(void* elem1, void* elem2)){
     return list;
 }
 
+void printList(listADT list,void (*print)(void* n)){
+
+    nodeP current = list->first;
+    while(current != NULL){
+        print(current->value);
+        current = current->next;
+    }
+}
+
 int insertBeforeNext(listADT list, void* element){
     if(!hasNext(list)) // no se inicializo iteradorNext
         toBegin(list);

@@ -12,6 +12,7 @@ typedef struct listCDT *listADT;
 //crea una nueva lista
 listADT newList(int elemSize, int (*equals)(void* elem1, void* elem2));
 
+void printList(listADT list,void (*print)(void* n));
 
 int insertBeforeNext(listADT list, void* element);  
 

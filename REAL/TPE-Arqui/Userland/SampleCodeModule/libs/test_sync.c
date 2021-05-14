@@ -1,4 +1,5 @@
 #include <mySemaphore.h>
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stddef.h>
@@ -82,4 +83,11 @@ void test_no_sync(){
     my_create_process("inc", 0, 1, 1000000);
     my_create_process("inc", 0, -1, 1000000);
   }
+
 }
+
+int main(){
+  test_sync();
+  return 0;
+}
+
