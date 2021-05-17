@@ -38,13 +38,14 @@ int sem_open(char* name, int initialValue){
 
     //busco el primer espacio libre
     int semId = findFreeSpace(name);
-    if(strcmp(semVec[semId].name, name) == 0){ //encontro un espacio libre
+    if(!semVec[semId].name && strcmp(semVec[semId].name, name) == 0){ //encontro un espacio libre
         semVec[semId].numProcess ++;
     }else{
         semVec[semId].value = initialValue;
         semVec[semId].name = name;
         semVec[semId].numProcess = 1;
     }
+    semVecSize++;
 
     //creo el sem en el kernel
     int returnValue;  
@@ -72,9 +73,10 @@ int sem_close(int semId){
     removeSemSyscall(semId, &returnValue);
     
     //libero el lugar solo si se elimino el sem en el kernel
-    if(returnValue) 
+    if(returnValue) {
+        semVecSize--;
         semVec[semId].value = -1; 
-    
+    }
     lock_post();
     return returnValue;
 }

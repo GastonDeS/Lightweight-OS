@@ -46,9 +46,8 @@ void inc(int argc, char **argv){
     //slowInc(&global, value);
     if (sem) sem_post(semId);
   }
+  if (sem) sem_close(semId);
   print("Final value: %d\n", global);
-  // if (sem) sem_close(semId);
-
   
   myExit();
 }
@@ -61,7 +60,7 @@ void test_sync(){
 
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++){
     my_create_process("inc", "1", "1", "100000");
-    my_create_process("inc", "1", "1", "100000");
+    my_create_process("inc", "1", "-1", "100000");
   }
   
 }
