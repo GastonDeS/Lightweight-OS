@@ -10,16 +10,21 @@ int atoi(char * str);
 int intToString(unsigned long long num, char * buffer);
 int strlen(char *str);
 int strcmp(char * str1, char * str2);
-int intToBase(unsigned long long num, int base, char*buffer);
+int intToBase(uint64_t num, int base, char*buffer);
 int iabs(int num);
 
 int atoi(char * str){
   int aux = 0;
+  int isNegative = 1;
+  if (str[0] == '-') {
+    isNegative = -1;
+    str++;
+  }
   while (*str!=0){
     aux = aux*10 + (*str)-'0';
     str++;
   }
-  return aux;
+  return aux * isNegative;
 }
 
 int atohex(char * str) {
@@ -91,7 +96,7 @@ int iabs(int num){
 }
 
 
-int intToString(unsigned long long num, char * buffer){
+int intToString(uint64_t num, char * buffer){
   return intToBase(num,10,buffer);
 }
 
