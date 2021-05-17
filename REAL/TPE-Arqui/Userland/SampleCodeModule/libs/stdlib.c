@@ -2,16 +2,35 @@
 #define STD_LIB_C value
 
 #include <stdlib.h>
-#include <syscallsASM.h>
-#include <stddef.h>
 
 int atoi(char * str);
 // double strToDouble(char * str);
-int intToString(unsigned long long num, char * buffer);
+int intToString(uint64_t num, char * buffer);
 int strlen(char *str);
 int strcmp(char * str1, char * str2);
-int intToBase(uint64_t num, int base, char*buffer);
+int intToBase(unsigned long long num, int base, char*buffer);
 int iabs(int num);
+
+void swap(char *a, char *b)                                                                                                                                                                       
+  {
+       if(!a || !b)
+           return;
+
+       char temp = *(a);
+       *(a) = *(b);
+       *(b) = temp;
+   }
+
+void reverse(char str[], int length){
+    int start = 0;
+    int end = length -1;
+    while (start < end)
+    {
+        swap(*(str+start), *(str+end));
+        start++;
+        end--;
+    }
+}
 
 int atoi(char * str){
   int aux = 0;
@@ -97,7 +116,43 @@ int iabs(int num){
 
 
 int intToString(uint64_t num, char * buffer){
-  return intToBase(num,10,buffer);
+    int i = 0;
+    int isNegative = 0;
+  
+    /* Handle 0 explicitely, otherwise empty string is printed for 0 */
+    if (num == 0)
+    {
+        buffer[i++] = '0';
+        buffer[i] = '\0';
+        return buffer;
+    }
+  
+    // In standard itoa(), negative numbers are handled only with 
+    // base 10. Otherwise numbers are considered unsigned.
+    if (num < 0)
+    {
+        isNegative = 1;
+        num = -num;
+    }
+  
+    // Process individual digits
+    while (num != 0)
+    {
+        int rem = num % 10;
+        buffer[i++] = (rem > 9)? (rem-10) + 'a' : rem + '0';
+        num = num/10;
+    }
+  
+    // If number is negative, append '-'
+    if (isNegative)
+        buffer[i++] = '-';
+  
+    buffer[i] = '\0'; // Append string terminator
+  
+    // Reverse the string
+    reverse(buffer, i);
+  
+    return buffer;
 }
 
 int strlen(char *str){
