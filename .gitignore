@@ -8,3 +8,6 @@ REAL/TPE-Arqui/.gdb_history
 .vscode/settings.json
 .bashrc
 *.elf
+REAL/TPE-Arqui/.gdbinit
+REAL/TPE-Arqui/Kernel/kernel.elf
+REAL/TPE-Arqui/Userland/0000-sampleCodeModule.elf

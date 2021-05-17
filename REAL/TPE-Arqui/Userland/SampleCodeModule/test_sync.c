@@ -35,7 +35,7 @@ void inc(int argc, char **argv){
 
   print("%d \n", N);
 
-  
+
   if (sem && (semId = sem_open(SEM_ID, 1)) == -1){
     print("ERROR OPENING SEM\n");
     return;

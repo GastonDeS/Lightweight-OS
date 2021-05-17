@@ -4,6 +4,7 @@
 
 typedef struct elem{
     int value;
+    int numProcess;
     char *name;
 }elem;
 
@@ -37,9 +38,12 @@ int sem_open(char* name, int initialValue){
 
     //busco el primer espacio libre
     int semId = findFreeSpace(name);
-    if(semVec[semId].value == -1){
+    if(strcmp(semVec[semId].name, name) == 0){ //encontro un espacio libre
+        semVec[semId].numProcess ++;
+    }else{
         semVec[semId].value = initialValue;
         semVec[semId].name = name;
+        semVec[semId].numProcess = 1;
     }
 
     //creo el sem en el kernel
@@ -58,6 +62,10 @@ int sem_close(int semId){
     lock_wait();
     if(semId < 0  || semId > semVecSize)
         return -1;
+    
+    semVec[semId].numProcess --;
+    if(semVec[semId].numProcess != 0)
+        return 0;
 
     //remuevo el sem del kernel
     int returnValue = 0;
