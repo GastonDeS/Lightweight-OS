@@ -1,5 +1,6 @@
-#include <semaphore.h>
-#define BLOCK 20
+#include <mySemaphore.h>
+
+#define BLOCK 10000
 
 typedef struct elem{
     int value;
@@ -23,13 +24,14 @@ void lock_wait();
 int sem_open(char* name, int initialValue){
     lock_wait();
 
-    if(initialValue >= 0)
+    if(initialValue < 0)
         return -1;
     
     if(semVec == NULL){ //la primera vez creo el vector
         semVec = malloc(sizeof(elem)*BLOCK);
-        if(semVec == NULL)
+        if(semVec == NULL){
             return -1;
+        }
         semVecDim += BLOCK;
     }
 
@@ -99,12 +101,13 @@ int sem_post(int semId){
     return returnValue;
 }
 
-
-//private:
+//private---------------
 void reallocVec(){
+    /*
     semVec = realloc(semVec, sizeof(elem)*(semVecDim+BLOCK));
     //chequear si hubo error
     semVecDim += BLOCK;
+    */
 }
 
 int findFreeSpace(char *str){

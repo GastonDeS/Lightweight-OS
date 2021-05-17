@@ -1,7 +1,7 @@
 #include <sem.h>
 
 
-#define BLOCK 20
+#define BLOCK 10000
 
 listADT* semVec = NULL;
 int semVecDim = 0;  //espacio de semVec
@@ -11,16 +11,20 @@ int signalCheck = 0;
 void createSem(int semId, int* returnValue){
     if(semVec == NULL){ //primer llamado
         semVec = malloc(sizeof(listADT)*BLOCK);
-        if(semVec == NULL)
+        if(semVec == NULL){
             *returnValue = -1;
+            return;
+        }
         semVecDim += BLOCK;
     }
     
+    /*
     if(semVecDim < semId){ 
         semVec = realloc(semVec, sizeof(int)*(semVecDim+BLOCK));
         //chequear 
         semVecDim += BLOCK;
     }
+    */
 
     //creo una cola de pids de los proceso que esperan por entra al shMem
     semVec[semId] = newList(sizeof(int),NULL);

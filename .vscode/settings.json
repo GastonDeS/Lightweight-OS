@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "*.c": "c",
-        "cstdlib": "c"
+        "cstdlib": "c",
+        "type_traits": "c"
     }
 }
