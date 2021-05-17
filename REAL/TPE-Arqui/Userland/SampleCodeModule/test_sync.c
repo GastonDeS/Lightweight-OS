@@ -29,23 +29,21 @@ void slowInc(int *p, int inc){
 
 void inc(int argc, char **argv){
   int i, semId;
-  print("%s %s %s %s %s \n", argv[0], argv[1], argv[2], argv[3], argv[4]);
-  print("%d \n", argc);
-  print(" %d \n", atoi("-120"));
+  int sem = atoi(argv[1]);
+  int value = atoi( argv[2] );
+  int N = atoi(argv[3]);
 
-  int sem = atoi(*argv[1]);
-  int value = atoi( *argv[2] );
-  int N = atoi(*argv[3]);
+  print("%d \n", N);
 
-  print(" %d %d \n", sem, value);
-
+  
   if (sem && (semId = sem_open(SEM_ID, 1)) == -1){
     print("ERROR OPENING SEM\n");
     return;
   }
   for (i = 0; i < N; i++){
     if (sem) sem_wait(semId);
-    slowInc(&global, value);
+    global += value;
+    //slowInc(&global, value);
     if (sem) sem_post(semId);
   }
   if (sem) sem_close(semId);

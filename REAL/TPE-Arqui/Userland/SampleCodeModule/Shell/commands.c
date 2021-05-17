@@ -144,3 +144,9 @@ void uwu(char args[MAX_ARGS][MAX_ARG_LEN]) {
   print("       &@@@@@@@@@.             (@@@@        @@@@#              /@@@@@@@@@&      \n");
   print("\n\n\n");
 }
+
+void semTester(char args[MAX_ARGS][MAX_ARG_LEN]){
+
+  test_sync();
+
+}
