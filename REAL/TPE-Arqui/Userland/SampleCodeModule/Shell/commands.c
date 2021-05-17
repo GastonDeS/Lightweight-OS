@@ -9,6 +9,7 @@
 #include <syscallsASM.h>
 #include <forcedExceptions.h>
 #include <timer.h>
+#include <test_sync.h>
 
 void inforeg(char args[MAX_ARGS][MAX_ARG_LEN]){
   clearScreen(0);
@@ -69,10 +70,12 @@ void listAllProcess(char args[MAX_ARGS][MAX_ARG_LEN]) {
 }
 
 void getPid(char args[MAX_ARGS][MAX_ARG_LEN]) {
+  
   putChar('\n');
   uint64_t pid ;
   getPidSyscall(&pid);
   print("Pid: %d",pid);
+  
 }
 
 
