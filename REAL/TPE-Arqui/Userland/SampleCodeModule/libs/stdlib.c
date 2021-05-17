@@ -5,7 +5,7 @@
 
 int atoi(char * str);
 // double strToDouble(char * str);
-int intToString(uint64_t num, char * buffer);
+int intToString(int num, char * buffer);
 int strlen(char *str);
 int strcmp(char * str1, char * str2);
 int intToBase(unsigned long long num, int base, char*buffer);
@@ -115,7 +115,7 @@ int iabs(int num){
 }
 
 
-int intToString(uint64_t num, char * buffer){
+int intToString(int num, char * buffer){
     int i = 0;
     int isNegative = 0;
   

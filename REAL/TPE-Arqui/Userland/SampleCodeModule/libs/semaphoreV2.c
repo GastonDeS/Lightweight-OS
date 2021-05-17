@@ -75,29 +75,32 @@ int sem_wait(int semId){
     if(semId < 0  || semId > semVecSize)
         return -1;
     
+    lock_wait();
     if(semVec[semId].value >0)
         _xadd(-1,&(semVec[semId].value)); 
     else{
         int returnValue;
         semSleepSyscall(semId, &returnValue);
-        if(returnValue ==  -1) //si hubo un error al intentar dormir el proceso 
+        if(returnValue ==  -1) {//si hubo un error al intentar dormir el proceso 
+            lock_post();
             return returnValue;
-
+        }
         //se despierta solo si alguien hace un post
          _xadd(-1,&(semVec[semId].value)); //semVec[semId]--; 
     }
+    lock_post();
     return 1;
 }
 
 int sem_post(int semId){
     if(semId < 0  || semId > semVecSize)
         return -1;
-
+    lock_wait();
     _xadd(1,&(semVec[semId].value));//semVec[semId] ++;
 
     int returnValue;
     semWakeUpSyscall(semId, &returnValue);
-    
+    lock_post();
     return returnValue;
 }
 

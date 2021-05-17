@@ -33,7 +33,7 @@ void inc(int argc, char **argv){
   int value = atoi( argv[2] );
   int N = atoi(argv[3]);
 
-  print("%d \n", N);
+  // print("%d \n", N);
 
   
   if (sem && (semId = sem_open(SEM_ID, 1)) == -1){
@@ -46,9 +46,10 @@ void inc(int argc, char **argv){
     //slowInc(&global, value);
     if (sem) sem_post(semId);
   }
-  if (sem) sem_close(semId);
-
   print("Final value: %d\n", global);
+  // if (sem) sem_close(semId);
+
+  
   myExit();
 }
 
@@ -59,8 +60,8 @@ void test_sync(){
   print("\nCREATING PROCESSES...(WITH SEM)\n");
 
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++){
-    my_create_process("inc", "1", "1", "1000000");
-    //my_create_process("inc", "1", "-1", "1000000");
+    my_create_process("inc", "1", "1", "100000");
+    my_create_process("inc", "1", "1", "100000");
   }
   
 }

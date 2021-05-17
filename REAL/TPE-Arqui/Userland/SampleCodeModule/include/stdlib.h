@@ -5,7 +5,7 @@
 #include <stddef.h>
 
 int atoi(char * str);
-int intToString(uint64_t num, char * buffer);
+int intToString(int num, char * buffer);
 int strlen(char *str);
 int strcmp(char * str1, char * str2);
 int intToBase(unsigned long long num, int base, char*buffer);
