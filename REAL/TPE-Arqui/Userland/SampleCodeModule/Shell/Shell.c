@@ -33,7 +33,7 @@ char commandsNames[][MAX_ARG_LEN]={"unblockPid","blockPid","listAllProcess","get
 void  (* run[])(char args[MAX_ARGS][MAX_ARG_LEN]) = {unblockPid,blockPid,listAllProcess,getPid,kill,time,help,inforeg,chess,printmem,divZero,invalidOPCode,clear,echo,uwu};
 static int totalCommands = 15;
 
-void init_shell() {
+void init_shell(int argc, char **argv) {
   setConsoleUpdateFunction(updateShell);
   drawShellLines();
   exceptions();

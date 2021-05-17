@@ -14,6 +14,8 @@ typedef struct {
     uint64_t *SP;
     uint64_t pid;
     State state;
+    char *name;
+    uint8_t priority;
 }process;
 
 
@@ -57,7 +59,7 @@ void changeProcess(){
     
 }
 
-void addProcess(uint64_t *currentProces) {
+void addProcess(uint64_t *currentProces, char *name) {
     if(processList == NULL){
         processList = newList(sizeof(process),equals);
         if(processList == NULL)
@@ -67,6 +69,8 @@ void addProcess(uint64_t *currentProces) {
     newProcess.SP = currentProces;
     newProcess.pid = size(processList);
     newProcess.state = READY;
+    newProcess.name = name; // asi o lo copio en una dirreccion de memoria nueva paraguardarlo
+    newProcess.priority = 3; 
     
     insertBeforeNext(processList, &newProcess);
     return;
