@@ -5,7 +5,7 @@
 #include <interrupts.h>
 
 uint64_t * scheduler(uint64_t *currentProces);
-void addProcess(uint64_t *currentProces);
+void addProcess(uint64_t *currentProces,char * name);
 void endProcessWrapper(uint64_t pid);
 void getPid(uint64_t *pid);
 void listAllProcess(char **ProcessList);
