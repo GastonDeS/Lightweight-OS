@@ -26,7 +26,7 @@ void reverse(char str[], int length){
     int end = length -1;
     while (start < end)
     {
-        swap(*(str+start), *(str+end));
+        swap((str+start), (str+end));
         start++;
         end--;
     }
