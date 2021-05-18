@@ -72,7 +72,6 @@ void nice(uint64_t pid, uint64_t priority){
     if (processAux!=NULL) {
         processAux->priority = priority;   
     }  
-    free(processAux);
 }
 
 void addProcess(uint64_t *currentProces, char *name) {
@@ -130,7 +129,6 @@ void changeState(uint64_t pid , State state){
     if (processAux!=NULL) {
         (*processAux).state = state;   
     }    
-    free(processAux);
 }
 
 
