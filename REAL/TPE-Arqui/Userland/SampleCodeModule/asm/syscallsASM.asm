@@ -27,8 +27,20 @@ GLOBAL semSleepSyscall
 GLOBAL semWakeUpSyscall
 GLOBAL niceSyscall
 
+GLOBAL yieldSyscall
+
 section .text
 
+yieldSyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 28
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
 niceSyscall:
   push rbp
   mov rbp, rsp

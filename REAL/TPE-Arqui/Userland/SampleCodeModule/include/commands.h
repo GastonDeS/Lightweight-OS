@@ -2,7 +2,7 @@
 #define COMMANDS_H
 #define MAX_ARGS 10
 #define MAX_ARG_LEN 32
-
+void semTester(char args[MAX_ARGS][MAX_ARG_LEN]);
 void test(char args[MAX_ARGS][MAX_ARG_LEN]);
 void nice(char args[MAX_ARGS][MAX_ARG_LEN]);
 void blockPid(char args[MAX_ARGS][MAX_ARG_LEN]);

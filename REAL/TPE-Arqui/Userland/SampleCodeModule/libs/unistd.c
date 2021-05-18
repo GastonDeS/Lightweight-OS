@@ -1,5 +1,9 @@
 #include <unistd.h>
 
+void yield(){
+    yieldSyscall();
+}
+
 void createProcess(void (*function)(),char **argv){
     createProcessSyscall(function,argv);
 }

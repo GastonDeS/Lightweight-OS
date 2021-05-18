@@ -18,8 +18,6 @@ typedef struct {
     uint8_t priority;
 }process;
 
-
-
 int equals(void* n1, void* n2){
     process aux1 = *((process*)n1);
     process aux2 = *((process*)n2);

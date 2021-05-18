@@ -29,5 +29,6 @@ void removeSemSyscall(int semId, int* returnValue);
 void semSleepSyscall(int semId, int* returnValue);
 void semWakeUpSyscall(int semId, int* returnValue);
 void niceSyscall(uint64_t pid, uint64_t priority);
+void yieldSyscall();
 
 #endif

@@ -150,6 +150,10 @@ void syscallHandler(registerStruct * registers) {
     case 27:
     nice((uint64_t) registers->rdi, (uint64_t) registers->rsi);
     break;
+
+    case 28:
+    yield();
+    break;
   }
 }
 
