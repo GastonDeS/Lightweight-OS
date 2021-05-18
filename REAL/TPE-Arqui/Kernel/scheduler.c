@@ -75,6 +75,10 @@ void nice(uint64_t pid, uint64_t priority){
     //TODO free processAux
 }
 
+void yield(){
+    currentCountdownPriority = 0;
+}
+
 void addProcess(uint64_t *currentProces, char *name) {
     if(processList == NULL){
         processList = newList(sizeof(process),equals);

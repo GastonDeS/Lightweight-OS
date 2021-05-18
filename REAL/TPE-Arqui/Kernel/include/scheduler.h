@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <interrupts.h>
 
+void yield();
 uint64_t * scheduler(uint64_t *currentProces);
 void addProcess(uint64_t *currentProces,char * name);
 void endProcessWrapper(uint64_t pid);
