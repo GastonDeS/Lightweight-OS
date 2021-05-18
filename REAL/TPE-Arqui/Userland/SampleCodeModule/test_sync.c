@@ -59,8 +59,8 @@ void test_sync(){
   print("\nCREATING PROCESSES...(WITH SEM)\n");
 
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++){
-    my_create_process("inc", "1", "1", "100000");
-    my_create_process("inc", "1", "-1", "100000");
+    my_create_process("inc+", "1", "51654732800", "100000");
+    my_create_process("inc-", "1", "-51654732800", "100000");
   }
   
 }

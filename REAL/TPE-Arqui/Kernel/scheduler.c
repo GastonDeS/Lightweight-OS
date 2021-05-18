@@ -30,6 +30,8 @@ listADT processList = NULL;
 
 process *current = NULL;
 
+int currentCountdownPriority;
+
 //private:
 void changeProcess();
 void changeState(uint64_t pid , State state);
@@ -52,11 +54,25 @@ uint64_t * scheduler(uint64_t *currentProces){
 }
 
 void changeProcess(){
-    current = (process *)next(processList);
-    while ((*current).state==BLOCKED) {
+    if (currentCountdownPriority) {
+        currentCountdownPriority--;
+    } else {
         current = (process *)next(processList);
+        while ((*current).state==BLOCKED) {
+            current = (process *)next(processList);
+        }
+        currentCountdownPriority = current->priority;
     }
-    
+}
+
+void nice(uint64_t pid, uint64_t priority){
+    process *processAux = malloc(sizeof(process));
+    (*processAux).pid = pid;
+    processAux = (process*)getElem(processList, processAux);
+    if (processAux!=NULL) {
+        processAux->priority = priority;   
+    }  
+    free(processAux);
 }
 
 void addProcess(uint64_t *currentProces, char *name) {
@@ -108,12 +124,13 @@ void unlockProcess(uint64_t pid){
 }
 
 void changeState(uint64_t pid , State state){
-    process *processAux;
+    process *processAux = malloc(sizeof(process));
     (*processAux).pid = pid;
     processAux = (process*)getElem(processList, processAux);
     if (processAux!=NULL) {
         (*processAux).state = state;   
     }    
+    free(processAux);
 }
 
 

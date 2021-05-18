@@ -70,13 +70,53 @@ void listAllProcess(char args[MAX_ARGS][MAX_ARG_LEN]) {
 }
 
 void getPid(char args[MAX_ARGS][MAX_ARG_LEN]) {
-
-  test_sync();
-  /*putChar('\n');
+  putChar('\n');
   uint64_t pid ;
   getPidSyscall(&pid);
   print("Pid: %d",pid);
-  */
+}
+
+void nice(char args[MAX_ARGS][MAX_ARG_LEN]){
+  int pid = atoi(args[1]);
+  int priority = atoi(args[2]);
+  niceSyscall(pid, priority);
+  print("pid %s priority set to: %s", args[1], args[2]);
+}
+
+void test1(int argc, char** argv){
+  while (1) {
+    for (int i = 0; i < 10; i++) {
+      print(" 1 ");
+    }
+  }
+}
+
+void test2(int argc, char** argv){
+  while (1) {
+    for (int i = 0; i < 10; i++) {
+      print(" 2 ");
+    }
+  }
+}
+
+void test3(int argc, char** argv){
+  while (1) {
+    for (int i = 0; i < 10; i++) {
+      print(" 3 ");
+    }
+  }
+}
+
+
+
+void test(char args[MAX_ARGS][MAX_ARG_LEN]) {
+  char *argv[2];
+  argv[0] = "test ";
+  argv[1] = NULL;
+  createProcessSyscall(test1,argv);
+  createProcessSyscall(test2,argv);
+  createProcessSyscall(test3,argv);
+
 }
 
 

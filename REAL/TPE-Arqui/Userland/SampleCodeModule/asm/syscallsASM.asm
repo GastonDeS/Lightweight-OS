@@ -25,8 +25,20 @@ GLOBAL createSemSyscall
 GLOBAL removeSemSyscall
 GLOBAL semSleepSyscall
 GLOBAL semWakeUpSyscall
+GLOBAL niceSyscall
 
 section .text
+
+niceSyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 27
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
 
 semWakeUpSyscall:
   push rbp

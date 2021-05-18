@@ -96,7 +96,8 @@ int sem_wait(int semId){
             return returnValue;
         }
         //se despierta solo si alguien hace un post
-         _xadd(-1,&(semVec[semId].value)); //semVec[semId]--; 
+        (semVec[semId].value)--; 
+        //  _xadd(-1,&(semVec[semId].value)); //semVec[semId]--; 
     }
     lock_post();
     return 1;
@@ -106,7 +107,8 @@ int sem_post(int semId){
     if(semId < 0  || semId > semVecSize)
         return -1;
     lock_wait();
-    _xadd(1,&(semVec[semId].value));//semVec[semId] ++;
+    (semVec[semId].value)++;
+    // _xadd(1,&(semVec[semId].value));//semVec[semId] ++;
 
     int returnValue;
     semWakeUpSyscall(semId, &returnValue);
