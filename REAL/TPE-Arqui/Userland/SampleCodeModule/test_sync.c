@@ -47,7 +47,7 @@ void test_sync(){
     argv1[0] = "inc+";      //nombre del proceso
     argv1[1] = "1";         //1 si se quiere usar semaforos
     argv1[2] = "1";         //valor a sumar al shMem
-    argv1[3] = "10000000"; //cantidad de entradas al shMem
+    argv1[3] = "1000000"; //cantidad de entradas al shMem
     argv1[4] = NULL;
     createProcess(inc, argv1);
     argv2[0] = "inc-";
