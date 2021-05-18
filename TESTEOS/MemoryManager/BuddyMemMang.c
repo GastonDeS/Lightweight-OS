@@ -1,9 +1,10 @@
 #include "BuddyMemMang.h"
+//para test con el malloc del heap hacer free a final
 
+#define HEAP_SIZE 16384  // 4Mb entran aprox 1024 4kb sirve masomenos 
 
-#define HEAP_SIZE 1024*1024*4  // 4Mb entran aprox 1024 4kb sirve masomenos 
-
-void *startMemory = (void *)0x600000;
+//void *startMemory = (void *)0x600000;
+void *startMemory = NULL;
 
 /*
 ** Basado en:
@@ -31,8 +32,9 @@ http://brokenthorn.com/Resources/OSDev26.html
 static BUDDY_HEADER *blocks[LEVELS]; //arreglo de listas de punteros a Bloques
 static char initialized = 0;
 static uint64_t remainingBytes = MAX_BLOCK_SIZE;
+static BUDDY_HEADER *occupiedBlocks;
 
-void *malloc(uint64_t size){
+void *my_malloc(uint64_t size){
    //en el primer llamado hay que inicializarlo
    if (!initialized) {
       initialize();
@@ -43,14 +45,16 @@ void *malloc(uint64_t size){
    if (size > remainingBytes) {
       return NULL;
    }
-   uint64_t level = getLevel(size);
+   int64_t level = getLevel(size);
    //No tego espacio
    if (level == -1) {
       return NULL;
    }
    //el puntero a devolver debe saltearse el header del bloque
    void *toReturn = recursiveMalloc(level) + BUDDY_HEADER_SIZE;
-   remainingBytes -= size;
+   printf("%p\n", toReturn);
+   remainingBytes -= SIZE_OF_BLOCKS_AT_LEVEL(level);
+   addOccupied(toReturn, level);
    return toReturn;
 }
 
@@ -72,11 +76,15 @@ void *recursiveMalloc(uint64_t level) {
    return removeHeadBlock(level);
 }
 
-void free(void *ptr) {
+void my_free(void *ptr) { //si el puntero no es válido no hago nada
+   
+   if (removeOccupied(ptr) == -1) {
+      return;
+   }
    void *freePtr = ptr - BUDDY_HEADER_SIZE;
    BUDDY_HEADER *freeBlock = (BUDDY_HEADER *)freePtr;
-   recursiveFree(freeBlock, freeBlock->level);
    remainingBytes += SIZE_OF_BLOCKS_AT_LEVEL(freeBlock->level);
+   recursiveFree(freeBlock, freeBlock->level);
 }
 
 void recursiveFree(void *header, uint64_t level) {
@@ -136,6 +144,46 @@ void insertBlock(void *header, uint64_t level) {
    }
 }
 
+void addOccupied(void *header, uint64_t level) {
+   //no es una lista ordenada por ende se agrega al final
+
+   if (occupiedBlocks == NULL) {
+      occupiedBlocks = (BUDDY_HEADER *) header;
+      occupiedBlocks -> level = level;
+      occupiedBlocks -> next = NULL;
+   }
+   else {
+      BUDDY_HEADER *block = occupiedBlocks;
+      while (block->next != NULL) {
+         block = block -> next;
+      }
+      block -> next = (BUDDY_HEADER *) header;
+      block = block -> next;
+      block -> level = level;
+      block -> next = NULL;
+   }
+}
+
+int8_t removeOccupied(void *header) {
+   if (occupiedBlocks == NULL || startMemory > header || (startMemory+HEAP_SIZE) < header) {
+      return -1;
+   }
+   BUDDY_HEADER *blockHeader = (BUDDY_HEADER *)header;
+   if (occupiedBlocks == blockHeader) {
+      occupiedBlocks = occupiedBlocks->next;
+      return 1;
+   }
+   BUDDY_HEADER *block = occupiedBlocks;
+   while (block -> next != NULL || block -> next !=blockHeader) {
+      block = block->next;
+   }
+   if (block->next == NULL) {
+      return -1;
+   }
+   block -> next = blockHeader -> next;
+   return 1;
+}
+
 void removeBlock(void * header, uint64_t level) {
    BUDDY_HEADER *block = blocks[level];
    BUDDY_HEADER *toRemove = (BUDDY_HEADER *) header;
@@ -162,7 +210,6 @@ void removeBlock(void * header, uint64_t level) {
 }
 
 void *removeHeadBlock(uint64_t level) {
-
    if (blocks[level] == NULL) { //list no iicializada
       return NULL;
    }
@@ -172,8 +219,8 @@ void *removeHeadBlock(uint64_t level) {
    return toReturn;
 }
 
-uint64_t getLevel(uint64_t size){ //devuelvo el nivel adecuado para el tamaño requerido
-   uint64_t level = 0;
+int64_t getLevel(uint64_t size){ //devuelvo el nivel adecuado para el tamaño requerido
+   int64_t level = 0;
    uint64_t totalBytes = MAX_BLOCK_SIZE;
    if (size > totalBytes){
       return -1;
@@ -191,5 +238,32 @@ uint64_t getLevel(uint64_t size){ //devuelvo el nivel adecuado para el tamaño r
 }
 
 void initialize() {
+   startMemory = malloc(HEAP_SIZE);
+   if (startMemory == NULL) {
+      printf("fallo malloc de stdlib\n");
+      exit(0);
+   }
    insertBlock((void *)startMemory, 0);
+}
+
+//chequeo si la memoria que me queda equivale a la que me debería quedar
+int checkMemory() {
+   uint64_t bytesLeft = 0;
+   for (int i = 0; i < LEVELS; i++) {
+      BUDDY_HEADER *block = blocks[i];
+      while (block != NULL) {
+         bytesLeft += SIZE_OF_BLOCKS_AT_LEVEL(i);
+         block = block->next;
+      }
+   }
+   printf("%ld, %ld \n", bytesLeft, remainingBytes);
+   if (bytesLeft != remainingBytes) {
+      return 0;
+   }
+   return 1;   
+}
+
+void MM_end() { 
+   free(startMemory); 
+   initialized = 0;
 }
