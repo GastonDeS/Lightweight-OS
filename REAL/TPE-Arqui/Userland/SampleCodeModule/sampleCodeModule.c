@@ -19,8 +19,11 @@ int main() {
 	*v = 'X';
 	*(v+1) = 0x74;
 
-	char **argv = NULL;
+	char *argv[2];
+	argv[0] = "shell";
+	argv[1] = NULL;
 	createProcess(init_shell,argv);
+	niceSyscall(0,100);
 	// createProcess(chess,argv);
 	while (1)
 	{

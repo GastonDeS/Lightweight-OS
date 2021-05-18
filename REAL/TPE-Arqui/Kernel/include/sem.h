@@ -3,13 +3,17 @@
 
 #include <listADT.h>
 #include <scheduler.h>
+#include <stddef.h>
+#include <semAsm.h>
+
+#define BLOCK 1000 //cantidad de semaforos permitdos
 
 //crea un semaforo en kernel
 //si hubo un error returnValue = -1
-void createSem(int semId, int* returnValue);
+void createSem(char *semName, int initialValue, int* returnValue);
 
 //elimina el semforo solo si no tiene procesos eperando
-//returnValue = 1 si lo libero sin es igual a 0
+//returnValue = 1 si lo libero sino es igual a 0
 void removeSem(int semId, int* returnValue);
 
 //si hubo un error returnValue = -1 sino 0

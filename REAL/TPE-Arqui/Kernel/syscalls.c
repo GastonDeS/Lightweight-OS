@@ -132,7 +132,7 @@ void syscallHandler(registerStruct * registers) {
     break;
 
     case 23:
-    createSem((int) registers->rdi, (int *) registers->rsi);
+    createSem((char*) registers->rdi, (int ) registers->rsi, (int *) registers->rdx);
     break;
 
     case 24:
@@ -146,7 +146,10 @@ void syscallHandler(registerStruct * registers) {
     case 26:
     semWakeUp((int) registers->rdi, (int *) registers->rsi);
     break;
-
+    
+    case 27:
+    nice((uint64_t) registers->rdi, (uint64_t) registers->rsi);
+    break;
   }
 }
 

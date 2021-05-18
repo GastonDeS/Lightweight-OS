@@ -9,6 +9,7 @@
 #include <syscallsASM.h>
 #include <forcedExceptions.h>
 #include <timer.h>
+#include <test_sync.h>
 
 void inforeg(char args[MAX_ARGS][MAX_ARG_LEN]){
   clearScreen(0);
@@ -75,6 +76,49 @@ void getPid(char args[MAX_ARGS][MAX_ARG_LEN]) {
   print("Pid: %d",pid);
 }
 
+void nice(char args[MAX_ARGS][MAX_ARG_LEN]){
+  int pid = atoi(args[1]);
+  int priority = atoi(args[2]);
+  niceSyscall(pid, priority);
+  print("pid %s priority set to: %s", args[1], args[2]);
+}
+
+void test1(int argc, char** argv){
+  while (1) {
+    for (int i = 0; i < 10; i++) {
+      print(" 1 ");
+    }
+  }
+}
+
+void test2(int argc, char** argv){
+  while (1) {
+    for (int i = 0; i < 10; i++) {
+      print(" 2 ");
+    }
+  }
+}
+
+void test3(int argc, char** argv){
+  while (1) {
+    for (int i = 0; i < 10; i++) {
+      print(" 3 ");
+    }
+  }
+}
+
+
+
+void test(char args[MAX_ARGS][MAX_ARG_LEN]) {
+  char *argv[2];
+  argv[0] = "test ";
+  argv[1] = NULL;
+  createProcessSyscall(test1,argv);
+  createProcessSyscall(test2,argv);
+  createProcessSyscall(test3,argv);
+
+}
+
 
 void kill(char args[MAX_ARGS][MAX_ARG_LEN]) {
   putChar('\n');
@@ -139,4 +183,10 @@ void uwu(char args[MAX_ARGS][MAX_ARG_LEN]) {
   print("    @@@@@@@&#&@@@@@@          @@@@@@@@     @@@@@@@,         *@@@@@@&#&@@@@@@&   \n");
   print("       &@@@@@@@@@.             (@@@@        @@@@#              /@@@@@@@@@&      \n");
   print("\n\n\n");
+}
+
+void semTester(char args[MAX_ARGS][MAX_ARG_LEN]){
+
+  test_sync();
+
 }

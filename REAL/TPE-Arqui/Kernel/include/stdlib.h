@@ -1,7 +1,6 @@
 #ifndef STDLIB_H
 #define STDLIB_H
 
-#include <syscallsASM.h>
 #include <stddef.h>
 
 int atoi(char * str);

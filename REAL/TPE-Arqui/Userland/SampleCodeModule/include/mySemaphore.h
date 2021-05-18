@@ -1,9 +1,6 @@
-#ifndef SEMAPHORE_H
-#define SEMAPHORE_H
+#ifndef MYSEMAPHORE_H
+#define MYSEMAPHORE_H
 
-#include <stddef.h>
-#include <semAsm.h>
-#include <stdlib.h> 
 #include <syscallsASM.h>
 
 
@@ -13,7 +10,7 @@
 int sem_open(char *name, int initialValue);
 
 //elimina el semforo solo si no tiene procesos eperando
-//si se libero devulve 1 sino 0 y si hubo un error -1
+//si se libero del kernel devulve 1 sino 0 y si hubo un error -1
 int sem_close(int semId);
 
 

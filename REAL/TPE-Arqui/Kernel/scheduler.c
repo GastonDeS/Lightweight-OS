@@ -14,6 +14,8 @@ typedef struct {
     uint64_t *SP;
     uint64_t pid;
     State state;
+    char *name;
+    uint8_t priority;
 }process;
 
 
@@ -27,6 +29,8 @@ int equals(void* n1, void* n2){
 listADT processList = NULL;
 
 process *current = NULL;
+
+int currentCountdownPriority;
 
 //private:
 void changeProcess();
@@ -50,14 +54,28 @@ uint64_t * scheduler(uint64_t *currentProces){
 }
 
 void changeProcess(){
-    current = (process *)next(processList);
-    while ((*current).state==BLOCKED) {
+    if (currentCountdownPriority) {
+        currentCountdownPriority--;
+    } else {
         current = (process *)next(processList);
+        while ((*current).state==BLOCKED) {
+            current = (process *)next(processList);
+        }
+        currentCountdownPriority = current->priority;
     }
-    
 }
 
-void addProcess(uint64_t *currentProces) {
+void nice(uint64_t pid, uint64_t priority){
+    process *processAux = malloc(sizeof(process));
+    (*processAux).pid = pid;
+    processAux = (process*)getElem(processList, processAux);
+    if (processAux!=NULL) {
+        processAux->priority = priority;   
+    }  
+    //TODO free processAux
+}
+
+void addProcess(uint64_t *currentProces, char *name) {
     if(processList == NULL){
         processList = newList(sizeof(process),equals);
         if(processList == NULL)
@@ -67,6 +85,8 @@ void addProcess(uint64_t *currentProces) {
     newProcess.SP = currentProces;
     newProcess.pid = size(processList);
     newProcess.state = READY;
+    newProcess.name = name; // asi o lo copio en una dirreccion de memoria nueva paraguardarlo
+    newProcess.priority = 3; 
     
     insertBeforeNext(processList, &newProcess);
     return;
@@ -104,12 +124,13 @@ void unlockProcess(uint64_t pid){
 }
 
 void changeState(uint64_t pid , State state){
-    process *processAux;
+    process *processAux = malloc(sizeof(process));
     (*processAux).pid = pid;
     processAux = (process*)getElem(processList, processAux);
     if (processAux!=NULL) {
         (*processAux).state = state;   
     }    
+    //TODO fre processAux
 }
 
 
