@@ -10,6 +10,7 @@
 #include <forcedExceptions.h>
 #include <timer.h>
 #include <test_sync.h>
+#include <chess.h>
 
 void inforeg(char args[MAX_ARGS][MAX_ARG_LEN]){
   clearScreen(0);
@@ -89,6 +90,13 @@ void test1(int argc, char** argv){
       print(" 1 ");
     }
   }
+}
+
+void chessO(){
+  char *argv[2];
+	argv[0] = "chess";
+	argv[1] = NULL;
+  createProcess(chess,argv);
 }
 
 void test2(int argc, char** argv){
