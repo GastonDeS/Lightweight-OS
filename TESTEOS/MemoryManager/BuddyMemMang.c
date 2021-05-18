@@ -247,7 +247,6 @@ void initialize() {
 }
 
 //chequeo si la memoria que me queda equivale a la que me debería quedar
-//tambien si la usada mas la que me qeueda equivale al total
 int checkMemory() {
    uint64_t bytesLeft = 0;
    for (int i = 0; i < LEVELS; i++) {
@@ -259,15 +258,6 @@ int checkMemory() {
    }
    printf("%ld, %ld \n", bytesLeft, remainingBytes);
    if (bytesLeft != remainingBytes) {
-      return 0;
-   }
-   BUDDY_HEADER *occupiedBlock =(BUDDY_HEADER *) occupiedBlocks;
-   while (occupiedBlock != NULL) {
-      bytesLeft += SIZE_OF_BLOCKS_AT_LEVEL(occupiedBlocks->level);
-      occupiedBlock = occupiedBlock ->next;
-   }
-   printf("%d, %ld \n", HEAP_SIZE, bytesLeft);
-    if (bytesLeft != HEAP_SIZE) {
       return 0;
    }
    return 1;   

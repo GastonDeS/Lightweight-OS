@@ -1,6 +1,5 @@
 
 all:  bootloader kernel userland image
-allBuddy: bootloader kernelBuddy userland image
 
 bootloader:
 	cd Bootloader; make all
@@ -8,8 +7,6 @@ bootloader:
 kernel:
 	cd Kernel; make all
 
-kernelBuddy:
-	cd Kernel; make allBuddy
 userland:
 	cd Userland; make all
 
