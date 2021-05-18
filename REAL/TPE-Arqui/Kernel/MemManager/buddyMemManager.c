@@ -1,10 +1,9 @@
-#include "BuddyMemMang.h"
+#include <buddyMemManager.h>
 //para test con el malloc del heap hacer free a final
 
-#define HEAP_SIZE 16384  // 4Mb entran aprox 1024 4kb sirve masomenos 
 
-//void *startMemory = (void *)0x600000;
-void *startMemory = NULL;
+//void *myStartMemory = (void *)0x600000;
+void *myStartMemory = NULL;
 
 /*
 ** Basado en:
@@ -34,7 +33,7 @@ static char initialized = 0;
 static uint64_t remainingBytes = MAX_BLOCK_SIZE;
 static BUDDY_HEADER *occupiedBlocks;
 
-void *my_malloc(uint64_t size){
+void *malloc(uint64_t size){
    //en el primer llamado hay que inicializarlo
    if (!initialized) {
       initialize();
@@ -52,7 +51,6 @@ void *my_malloc(uint64_t size){
    }
    //el puntero a devolver debe saltearse el header del bloque
    void *toReturn = recursiveMalloc(level) + BUDDY_HEADER_SIZE;
-   printf("%p\n", toReturn);
    remainingBytes -= SIZE_OF_BLOCKS_AT_LEVEL(level);
    addOccupied(toReturn, level);
    return toReturn;
@@ -76,7 +74,7 @@ void *recursiveMalloc(uint64_t level) {
    return removeHeadBlock(level);
 }
 
-void my_free(void *ptr) { //si el puntero no es válido no hago nada
+void free(void *ptr) { //si el puntero no es válido no hago nada
    
    if (removeOccupied(ptr) == -1) {
       return;
@@ -89,7 +87,7 @@ void my_free(void *ptr) { //si el puntero no es válido no hago nada
 
 void recursiveFree(void *header, uint64_t level) {
    void * buddy;
-   uint64_t blockNumber = INDEX_OF_POINTER_IN_LEVEL(header,level, startMemory);
+   uint64_t blockNumber = INDEX_OF_POINTER_IN_LEVEL(header,level, myStartMemory);
    uint64_t blockSize = SIZE_OF_BLOCKS_AT_LEVEL(level);
 
    /*chequeo si el índice es par o impar, de esta manera encuentro su buddy (si es par,
@@ -165,7 +163,7 @@ void addOccupied(void *header, uint64_t level) {
 }
 
 int8_t removeOccupied(void *header) {
-   if (occupiedBlocks == NULL || startMemory > header || (startMemory+HEAP_SIZE) < header) {
+   if (occupiedBlocks == NULL || myStartMemory > header || (myStartMemory+HEAP_SIZE) < header) {
       return -1;
    }
    BUDDY_HEADER *blockHeader = (BUDDY_HEADER *)header;
@@ -238,42 +236,35 @@ int64_t getLevel(uint64_t size){ //devuelvo el nivel adecuado para el tamaño re
 }
 
 void initialize() {
-   startMemory = malloc(HEAP_SIZE);
-   if (startMemory == NULL) {
-      printf("fallo malloc de stdlib\n");
-      exit(0);
+   myStartMemory = sbrk(HEAP_SIZE);
+   if (myStartMemory == NULL) {
+      //lo cierro
    }
-   insertBlock((void *)startMemory, 0);
+   insertBlock((void *)myStartMemory, 0);
 }
 
-//chequeo si la memoria que me queda equivale a la que me debería quedar
-//tambien si la usada mas la que me qeueda equivale al total
-int checkMemory() {
-   uint64_t bytesLeft = 0;
-   for (int i = 0; i < LEVELS; i++) {
-      BUDDY_HEADER *block = blocks[i];
-      while (block != NULL) {
-         bytesLeft += SIZE_OF_BLOCKS_AT_LEVEL(i);
-         block = block->next;
-      }
-   }
-   printf("%ld, %ld \n", bytesLeft, remainingBytes);
-   if (bytesLeft != remainingBytes) {
-      return 0;
-   }
-   BUDDY_HEADER *occupiedBlock =(BUDDY_HEADER *) occupiedBlocks;
-   while (occupiedBlock != NULL) {
-      bytesLeft += SIZE_OF_BLOCKS_AT_LEVEL(occupiedBlocks->level);
-      occupiedBlock = occupiedBlock ->next;
-   }
-   printf("%d, %ld \n", HEAP_SIZE, bytesLeft);
-    if (bytesLeft != HEAP_SIZE) {
-      return 0;
-   }
-   return 1;   
+void *realloc(void *ptr, uint64_t newSize){
+    if (removeOccupied(ptr) == -1) {
+      return NULL;
+    }
+    void *currentPtr = ptr - BUDDY_HEADER_SIZE;
+    BUDDY_HEADER * current = (BUDDY_HEADER *) currentPtr;
+    uint64_t size = SIZE_OF_BLOCKS_AT_LEVEL(current->level);
+    if(size> newSize +BUDDY_HEADER_SIZE) {
+         return ptr;
+    }
+    void* newPtr = malloc(newSize);
+    if(newPtr == NULL)//si no hay espacio se devulve null y no se modifica ptr
+        return NULL;
+    memcpy(newPtr, ptr, size);
+    free(ptr);
+    return newPtr;
 }
 
-void MM_end() { 
-   free(startMemory); 
-   initialized = 0;
+void reallocSyscall(void *ptr, uint64_t newSize, void* result){
+    result = realloc(ptr, newSize);
+}
+
+void mallocSyscall(uint64_t size, void* result){
+    result = malloc(size);
 }
