@@ -11,7 +11,6 @@
 #include <commands.h>
 #include <Shell.h>
 #include <stdlib.h>
-#include <chess.h>
 #include <timer.h>
 #include <unistd.h>
 
@@ -30,7 +29,7 @@ static int isCommand(char * name);
 void updateShell(char * buff, int dim);
 
 char commandsNames[][MAX_ARG_LEN]={"test","nice","unblockPid","blockPid","listAllProcess","getPid","kill","time","help","inforeg","chess","printmem","divZero","invalidOPCode","clear","echo","UWU"};
-void  (* run[])(char args[MAX_ARGS][MAX_ARG_LEN]) = {test,nice,unblockPid,blockPid,listAllProcess,getPid,kill,time,help,inforeg,chess,printmem,divZero,invalidOPCode,clear,echo,uwu};
+void  (* run[])(char args[MAX_ARGS][MAX_ARG_LEN]) = {test,nice,unblockPid,blockPid,listAllProcess,getPid,kill,time,help,inforeg,chessO,printmem,divZero,invalidOPCode,clear,echo,uwu};
 static int totalCommands = 17;
 
 void init_shell(int argc, char **argv) {
