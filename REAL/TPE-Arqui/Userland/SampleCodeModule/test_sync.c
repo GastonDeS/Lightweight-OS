@@ -1,29 +1,17 @@
 #include <test_sync.h>
 
 long global; //shared memory
-char *argv[5];
+char *argv1[5];
+char *argv2[5];
 
 //private:
-int my_create_process(char *name, int *sem, int *value, int *N);
 void slowInc(int *p, int inc);
 void inc(int argc, char **argv);
-
-
-int my_create_process(char *name, int *sem, int *value, int *N){
-  argv[0] = name;
-  argv[1] = sem;
-  argv[2] = value;
-  argv[3] = N;
-  argv[4] = NULL;
-
-  createProcess(inc, argv);
-  return 0;
-}
 
 void slowInc(int *p, int inc){
   int aux = *p;
   aux += inc;
-  //yield(); 
+  //yield();
   *p = aux;
 }
 
@@ -33,22 +21,19 @@ void inc(int argc, char **argv){
   int value = atoi( argv[2] );
   int N = atoi(argv[3]);
 
-  // print("%d \n", N);
-
-
   if (sem && (semId = sem_open(SEM_ID, 1)) == -1){
     print("ERROR OPENING SEM\n");
     return;
   }
   for (i = 0; i < N; i++){
     if (sem) sem_wait(semId);
-    global += value;
-    //slowInc(&global, value);
+    //global += value;
+    slowInc(&global, value);
     if (sem) sem_post(semId);
   }
   if (sem) sem_close(semId);
+
   print("Final value: %d\n", global);
-  
   myExit();
 }
 
@@ -57,24 +42,39 @@ void test_sync(){
   global = 0;
 
   print("\nCREATING PROCESSES...(WITH SEM)\n");
-
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++){
-    my_create_process("inc+", "1", "51654732800", "100000");
-    my_create_process("inc-", "1", "-51654732800", "100000");
+    argv1[0] = "inc+";      //nombre del proceso
+    argv1[1] = "1";         //1 si se quiere usar semaforos
+    argv1[2] = "1";         //valor a sumar al shMem
+    argv1[3] = "1000000"; //cantidad de entradas al shMem
+    argv1[4] = NULL;
+    createProcess(inc, argv1);
+    argv2[0] = "inc-";
+    argv2[1] = "1";
+    argv2[2] = "-1";
+    argv2[3] = "1000000";
+    argv2[4] = NULL;
+    createProcess(inc, argv2);
   }
-  
 }
 
 void test_no_sync(){
   int i;
-  int sem = 0, suma = 1, resta = -1, N = 1000000;
   global = 0;
 
   print("\nCREATING PROCESSES...(WITH SEM)\n");
-
-  for (i = 0; i < TOTAL_PAIR_PROCESSES; i++)
-  {
-    my_create_process("inc", &sem, &suma, &N);
-    my_create_process("inc", &sem, &resta, &N);
+  for (i = 0; i < TOTAL_PAIR_PROCESSES; i++){
+    argv1[0] = "inc+";
+    argv1[1] = "0";
+    argv1[2] = "1";
+    argv1[3] = "100000000";
+    argv1[4] = NULL;
+    createProcess(inc, argv1);
+    argv2[0] = "inc-";
+    argv2[1] = "0";
+    argv2[2] = "-1";
+    argv2[3] = "100000000";
+    argv2[4] = NULL;
+    createProcess(inc, argv2);
   }
 }
