@@ -132,7 +132,7 @@ void syscallHandler(registerStruct * registers) {
     break;
 
     case 23:
-    createSem((int) registers->rdi, (int *) registers->rsi);
+    createSem((char*) registers->rdi, (int ) registers->rsi, (int *) registers->rdx);
     break;
 
     case 24:

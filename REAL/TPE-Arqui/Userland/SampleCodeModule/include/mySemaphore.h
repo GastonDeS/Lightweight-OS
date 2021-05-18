@@ -1,10 +1,6 @@
 #ifndef MYSEMAPHORE_H
 #define MYSEMAPHORE_H
 
-#include <stddef.h>
-#include <semAsm.h>
-#include <stdlib.h> 
-#include <stdlib.h>
 #include <syscallsASM.h>
 
 
