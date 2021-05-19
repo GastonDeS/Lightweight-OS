@@ -42,7 +42,7 @@ void init_shell(int argc, char **argv) {
 	}
 }
 void writeToLines(char * buff, int dim) {
-  for (int i = 0; i < dim && buff[i] != 0 && i < MAX_LINE_LENGTH; i++) {
+  for (int i = 0; i < dim && buff[i] != 0 /*&& i < MAX_LINE_LENGTH*/; i++) {
     if (buff[i] == '\n' || lineCursor == (MAX_LINE_LENGTH - 1)) { //El -1 es para que el ultimo elemento sea un 0
       addLine();
 
