@@ -5,6 +5,7 @@
 #include <scheduler.h>
 #include <stddef.h>
 #include <semAsm.h>
+#include <stdlib.h>
 
 #define BLOCK 1000 //cantidad de semaforos permitdos
 
@@ -22,5 +23,6 @@ void semSleep(int semId, int* returnValue);
 //si habia procesos en la cola returnValue = 1 sino 0
 void semWakeUp(int semId, int*returnValue);
 
+void printSem(char *result);
 
 #endif

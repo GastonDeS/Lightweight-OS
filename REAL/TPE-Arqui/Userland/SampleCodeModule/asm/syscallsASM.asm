@@ -29,8 +29,20 @@ GLOBAL niceSyscall
 
 GLOBAL yieldSyscall
 
+GLOBAL printSemSyscall
+
 section .text
 
+printSemSyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 29
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
 yieldSyscall:
   push rbp
   mov rbp, rsp

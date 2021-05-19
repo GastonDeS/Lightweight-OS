@@ -5,5 +5,6 @@
 
 void createProcess(void (*function)(),char **argv);
 void myExit();
+void yield();
 
 #endif

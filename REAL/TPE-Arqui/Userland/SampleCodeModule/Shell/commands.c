@@ -71,10 +71,13 @@ void listAllProcess(char args[MAX_ARGS][MAX_ARG_LEN]) {
 }
 
 void getPid(char args[MAX_ARGS][MAX_ARG_LEN]) {
-  putChar('\n');
+  
+  printSem();
+  /*putChar('\n');
   uint64_t pid ;
   getPidSyscall(&pid);
   print("Pid: %d",pid);
+  */
 }
 
 void nice(char args[MAX_ARGS][MAX_ARG_LEN]){

@@ -154,6 +154,10 @@ void syscallHandler(registerStruct * registers) {
     case 28:
     yield();
     break;
+
+    case 29:
+    printSem((char*) registers->rdi);
+    break;
   }
 }
 

@@ -1,6 +1,6 @@
 #include <test_sync.h>
 
-long global; //shared memory
+int global; //shared memory
 char *argv1[5];
 char *argv2[5];
 

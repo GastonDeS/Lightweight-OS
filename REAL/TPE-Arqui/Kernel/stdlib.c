@@ -124,7 +124,7 @@ int intToString(int num, char * buffer){
     {
         buffer[i++] = '0';
         buffer[i] = '\0';
-        return buffer;
+        return i;
     }
   
     // In standard itoa(), negative numbers are handled only with 
@@ -152,7 +152,7 @@ int intToString(int num, char * buffer){
     // Reverse the string
     reverse(buffer, i);
   
-    return buffer;
+    return i;
 }
 
 int strlen(char *str){

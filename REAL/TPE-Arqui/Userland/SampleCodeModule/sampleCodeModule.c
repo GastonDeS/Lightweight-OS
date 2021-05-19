@@ -5,9 +5,9 @@
 #include <stdint.h>
 #include <unistd.h>
 #include <chess.h>
+#include <stddef.h>
 // #include <testProces.h>
 
-#define NULL (void *) 0
 
 char * v = (char*)0xB8000 + 79 * 2;
 
