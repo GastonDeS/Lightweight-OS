@@ -18,7 +18,7 @@ void sbrkSyscall(uint64_t size, void* result);
 void createProcessSyscall(void (*)(),char **);
 void endProcessSyscall(uint64_t pid);
 void getPidSyscall(uint64_t *);
-void listAllProcessSyscall(char **);
+void psSyscall(char *);
 void blockPidSyscall(uint64_t pid);
 void unblockPidSyscall(uint64_t pid);
 void mallocSyscall(uint64_t size, void* result);

@@ -3,6 +3,7 @@
 //#include <MemMang.h>
 #include <listADT.h> 
 #include <stddef.h>
+#include <stdlib.h>
 
 //#define MAXPROCESS 100
 //#define PROCESS_SIZE 
@@ -33,6 +34,9 @@ int currentCountdownPriority;
 //private:
 void changeProcess();
 void changeState(uint64_t pid , State state);
+void addTitle(char *dest,int *j);
+void strcat(char *dest, char *src, int *j);
+void movIndex(char *dest,int to, int *from);
 
 
 uint64_t * scheduler(uint64_t *currentProces){
@@ -112,13 +116,52 @@ void getPid(uint64_t *pid) {
     return;
 }
 
-void ps(void (*print)(void* n)){
-    printList(processList, print);
+void ps(char *result){
+    process **arrayOfProcess = ListToArray(processList);
+    int i = 0;
+    int j = 0, k =0;
+    char statesA[4][8] = {"Error","Blocked","Killed","Ready"}; 
+    char title[27] = "pid   prio   state   name\n";
+    // for (; title[j] ; j++) {
+    //     result[j] = title[j];
+    // }
+    strcat(result,title,&j);
+    while (arrayOfProcess[i] != NULL) {
+        result[j++] = ' ';
+        char pid[3], prio[10];
+        intToString(arrayOfProcess[i]->pid,pid);
+        strcat(result,pid,&j);
+        movIndex(result,6,&j);
+        intToString(arrayOfProcess[i]->priority,prio);
+        strcat(result,prio,&j);
+        movIndex(result,13,&j);
+        strcat(result,statesA[arrayOfProcess[i]->state],&j);
+        movIndex(result,21,&j);
+        strcat(result,arrayOfProcess[i]->name,&j);
+        result[j++] = '\n';
+        i++;
+    }
+    result[j] = 0;
+    free(arrayOfProcess);
+}
+
+void movIndex(char *dest,int to, int *from){
+    for ( ; (*from)%27 < to; (*from)++) {
+        dest[(*from)] = ' ';
+    }
+}
+
+void strcat(char *dest, char *src, int *j) {
+    int k = 0;
+    for ( k = 0 ; src[k] ;  (*j)++, k++ ) {
+        dest[*j] = src[k];
+    }
 }
 
 void blockProcess(uint64_t pid){
     if (pid==0) return;
     changeState(pid, BLOCKED);
+    _hlt();
 }
 
 void unlockProcess(uint64_t pid){

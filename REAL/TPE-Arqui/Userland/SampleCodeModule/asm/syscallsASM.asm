@@ -15,7 +15,7 @@ GLOBAL sbrkSyscall
 GLOBAL createProcessSyscall
 GLOBAL endProcessSyscall
 GLOBAL getPidSyscall
-GLOBAL listAllProcessSyscall
+GLOBAL psSyscall
 GLOBAL blockPidSyscall
 GLOBAL unblockPidSyscall
 GLOBAL mallocSyscall
@@ -161,7 +161,7 @@ blockPidSyscall:
   pop rbp
   ret
 
-listAllProcessSyscall:
+psSyscall:
   push rbp
   mov rbp, rsp
 
