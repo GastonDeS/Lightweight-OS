@@ -11,6 +11,7 @@
 #include <timer.h>
 #include <test_sync.h>
 #include <chess.h>
+#include <stddef.h>
 
 void inforeg(char args[MAX_ARGS][MAX_ARG_LEN]){
   clearScreen(0);
@@ -63,11 +64,11 @@ void unblockPid(char args[MAX_ARGS][MAX_ARG_LEN]){
   unblockPidSyscall(pid);
 }
 
-void listAllProcess(char args[MAX_ARGS][MAX_ARG_LEN]) {
-  char **allProcess = (void *)0;
-  listAllProcessSyscall(allProcess);
+void ps(char args[MAX_ARGS][MAX_ARG_LEN]) {
+  char allProcess = malloc(sizeof(char) * 300);
+  psSyscall(allProcess);
   putChar('\n');
-  print("%s",*allProcess);
+  print("%s",allProcess);
 }
 
 void getPid(char args[MAX_ARGS][MAX_ARG_LEN]) {
@@ -156,7 +157,7 @@ void help(char args[MAX_ARGS][MAX_ARG_LEN]) {
   print("\nAVAILABLE COMMANDS: \n");
   print("unblockPid [Pid] - unblocks a process given a pid\n");
   print("blockPid [Pid] - blocks a process given a pid\n");
-  print("printAllProcess - Prints all the process pcb\n");
+  print("ps - Prints all the process pcb\n");
   print("getPid - Prints the pid of the current process\n");
   print("kill [Pid] - kills a process given a Pid\n");
   print("time - Displays current time and date\n");

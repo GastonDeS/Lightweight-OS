@@ -8,7 +8,7 @@ void test(char args[MAX_ARGS][MAX_ARG_LEN]);
 void nice(char args[MAX_ARGS][MAX_ARG_LEN]);
 void blockPid(char args[MAX_ARGS][MAX_ARG_LEN]);
 void unblockPid(char args[MAX_ARGS][MAX_ARG_LEN]);
-void listAllProcess(char args[MAX_ARGS][MAX_ARG_LEN]);
+void ps(char args[MAX_ARGS][MAX_ARG_LEN]);
 void getPid(char args[MAX_ARGS][MAX_ARG_LEN]);
 void kill(char args[MAX_ARGS][MAX_ARG_LEN]);
 void help(char args[MAX_ARGS][MAX_ARG_LEN]);

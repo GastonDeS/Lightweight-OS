@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <interrupts.h>
+#include <stdlib.h>
 
 void yield();
 uint64_t * scheduler(uint64_t *currentProces);
@@ -13,7 +14,7 @@ void listAllProcess(char **ProcessList);
 void blockProcess(uint64_t pid);
 void unlockProcess(uint64_t pid);
 void exceptionProcess();
-void ps(void (*print)(void* n));
+void ps(char *array);
 void nice(uint64_t pid, uint64_t priority);
 
 #endif

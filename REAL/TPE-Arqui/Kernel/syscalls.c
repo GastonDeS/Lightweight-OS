@@ -107,9 +107,9 @@ void syscallHandler(registerStruct * registers) {
     getPid((uint64_t *) registers->rdi);
     break;
 
-    // case 17: //ListAllProcess
-    // listAllProcess((char *)registers->rdi);
-    // break;
+    case 17: //ListAllProcess
+    ps((char *)registers->rdi);
+    break;
 
     case 18: //blockPid
     blockProcess((uint64_t) registers->rdi);
