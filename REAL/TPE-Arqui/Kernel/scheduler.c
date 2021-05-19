@@ -12,10 +12,12 @@
 typedef enum {ERROR, BLOCKED, KILLED, READY}State;
 
 typedef struct {
+    uint64_t *BP;
     uint64_t *SP;
     uint64_t pid;
     State state;
     char *name;
+    uint8_t foreground;
     uint8_t priority;
 }process;
 
@@ -56,11 +58,11 @@ uint64_t * scheduler(uint64_t *currentProces){
 }
 
 void changeProcess(){
-    if (currentCountdownPriority) {
+    if (currentCountdownPriority && current->state == READY) {
         currentCountdownPriority--;
     } else {
         current = (process *)next(processList);
-        while ((*current).state==BLOCKED) {
+        while ((*current).state!=READY) {
             current = (process *)next(processList);
         }
         currentCountdownPriority = current->priority;
@@ -79,6 +81,7 @@ void nice(uint64_t pid, uint64_t priority){
 
 void yield(){
     currentCountdownPriority = 0;
+    _hlt();
 }
 
 void addProcess(uint64_t *currentProces, char *name) {
@@ -91,6 +94,8 @@ void addProcess(uint64_t *currentProces, char *name) {
     newProcess.SP = currentProces;
     newProcess.pid = size(processList);
     newProcess.state = READY;
+    newProcess.foreground = 0;
+    newProcess.BP = currentProces;
     newProcess.name = name; // asi o lo copio en una dirreccion de memoria nueva paraguardarlo
     newProcess.priority = 3; 
     
@@ -109,6 +114,7 @@ void endProcessWrapper(uint64_t pid){
         aux.pid = pid;
         delete(processList, &aux);
     }
+    _hlt();
 }
 
 void getPid(uint64_t *pid) {
@@ -121,14 +127,13 @@ void ps(char *result){
     int i = 0;
     int j = 0, k =0;
     char statesA[4][8] = {"Error","Blocked","Killed","Ready"}; 
-    char title[27] = "pid   prio   state   name\n";
-    // for (; title[j] ; j++) {
-    //     result[j] = title[j];
-    // }
+    char title[41] = "pid   prio   state   SP     BP     name";
     strcat(result,title,&j);
+    movIndex(result,49,&j);
+    result[j++] = '\n';
     while (arrayOfProcess[i] != NULL) {
         result[j++] = ' ';
-        char pid[3], prio[10];
+        char pid[3], prio[10],SP[10],BP[10];
         intToString(arrayOfProcess[i]->pid,pid);
         strcat(result,pid,&j);
         movIndex(result,6,&j);
@@ -137,7 +142,14 @@ void ps(char *result){
         movIndex(result,13,&j);
         strcat(result,statesA[arrayOfProcess[i]->state],&j);
         movIndex(result,21,&j);
+        intToBase(arrayOfProcess[i]->SP,16,SP);
+        strcat(result,SP,&j);
+        movIndex(result,28,&j);
+        intToBase(arrayOfProcess[i]->BP,16,BP);
+        strcat(result,BP,&j);
+        movIndex(result,35,&j);
         strcat(result,arrayOfProcess[i]->name,&j);
+        movIndex(result,49,&j);
         result[j++] = '\n';
         i++;
     }
@@ -146,7 +158,7 @@ void ps(char *result){
 }
 
 void movIndex(char *dest,int to, int *from){
-    for ( ; (*from)%27 < to; (*from)++) {
+    for ( ; (*from)%50 < to; (*from)++) {
         dest[(*from)] = ' ';
     }
 }
@@ -159,7 +171,7 @@ void strcat(char *dest, char *src, int *j) {
 }
 
 void blockProcess(uint64_t pid){
-    if (pid==0) return;
+    // if (pid==0) return;
     changeState(pid, BLOCKED);
     _hlt();
 }

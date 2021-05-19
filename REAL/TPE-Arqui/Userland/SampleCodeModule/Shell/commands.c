@@ -65,20 +65,22 @@ void unblockPid(char args[MAX_ARGS][MAX_ARG_LEN]){
 }
 
 void ps(char args[MAX_ARGS][MAX_ARG_LEN]) {
-  char allProcess = malloc(sizeof(char) * 300);
+  char allProcess[1024];
+  // allProcess = malloc(sizeof(char) * 1024);
   psSyscall(allProcess);
   putChar('\n');
   print("%s",allProcess);
+  // free(allProcess);
 }
 
 void getPid(char args[MAX_ARGS][MAX_ARG_LEN]) {
   
-  printSem();
-  /*putChar('\n');
+  // printSem();
+  putChar('\n');
   uint64_t pid ;
   getPidSyscall(&pid);
   print("Pid: %d",pid);
-  */
+  
 }
 
 void nice(char args[MAX_ARGS][MAX_ARG_LEN]){
@@ -88,14 +90,6 @@ void nice(char args[MAX_ARGS][MAX_ARG_LEN]){
   print("pid %s priority set to: %s", args[1], args[2]);
 }
 
-void test1(int argc, char** argv){
-  while (1) {
-    for (int i = 0; i < 10; i++) {
-      print(" 1 ");
-    }
-  }
-}
-
 void chessO(){
   char *argv[2];
 	argv[0] = "chess";
@@ -103,10 +97,18 @@ void chessO(){
   createProcess(chess,argv);
 }
 
+void test1(int argc, char** argv){
+  while (1) {
+    for (int i = 0; i < 10; i++) {
+      // print(" 1 ");
+    }
+  }
+}
+
 void test2(int argc, char** argv){
   while (1) {
     for (int i = 0; i < 10; i++) {
-      print(" 2 ");
+      // print(" 2 ");
     }
   }
 }
@@ -114,7 +116,7 @@ void test2(int argc, char** argv){
 void test3(int argc, char** argv){
   while (1) {
     for (int i = 0; i < 10; i++) {
-      print(" 3 ");
+      // print(" 3 ");
     }
   }
 }

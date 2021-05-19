@@ -6,6 +6,7 @@
 #include <regi.h>
 #include <IO_driver.h>
 #include <stdint.h>
+#include <interrupts.h>
 #define BUFFER_SIZE 64
 
 static uint8_t shiftL = 0, shiftR = 0;
@@ -43,6 +44,7 @@ void keyboardHandler(registerStruct * registers) {
 
 void readKeyboard(char * buff, uint8_t size, uint64_t * count) {
   int i = 0;
+  if ((endIndex - startIndex) == 0) _hlt();
 	for(i = 0; i<(endIndex-startIndex) && i<size; i++){
 		buff[i] = BUFFER[(startIndex++)%BUFFER_SIZE];
 	}

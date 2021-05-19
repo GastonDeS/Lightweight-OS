@@ -7,9 +7,8 @@ typedef struct elem{
     listADT blockedProcesses;
 }elem;
 
-elem* semVec = NULL;
+elem semVec[100];
 int semVecSize = 0; //cantidad de elemntos
-int signalCheck = 0; 
 
 //private:
 int findFreeSpace();
@@ -20,26 +19,26 @@ int delimiter(int *freeSpace, char *str, char* token);
 
 
 void createSem(char *semName, int initialValue, int* returnValue){
-    if(semVec == NULL){ //primer llamado
-        semVec = malloc(sizeof(elem)*BLOCK);
-        if(semVec == NULL){
-            *returnValue = -1;
-            return;
-        }
-    }
+    // if(semVec == NULL){ //primer llamado
+    //     semVec = malloc(sizeof(elem)*BLOCK);
+    //     if(semVec == NULL){
+    //         *returnValue = -1;
+    //         return;
+    //     }
+    // }
     
 
     //busco el primer espacio libre o si ya se creeo el semaforo
     int semId = findFreeSpace(semName);
-    if(!semVec[semId].name && strcmp(semVec[semId].name, semName) == 0 ){ 
+    if(semVec[semId].name && strcmp(semVec[semId].name, semName) == 0 ){ 
         semVec[semId].numProcess ++; 
     }else{// se encotro un espacio libre
         semVec[semId].value = initialValue;
         semVec[semId].name = semName;
         semVec[semId].numProcess = 1;
         semVec[semId].blockedProcesses = newList(sizeof(int),NULL);
+        semVecSize++;
     }
-    semVecSize++;
 }
 
 void removeSem(int semId, int* returnValue){
@@ -75,12 +74,7 @@ void semSleep(int semId, int* returnValue){
     if(semId < 0  || semId > semVecSize){
         *returnValue = -1;
         return;
-    }
-    if(signalCheck){
-        signalCheck = 0;
-        *returnValue = 0;
-        return;
-    }   
+    } 
 
      if(semVec[semId].value >0)
         _xadd(-1,&(semVec[semId].value)); 
@@ -199,7 +193,6 @@ int wakeUpProcess(listADT blockedProcesses){
     
     //checke si esta vacia la lista
     if(check == NULL){
-        signalCheck = 1;
         return 0;
     }
     //lo despierto
@@ -224,7 +217,7 @@ int findFreeSpace(char *str){
     }
 
     if(foundFlag)
-        return i;
+        return i-1;
     //si no lo encontro foundFlag = 0
     if(firstFree == -1) 
         return i;
