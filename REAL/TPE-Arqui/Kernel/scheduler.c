@@ -114,7 +114,7 @@ void endProcessWrapper(uint64_t pid){
         aux.pid = pid;
         delete(processList, &aux);
     }
-    _hlt();
+    if (current->pid == pid) _hlt();
 }
 
 void getPid(uint64_t *pid) {
@@ -173,7 +173,7 @@ void strcat(char *dest, char *src, int *j) {
 void blockProcess(uint64_t pid){
     // if (pid==0) return;
     changeState(pid, BLOCKED);
-    _hlt();
+    if (current->pid == pid) _hlt();
 }
 
 void unlockProcess(uint64_t pid){
