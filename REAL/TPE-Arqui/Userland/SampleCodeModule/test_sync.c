@@ -1,4 +1,5 @@
 #include <test_sync.h>
+#include <commands.h>
 
 int global; //shared memory
 char *argv1[5];
@@ -29,6 +30,7 @@ void inc(int argc, char **argv){
   }
   for (i = 0; i < N; i++){
     if (sem) sem_wait(semId);
+    // ps(NULL);
     slowInc(&global, value);
     if (sem) sem_post(semId);
   }

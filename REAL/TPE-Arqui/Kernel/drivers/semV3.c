@@ -75,8 +75,7 @@ void semSleep(int semId, int* returnValue){
         *returnValue = -1;
         return;
     } 
-
-     if(semVec[semId].value >0)
+    if(semVec[semId].value >0)
         _xadd(-1,&(semVec[semId].value)); 
     else{
         *returnValue = sleepProcess(semVec[semId].blockedProcesses);
@@ -84,7 +83,7 @@ void semSleep(int semId, int* returnValue){
             return;
         }
         //se despierta solo si alguien hace un post
-         _xadd(-1,&(semVec[semId].value)); //semVec[semId]--; 
+        //  _xadd(-1,&(semVec[semId].value)); //semVec[semId]--; 
     }
 
 }
@@ -97,6 +96,10 @@ void semWakeUp(int semId, int* returnValue){
     _xadd(1,&(semVec[semId].value));
 
     *returnValue = wakeUpProcess(semVec[semId].blockedProcesses);
+    if (*returnValue) {
+        _xadd(-1,&(semVec[semId].value)); //semVec[semId]--; 
+    }
+    
     return;
 }
 
@@ -196,7 +199,7 @@ int wakeUpProcess(listADT blockedProcesses){
         return 0;
     }
     //lo despierto
-    int pid = *((int*) check);    
+    int pid = *((int*) check);
     unlockProcess(pid);
 
     return 1;

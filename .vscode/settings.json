@@ -2,5 +2,8 @@
     "files.associations": {
         "*.c": "c",
         "cstdlib": "c",
+        "__locale": "c",
+        "functional": "c",
+        "locale": "c"
     }
 }
