@@ -37,7 +37,7 @@ void inc(int argc, char **argv){
   if (sem) sem_close(semId);
 
   print("Final value: %d\n", global);
-  unblockPidSyscall(0);
+  unblock(0);
   myExit();
 }
 
@@ -60,7 +60,7 @@ void test_sync(){
     argv2[4] = NULL;
     createProcess(inc, argv2);
   }
-  blockPidSyscall(0);
+  block(0);
 }
 
 void test_no_sync(){

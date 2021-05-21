@@ -1,6 +1,4 @@
 #include <scheduler.h>
-//#include <video_driver.h>
-//#include <MemMang.h>
 #include <listADT.h> 
 #include <stddef.h>
 #include <stdlib.h>
@@ -35,7 +33,7 @@ int currentCountdownPriority;
 
 //private:
 void changeProcess();
-void changeState(uint64_t pid , State state);
+int changeState(uint64_t pid , State state);
 void addTitle(char *dest,int *j);
 void strcat(char *dest, char *src, int *j);
 void movIndex(char *dest,int to, int *from);
@@ -69,14 +67,17 @@ void changeProcess(){
     }
 }
 
-void nice(uint64_t pid, uint64_t priority){
+void nice(uint64_t pid, uint64_t priority, int *result){
     process *processAux = malloc(sizeof(process));
     (*processAux).pid = pid;
     processAux = (process*)getElem(processList, processAux);
     if (processAux!=NULL) {
-        processAux->priority = priority;   
+        processAux->priority = priority; 
+        (*result) = priority; 
+        return; 
     }  
     //TODO free processAux
+    (*result) = -1;
 }
 
 void yield(){
@@ -84,7 +85,7 @@ void yield(){
     _hlt();
 }
 
-void addProcess(uint64_t *currentProces, char *name) {
+void addProcess(uint64_t *currentProces, char *name,uint64_t *pid) {
     if(processList == NULL){
         processList = newList(sizeof(process),equals);
         if(processList == NULL)
@@ -100,6 +101,7 @@ void addProcess(uint64_t *currentProces, char *name) {
     newProcess.priority = 3; 
     
     insertBeforeNext(processList, &newProcess);
+    (*pid) = newProcess.pid;
     return;
 }
 
@@ -108,13 +110,17 @@ void exceptionProcess(){
     processList = NULL;
 }
 
-void endProcessWrapper(uint64_t pid){
+void endProcessWrapper(uint64_t pid, int *result){
     if(pid > 0){
         process aux;
         aux.pid = pid;
-        delete(processList, &aux);
+        if (delete(processList, &aux)){
+            (*result) = 0;
+            if (current->pid == pid) _hlt();
+            return;
+        }
     }
-    if (current->pid == pid) _hlt();
+    (*result) = 0;
 }
 
 void getPid(uint64_t *pid) {
@@ -170,23 +176,33 @@ void strcat(char *dest, char *src, int *j) {
     }
 }
 
-void blockProcess(uint64_t pid){
+void blockProcess(uint64_t pid, int *result){
     // if (pid==0) return;
-    changeState(pid, BLOCKED);
-    if (current->pid == pid) _hlt();
+    if (changeState(pid, BLOCKED)) {
+        (*result) = 0;
+        if (current->pid == pid) _hlt();
+        return;
+    }
+    (*result) = -1;
 }
 
-void unlockProcess(uint64_t pid){
-    changeState(pid, READY);
+void unlockProcess(uint64_t pid, int *result){
+    if (changeState(pid, READY)) {
+        (*result) = 0;
+        return;
+    }
+    (*result) = -1;
 }
 
-void changeState(uint64_t pid , State state){
+int changeState(uint64_t pid , State state){
     process *processAux = malloc(sizeof(process));
     (*processAux).pid = pid;
     processAux = (process*)getElem(processList, processAux);
     if (processAux!=NULL) {
-        (*processAux).state = state;   
-    }    
+        (*processAux).state = state;  
+        return 1; 
+    }
+    return -1;
     //TODO fre processAux
 }
 

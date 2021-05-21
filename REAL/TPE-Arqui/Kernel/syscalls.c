@@ -96,11 +96,11 @@ void syscallHandler(registerStruct * registers) {
     break;
 
     case 14: //execv
-    createProcess((void (*)()) registers->rdi, (char **) registers->rsi);
+    createProcess((void (*)()) registers->rdi, (char **) registers->rsi,(uint64_t *) registers->rdx);
     break;
 
     case 15:
-    endProcessWrapper((uint64_t) registers->rdi);
+    endProcessWrapper((uint64_t) registers->rdi, (int *) registers->rsi);
     break;
 
     case 16: //getPid
@@ -112,11 +112,11 @@ void syscallHandler(registerStruct * registers) {
     break;
 
     case 18: //blockPid
-    blockProcess((uint64_t) registers->rdi);
+    blockProcess((uint64_t) registers->rdi,(int *) registers->rsi);
     break;
 
     case 19: // unlockProcess
-    unlockProcess((uint64_t) registers->rdi);
+    unlockProcess((uint64_t) registers->rdi,(int *) registers->rsi);
     break;
 
     case 20: //malloc
@@ -148,7 +148,7 @@ void syscallHandler(registerStruct * registers) {
     break;
     
     case 27:
-    nice((uint64_t) registers->rdi, (uint64_t) registers->rsi);
+    nice((uint64_t) registers->rdi, (uint64_t) registers->rsi,(int *) registers->rdx);
     break;
 
     case 28:

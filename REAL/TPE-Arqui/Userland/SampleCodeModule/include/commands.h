@@ -2,15 +2,17 @@
 #define COMMANDS_H
 #define MAX_ARGS 10
 #define MAX_ARG_LEN 32
+
+void ProcessTester(char args[MAX_ARGS][MAX_ARG_LEN]);
+void prioTester(char args[MAX_ARGS][MAX_ARG_LEN]);
 void semTester(char args[MAX_ARGS][MAX_ARG_LEN]);
-void chessO();
-void test(char args[MAX_ARGS][MAX_ARG_LEN]);
-void nice(char args[MAX_ARGS][MAX_ARG_LEN]);
+void chessS(char args[MAX_ARGS][MAX_ARG_LEN]);
+void niceS(char args[MAX_ARGS][MAX_ARG_LEN]);
 void blockPid(char args[MAX_ARGS][MAX_ARG_LEN]);
 void unblockPid(char args[MAX_ARGS][MAX_ARG_LEN]);
 void ps(char args[MAX_ARGS][MAX_ARG_LEN]);
 void getPid(char args[MAX_ARGS][MAX_ARG_LEN]);
-void kill(char args[MAX_ARGS][MAX_ARG_LEN]);
+void killS(char args[MAX_ARGS][MAX_ARG_LEN]);
 void help(char args[MAX_ARGS][MAX_ARG_LEN]);
 void echo(char args[MAX_ARGS][MAX_ARG_LEN]);
 void inforeg(char args[MAX_ARGS][MAX_ARG_LEN]);

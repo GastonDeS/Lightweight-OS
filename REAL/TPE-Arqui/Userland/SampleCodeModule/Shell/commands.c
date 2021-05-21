@@ -12,6 +12,9 @@
 #include <test_sync.h>
 #include <chess.h>
 #include <stddef.h>
+#include <test_prio.h>
+#include <unistd.h>
+#include <test_process.h>
 
 void inforeg(char args[MAX_ARGS][MAX_ARG_LEN]){
   clearScreen(0);
@@ -55,17 +58,17 @@ void printmem(char args[MAX_ARGS][MAX_ARG_LEN]) {
 void blockPid(char args[MAX_ARGS][MAX_ARG_LEN]){
   putChar('\n');
   int pid = atoi(args[1]);
-  blockPidSyscall(pid);
+  block(pid);
 }
 
 void unblockPid(char args[MAX_ARGS][MAX_ARG_LEN]){
   putChar('\n');
   int pid = atoi(args[1]);
-  unblockPidSyscall(pid);
+  unblock(pid);
 }
 
 void ps(char args[MAX_ARGS][MAX_ARG_LEN]) {
-  char allProcess[1024];
+  char allProcess[1024*5]; // TODO ajustar el tamño a variable
   // allProcess = malloc(sizeof(char) * 1024);
   psSyscall(allProcess);
   putChar('\n');
@@ -83,62 +86,25 @@ void getPid(char args[MAX_ARGS][MAX_ARG_LEN]) {
   
 }
 
-void nice(char args[MAX_ARGS][MAX_ARG_LEN]){
+void niceS(char args[MAX_ARGS][MAX_ARG_LEN]){
   int pid = atoi(args[1]);
   int priority = atoi(args[2]);
-  niceSyscall(pid, priority);
+  nice(pid, priority);
   print("pid %s priority set to: %s", args[1], args[2]);
 }
 
-void chessO(){
+void chessS(char args[MAX_ARGS][MAX_ARG_LEN]){
   char *argv[2];
 	argv[0] = "chess";
 	argv[1] = NULL;
   createProcess(chess,argv);
 }
 
-void test1(int argc, char** argv){
-  while (1) {
-    for (int i = 0; i < 10; i++) {
-      // print(" 1 ");
-    }
-  }
-}
-
-void test2(int argc, char** argv){
-  while (1) {
-    for (int i = 0; i < 10; i++) {
-      // print(" 2 ");
-    }
-  }
-}
-
-void test3(int argc, char** argv){
-  while (1) {
-    for (int i = 0; i < 10; i++) {
-      // print(" 3 ");
-    }
-  }
-}
-
-
-
-void test(char args[MAX_ARGS][MAX_ARG_LEN]) {
-  char *argv[2];
-  argv[0] = "test ";
-  argv[1] = NULL;
-  createProcessSyscall(test1,argv);
-  createProcessSyscall(test2,argv);
-  createProcessSyscall(test3,argv);
-
-}
-
-
-void kill(char args[MAX_ARGS][MAX_ARG_LEN]) {
+void killS(char args[MAX_ARGS][MAX_ARG_LEN]) {
   putChar('\n');
   print("kill pid: %s",args[1]);
   int pid = atoi(args[1]);
-  endProcessSyscall(pid);
+  kill(pid);
 }
 
 void time(char args[MAX_ARGS][MAX_ARG_LEN]) { 
@@ -203,4 +169,20 @@ void semTester(char args[MAX_ARGS][MAX_ARG_LEN]){
 
   test_sync();
 
+}
+
+void prioTester(char args[MAX_ARGS][MAX_ARG_LEN]) {
+  print("\n");
+  char *arg[2];
+  arg[0] = "test_prio";
+  arg[1] = NULL;
+  createProcess(test_prio,arg);
+}
+
+void ProcessTester(char args[MAX_ARGS][MAX_ARG_LEN]) {
+  print("\n");
+  char *arg[2];
+  arg[0] = "test_processes";
+  arg[1] = NULL;
+  createProcess(test_processes,arg);
 }

@@ -186,7 +186,10 @@ int sleepProcess(listADT blockedProcesses){
     result = addToTheEnd(blockedProcesses, &pid);
 
     //bloqueo al proceso
-    blockProcess(pid); 
+    if (result ==0 ){
+        int ans;
+        blockProcess(pid, &ans); 
+    }
     return result;
 }
 
@@ -200,7 +203,8 @@ int wakeUpProcess(listADT blockedProcesses){
     }
     //lo despierto
     int pid = *((int*) check);
-    unlockProcess(pid);
+    int ans;
+    unlockProcess(pid, &ans);
 
     return 1;
 }
