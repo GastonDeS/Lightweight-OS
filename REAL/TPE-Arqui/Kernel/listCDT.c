@@ -168,18 +168,7 @@ int deleteElem(listADT list, void* element, void (*deleteElemValue)(void* value)
 
     if (list->iteradorNext == current) next(list);
     removeNode(current, list, deleteElemValue);
-    /*
-    if(current->next != NULL)
-        current->next->previous = current->previous;
-    if(current->previous != NULL)
-        current->previous->next = current->next;
-    else
-        list->first = current->next;
-    list->size --;
-
-    deleteElemValue(current->value);
-    free(current);
-    */
+    
     return 1;
 }
 

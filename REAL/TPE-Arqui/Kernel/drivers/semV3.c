@@ -7,7 +7,7 @@ typedef struct elem{
     listADT blockedProcesses;
 }elem;
 
-elem semVec[100];
+elem semVec[BLOCK];
 int semVecSize = 0; //cantidad de elemntos
 
 //private:
@@ -17,19 +17,11 @@ int wakeUpProcess(listADT blockedProcesses);
 
 
 void createSem(char *semName, int initialValue, int* returnValue){
-    // if(semVec == NULL){ //primer llamado
-    //     semVec = malloc(sizeof(elem)*BLOCK);
-    //     if(semVec == NULL){
-    //         *returnValue = -1;
-    //         return;
-    //     }
-    // }
-    
 
     //busco el primer espacio libre o si ya se creeo el semaforo
     int semId = findfreeSpaces(semName);
     if(semVec[semId].name && strcmp(semVec[semId].name, semName) == 0 ){ 
-        semVec[semId].numProcess ++; 
+        semVec[semId].numProcess ++;
     }else{// se encotro un espacio libre
         semVec[semId].value = initialValue;
         semVec[semId].name = semName;
@@ -37,6 +29,7 @@ void createSem(char *semName, int initialValue, int* returnValue){
         semVec[semId].blockedProcesses = newList(sizeof(int),NULL);
         semVecSize++;
     }
+    *returnValue = semId; 
 }
 
 void removeSem(int semId, int* returnValue){

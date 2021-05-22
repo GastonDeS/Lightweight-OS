@@ -167,6 +167,23 @@ void syscallHandler(registerStruct * registers) {
     case 31:
     checkMemory((struct checkMemdata*) registers->rdi);
     break;
+
+    case 32:
+    pipe((int* )registers->rdi);
+    break;
+
+    case 33:
+    pipeClose((int) registers->rdi,(int*) registers->rsi);
+    break;
+
+    case 34:
+    pipeWrite((int) registers->rdi,(char*) registers->rsi,(int) registers->rdx,(int*) registers->rcx);
+    break;
+
+    case 35:
+    pipeRead((int) registers->rdi,(char*) registers->rsi,(int) registers->rdx,(int*) registers->rcx);
+    break;
+    
   }
 }
 
