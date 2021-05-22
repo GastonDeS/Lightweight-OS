@@ -14,6 +14,7 @@
 #include <MemMang.h>
 #include <sem.h>
 #include <checkMemdata.h>
+#include <pipeDriver.h>
 
 void getDateInfo(uint8_t mode, uint8_t * target);
 
@@ -183,7 +184,7 @@ void syscallHandler(registerStruct * registers) {
     case 35:
     pipeRead((int) registers->rdi,(char*) registers->rsi,(int) registers->rdx,(int*) registers->rcx);
     break;
-    
+
   }
 }
 

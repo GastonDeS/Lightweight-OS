@@ -1,4 +1,4 @@
-#include <pipe_driver.h>
+#include <pipeDriver.h>
 
 typedef struct elem{
     char free;
@@ -23,7 +23,7 @@ void pipe(int *returnValue){
         pipeVec[pipeId].numProcess++; //encontro uno
     }else if(pipeVecSize+1 < BLOCK){//no hay, usa uno nuevo
         pipeId = pipeVecSize;
-        createSem(creatSemName(pipeId), 1, pipeVec[pipeId].semId);
+        createSem(creatSemName(pipeId), 1, &pipeVec[pipeId].semId);
         if(pipeVec[pipeId].semId == -1){
             *returnValue =  -1;
             return;
@@ -42,11 +42,6 @@ void pipe(int *returnValue){
 
 
 void pipeClose(int pipeId, int *returnValue){
-    int pipeId;
-    if( (pipeId = findSpaces()) != 0){//busco el pipe
-        *returnValue = 1; //no lo encontro
-        return;
-    }
 
     if((pipeVec[pipeId].numProcess--) == 0){
         pipeVec[pipeId].free = 1;
