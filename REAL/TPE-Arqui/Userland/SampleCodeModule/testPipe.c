@@ -14,7 +14,7 @@ void lector(int  argc, char **argv) {
     char *pipeBuff = malloc(sizeof(char)*124);
     int result;
     while (1) {
-        pipeReadSyscall(id,pipeBuff,100,&result);
+        pipeReadSyscall(id,pipeBuff,10,&result);
         print(pipeBuff);
         print("\n");
         for (int i = 0; i < 100000000; i++) {}

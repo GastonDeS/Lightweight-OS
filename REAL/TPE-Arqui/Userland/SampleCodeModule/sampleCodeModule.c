@@ -23,7 +23,7 @@ int main() {
 	argv[0] = "shell";
 	argv[1] = NULL;
 	createProcess(init_shell,argv);
-	nice(0,20);
+	// nice(0,20);
 	// createProcess(chess,argv);
 	while (1)
 	{

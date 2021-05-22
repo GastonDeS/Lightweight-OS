@@ -37,7 +37,7 @@ void inc(int argc, char **argv){
   myExit();
 }
 
-void test_sync(){
+void test_sync(int argc,char ** argv){
   int i;
   global = 0;
 
