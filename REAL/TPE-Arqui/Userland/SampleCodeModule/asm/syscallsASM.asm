@@ -26,17 +26,57 @@ GLOBAL removeSemSyscall
 GLOBAL semSleepSyscall
 GLOBAL semWakeUpSyscall
 GLOBAL niceSyscall
-
 GLOBAL yieldSyscall
-
 GLOBAL printSemSyscall
 GLOBAL printMemSyscall
 GLOBAL checkMemorySyscall
-
+GLOBAL pipeSyscall
+GLOBAL pipeCloseSyscall
+GLOBAL pipeWriteSyscall
+GLOBAL pipeReadSyscall
 
 
 section .text
+pipeReadSyscall:
+  push rbp
+  mov rbp, rsp
 
+  mov rax, 35
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
+pipeWriteSyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 34
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
+pipeCloseSyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 33
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
+pipeSyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 32
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
 checkMemorySyscall:
   push rbp
   mov rbp, rsp

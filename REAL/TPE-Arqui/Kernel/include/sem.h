@@ -7,7 +7,7 @@
 #include <semAsm.h>
 #include <stdlib.h>
 
-#define BLOCK 1000 //cantidad de semaforos permitdos
+#define BLOCK 100 //cantidad de semaforos permitdos
 
 //crea un semaforo en kernel
 //si hubo un error returnValue = -1
