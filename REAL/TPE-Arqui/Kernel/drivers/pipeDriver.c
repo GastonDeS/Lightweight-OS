@@ -7,12 +7,13 @@ typedef struct elem{
     int writeIndex;
     int numProcess;
     int semId;
-    int blockReadProcess;
-    int blockwriteProcess;
+    char processWantRead;
+    char processWantsWrite;
 }elem;
 
 elem pipeVec[BLOCK];
 int pipeVecSize = 0; //cantidad de elemntos
+
 
 //private
 int findSpaces();
@@ -22,8 +23,7 @@ int wakeUpProcess2(int pid);
 
 void pipe(int *returnValue){
     int pipeId;
-
-    if((pipeId=findSpaces()) != 0){//busco espacio libre
+    if((pipeId=findSpaces()) != 0){
         pipeVec[pipeId].numProcess++; //encontro uno
     }else if(pipeVecSize+1 < BLOCK){//no hay, usa uno nuevo
         pipeId = pipeVecSize;
@@ -33,8 +33,8 @@ void pipe(int *returnValue){
             return;
         }
         //crear listas
-        pipeVec[pipeId].blockReadProcess = -1;
-        pipeVec[pipeId].blockwriteProcess= -1; 
+        pipeVec[pipeId].processWantRead = 0;
+        pipeVec[pipeId].processWantsWrite= 0; 
         //listas
         pipeVec[pipeId].free = 0;
         pipeVec[pipeId].readIndex = 0;
@@ -54,8 +54,6 @@ void pipeClose(int pipeId, int *returnValue){
     if((pipeVec[pipeId].numProcess--) == 0){
         pipeVec[pipeId].free = 1;
         removeSem(pipeVec[pipeId].semId, NULL); //chequear
-        free(pipeVec[pipeId].semId);
-        //free listas
         *returnValue = 1;
         return;
     }
@@ -70,29 +68,30 @@ void pipeWrite(int pipeId, char *addr, int n, int *returnValue){
         return;
     } 
 
-
-
-    semSleep(pipeVec[pipeId].semId, returnValue);
+    pipeVec[pipeId].processWantsWrite = 1;
+    semWait(pipeVec[pipeId].semId, returnValue);
     if(*returnValue == -1)
         return;
+    pipeVec[pipeId].processWantsWrite = 0;
     
     for(int i = 0; i < n; i++){
         
         while(pipeVec[pipeId].writeIndex == pipeVec[pipeId].readIndex + PIPE_SIZE){
-
-            semWakeUp(pipeVec[pipeId].semId, returnValue);
-
-            if(pipeVec[pipeId].blockReadProcess != -1)
-                wakeUpProcess(pipeVec[pipeId].blockReadProcess);
-            sleepProcess();
-            
-            semSleep(pipeVec[pipeId].semId, returnValue);
-           
+            if(pipeVec[pipeId].processWantRead){
+                semPost(pipeVec[pipeId].semId, returnValue);
+                pipeVec[pipeId].processWantsWrite = 1;
+                semWait(pipeVec[pipeId].semId, returnValue);
+                if(*returnValue == -1)
+                    return;
+                pipeVec[pipeId].processWantsWrite = 0;
+            }else{
+                return;
+            }
         }
         pipeVec[pipeId].data[ pipeVec[pipeId].writeIndex++ % PIPE_SIZE ] = addr[i]; 
     }
 
-    semWakeUp(pipeVec[pipeId].semId, returnValue);
+    semPost(pipeVec[pipeId].semId, returnValue);
     return;
 }
 
@@ -102,25 +101,26 @@ void pipeRead(int pipeId, char * addr, int n, int *returnValue){
         return;
     } 
 
-    semSleep(pipeVec[pipeId].semId, returnValue);
+    pipeVec[pipeId].processWantRead = 1;
+    semWait(pipeVec[pipeId].semId, returnValue);
     if(*returnValue == -1)
         return;
+    pipeVec[pipeId].processWantRead = 0;
     
     for(int i = 0; i < n; i++){
-        while( pipeVec[pipeId].readIndex == pipeVec[pipeId].writeIndex){
-            semSleep(pipeVec[pipeId].semId, returnValue);
-            
-            if(pipeVec[pipeId].blockReadProcess != -1)
-                wakeUpProcess(pipeVec[pipeId].blockReadProcess);
-            
-            sleepProcess();
-
-            semWakeUp(pipeVec[pipeId].semId, returnValue);
+       while( pipeVec[pipeId].readIndex == pipeVec[pipeId].writeIndex){
+            if(pipeVec[pipeId].processWantsWrite){
+                semPost(pipeVec[pipeId].semId, returnValue);
+                pipeVec[pipeId].processWantRead = 1;
+                semWait(pipeVec[pipeId].semId, returnValue);
+                pipeVec[pipeId].processWantRead = 0;
+            }else{
+                return;
+            }
         }
         addr[i] = pipeVec[pipeId].data[ pipeVec[pipeId].readIndex++ % PIPE_SIZE ]; 
     }
-
-    semWakeUp(pipeVec[pipeId].semId, returnValue);
+    semPost(pipeVec[pipeId].semId, returnValue);
     return;
 }
 
