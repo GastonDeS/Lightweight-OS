@@ -2,7 +2,13 @@
 #define COMMANDS_H
 #define MAX_ARGS 10
 #define MAX_ARG_LEN 32
+
+void test_memS(char args[MAX_ARGS][MAX_ARG_LEN]);
+void memCheck(char args[MAX_ARGS][MAX_ARG_LEN]);
+void mem(char args[MAX_ARGS][MAX_ARG_LEN]);
+void noSemTester(char args[MAX_ARGS][MAX_ARG_LEN]);
 void semTester(char args[MAX_ARGS][MAX_ARG_LEN]);
+void sem(char args[MAX_ARGS][MAX_ARG_LEN]);
 void chessO();
 void test(char args[MAX_ARGS][MAX_ARG_LEN]);
 void nice(char args[MAX_ARGS][MAX_ARG_LEN]);

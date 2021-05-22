@@ -23,6 +23,6 @@ void semSleep(int semId, int* returnValue);
 //si habia procesos en la cola returnValue = 1 sino 0
 void semWakeUp(int semId, int*returnValue);
 
-void printSem(char *result);
+void printSem(char *result, int strSize);
 
 #endif

@@ -6,6 +6,8 @@ void *firstInfoBlock = NULL;
 void *memorySize = NULL; //(memorySize-firstInfoBlock) tamaño total de la memoria
 void *memoryDim = NULL;  //(memoryDim-firstInfoBlock) bytes usados 
 
+int index = 0; //variable auxiliar del printMem
+
 struct infoBlock{
     uint64_t size;  //12 bytes
     char free;  
@@ -176,3 +178,138 @@ void mallocSyscall(uint64_t size, void* result){
     result = malloc(size);
 }
 
+//----------------------------------------------debugger---------------------------------------------------
+/*
+  (*) No puede haber dos free juntos
+  (*) distancia entre bloques - size - INFO_BLOCK_SIZE < MAX_DIFF_SIZE
+  (*) memoryDim-firstInfoBlock = la sumatoria de "block->next - block" en todos
+  los bloques
+  (*) en todo los bloques pasa que, current = current->next->previous
+  (*) currentMemoryLimit = memorySize
+  (*) firstInfoBlock = startMemory
+  (*) totalBytes es igual a la suma de bytesUsedByBLocks, bytesUsedByUser,
+  unusedBytes y bytesUsedByAlign
+  (*) numeberOfBlocks es igual a los bloque libre y usados
+  (*) los punteros devueltos por malloc tienen que estar alineados a 64 bit
+*/
+void checkMemory(struct checkMemdata *data){
+    infoBlockPtr current = firstInfoBlock;
+    int freeFlag = 0;
+
+    while (current != NULL){
+        data->numeberOfBlocks++;
+        if (current->free){
+            data->freeBlock++;
+        }else{
+            data->blockused++;
+        }
+        data->bytesUsedByBLocks += INFO_BLOCK_SIZE;
+        data->bytesUsedByUser += current->size;
+        data->bytesUsedByAlign += 0;
+        
+        if (current->next != NULL){
+            data->unusedBytes += (long)current->next - (long)current - (int)current->size - INFO_BLOCK_SIZE;
+            data->totalBytes += (long)current->next - (long)current;
+        }else{
+            data->unusedBytes += (long)memoryDim - (long)current - (int)current->size - INFO_BLOCK_SIZE;
+            data->totalBytes += (long)memoryDim - (long)current;
+        }
+        if (current->free){ // no puede haber dos free juntos
+            if (freeFlag){
+                data->freeBlocksTogether ++;
+                data->numError ++;
+            }else
+                freeFlag = 1;
+        }else
+            freeFlag = 0;
+
+        long ptr = (long)(current + 1);
+        if (ptr % 63 != 0){
+            data->noAlignBlocks ++;
+            data->numError ++;
+        }
+
+        if (current->next != NULL){
+            long notUsed = (long)current->next - (long)current - (int)current->size - INFO_BLOCK_SIZE;
+            if (notUsed > MAX_DIFF_SIZE){
+                data->lostBytes += (notUsed - MAX_DIFF_SIZE);
+                data->numError ++;
+            }
+            if (current != current->next->previous){
+                data->curNextPrev++;
+                data->numError ++;
+            }
+        }
+        current = current->next;
+    }
+    if (data->totalBytes != (data->bytesUsedByBLocks + data->bytesUsedByUser + data->unusedBytes + data->bytesUsedByAlign)){
+        data->bytesError = 1;
+        data->numError ++;
+    }
+    if (data->numeberOfBlocks != data->blockused + data->freeBlock){
+        data->numblocksError = 1;
+        data->numError++;
+    }
+    if (memoryDim - firstInfoBlock != data->totalBytes){
+        data->memError = 1;
+        data->numError++;
+    }
+    return;
+}
+
+void printMem(char *str, int strSize){
+    int i=0, buffDim=10;
+    strSize--; //reservo el lugar del \n
+    char auxBuf[buffDim];    
+    
+    infoBlockPtr current = firstInfoBlock;
+    int j;
+    for(j= 0; j < index && current != NULL; j++)
+        current = current->next;
+    
+    char *title = "\n#bloque\t\tfree\t\tsize\n ";
+    strcat2(str, &i, strSize, title);
+
+    while (current != NULL && i < strSize ){
+        
+        intToString(index, auxBuf);
+        strcat2(str, &i, strSize, auxBuf);
+        strcat2(str, &i, strSize, "\t\t\t\t\t\t");
+
+        if(current->free)
+            strcat2(str, &i, strSize, "si");
+        else
+            strcat2(str, &i, strSize, "no");
+        strcat2(str, &i, strSize, "\t\t\t\t\t");
+
+        intToString(current->size, auxBuf);
+        strcat2(str, &i, strSize, auxBuf);
+        strcat2(str, &i, strSize, "\n");
+        
+
+        /*//numero de bloque
+        strcat2(str, &i, strSize, "\nbloque: ");
+        intToString(index, auxBuf);
+        strcat2(str, &i, strSize, auxBuf);
+
+        //tamaño del bloque
+        strcat2(str, &i, strSize, "\n\t|-> size: ");
+        intToString(current->size, auxBuf);
+        strcat2(str, &i, strSize, auxBuf);
+
+        //si esta libre o no
+        strcat2(str, &i, strSize, "\n\t|-> free: ");
+        if(current->free)
+            strcat2(str, &i, strSize, "si");
+        else
+            strcat2(str, &i, strSize, "no");
+        */
+        current = current->next;
+        index++;
+    }
+    if(current == NULL && i != strSize)
+        index = 0;
+    if(i == strSize)
+        index--;
+    str[i] = '\0'; 
+}

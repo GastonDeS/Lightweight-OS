@@ -182,5 +182,12 @@ char * strcpy(char * dest, char * src) {
   return dest;
 }
 
+void strcat2(char * dest, int* from, int strSize, char * src){
+  int j;
+  for (j=0; src[j] != 0 && *from < strSize; j++, (*from)++) {
+    dest[*from] = src[j];
+  }
+  return;
+}
 
 #endif

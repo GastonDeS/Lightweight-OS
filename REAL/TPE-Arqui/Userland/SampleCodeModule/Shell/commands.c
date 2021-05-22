@@ -12,6 +12,8 @@
 #include <test_sync.h>
 #include <chess.h>
 #include <stddef.h>
+#include <checkMemdata.h>
+#include <test_mm.h>
 
 void inforeg(char args[MAX_ARGS][MAX_ARG_LEN]){
   clearScreen(0);
@@ -74,8 +76,6 @@ void ps(char args[MAX_ARGS][MAX_ARG_LEN]) {
 }
 
 void getPid(char args[MAX_ARGS][MAX_ARG_LEN]) {
-  
-  // printSem();
   putChar('\n');
   uint64_t pid ;
   getPidSyscall(&pid);
@@ -88,6 +88,10 @@ void nice(char args[MAX_ARGS][MAX_ARG_LEN]){
   int priority = atoi(args[2]);
   niceSyscall(pid, priority);
   print("pid %s priority set to: %s", args[1], args[2]);
+}
+
+void sem(char args[MAX_ARGS][MAX_ARG_LEN]){
+  printSem();
 }
 
 void chessO(){
@@ -200,7 +204,48 @@ void uwu(char args[MAX_ARGS][MAX_ARG_LEN]) {
 }
 
 void semTester(char args[MAX_ARGS][MAX_ARG_LEN]){
-
   test_sync();
+}
 
+void noSemTester(char args[MAX_ARGS][MAX_ARG_LEN]){
+  test_no_sync();
+}
+
+void mem(char args[MAX_ARGS][MAX_ARG_LEN]){
+  int strSize = 800;
+  char str[strSize];
+  printMemSyscall(str, strSize);
+  print("%s", str);
+}
+
+void memCheck(char args[MAX_ARGS][MAX_ARG_LEN]){
+  struct checkMemdata data = {0};
+  checkMemorySyscall(&data);
+  print("\n");
+  print("* Cantidad de bloques: %d\n", data.numeberOfBlocks);
+  print("    |-> Usados: %d\n", data.blockused);
+  print("    |-> Libre: %d\n", data.freeBlock);
+  print("\n");
+  print("* Cantidad total de bytes usados: %d Bytes\n", data.totalBytes);
+  print("    |-> Usados en infoBLocks: %d Bytes\n", data.bytesUsedByBLocks);
+  print("    |-> Usados por el usuario: %d Bytes\n", data.bytesUsedByUser);
+  print("    |-> No utilizados: %d Bytes\n", data.unusedBytes);
+  print("    |-> Usados para alinear: %d Bytes\n", data.bytesUsedByAlign);
+  print("    |-> Bytes perdidos: %d Bytes\n", data.lostBytes);
+  print("\n");
+  print("* Numero de errores: %d\n", data.numError);
+  print("    |-> Numero de bloque con error A: %d\n", data.freeBlocksTogether);
+  print("    |-> Numero de bloque con error B: %d\n", data.noAlignBlocks);
+  print("    |-> Numero de bloque con error C: %d\n", data.curNextPrev);
+  /*
+  Errores:
+    A: dos bloque libreos juntos
+    B: bloque no alineado a 8 bytes
+    C: que el previous no apunte el bloque anterior
+  */
+
+}
+
+void test_memS(char args[MAX_ARGS][MAX_ARG_LEN]){
+  test_mm();
 }

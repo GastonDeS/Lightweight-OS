@@ -260,8 +260,19 @@ struct data {
   int bytesUsedByBLocks; // Bytes usados por los infoBLock
   int bytesUsedByUser;   // Bytes usados por el usuario
   int unusedBytes;       // Bytes no usados por reutilizar bloques
-  int bytesUsedByAlign;  // Bytes usados para alinear
+  int bytesUsedByAlign;  // Bytes usados para alinear usuario
+  int lostBytes;          //bytes que por algun error no se toman en cuenta
+
+  int freeBlocksTogether;   //numero de bloques libre que estan junto a otro bloque libre
+  int noAlignBlocks;        //numero de bloques que no estan alineados
+  int curNextPrev;          //cantidad de bloques que no cumplen: current != current->next->previous
+
+  char bytesError;
+  char blocksError;
+  char memError;
+
 };
+
 typedef struct data *dataPtr;
 
 int registerData(infoBlockPtr block, dataPtr data) {

@@ -30,9 +30,34 @@ GLOBAL niceSyscall
 GLOBAL yieldSyscall
 
 GLOBAL printSemSyscall
+GLOBAL printMemSyscall
+GLOBAL checkMemorySyscall
+
+
 
 section .text
 
+checkMemorySyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 31
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
+
+printMemSyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 30
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
 printSemSyscall:
   push rbp
   mov rbp, rsp

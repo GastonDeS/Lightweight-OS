@@ -29,7 +29,8 @@ int sem_post(int semId){
 }
 
 void printSem(){
-    char str[101];
-    printSemSyscall(str);
+    int strSize = 100;
+    char str[strSize];
+    printSemSyscall(str, strSize);
     print("%s", str);
 }

@@ -13,5 +13,5 @@ char * strcpy(char * dest, char * src);
 int atohex(char * str);
 char toUpper(char letter);
 char toLower(char letter);
-
+void strcat2(char * dest, int* from, int strSize, char * src);
 #endif

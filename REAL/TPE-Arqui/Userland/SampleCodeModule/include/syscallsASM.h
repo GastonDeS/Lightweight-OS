@@ -2,6 +2,7 @@
 #define SYSCALLS_ASM_H
 
 #include <stdint.h>
+#include <checkMemdata.h>
 
 void drawStringSysCall(char * buff, uint64_t size, uint64_t x, uint64_t y, uint64_t fontColor, uint64_t backgroundColor, uint64_t fontSize, uint64_t alphaBackground);
 void isKeyboardEmptySyscall(uint64_t * target);
@@ -30,5 +31,8 @@ void semSleepSyscall(int semId, int* returnValue);
 void semWakeUpSyscall(int semId, int* returnValue);
 void niceSyscall(uint64_t pid, uint64_t priority);
 void yieldSyscall();
+void printSemSyscall(char *str, int strSize);
+void printMemSyscall(char *str, int strSize);
+void checkMemorySyscall(struct checkMemdata* data);
 
 #endif

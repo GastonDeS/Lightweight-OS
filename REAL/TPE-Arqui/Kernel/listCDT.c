@@ -114,7 +114,6 @@ void* pop(listADT list){
 int deleteFirstElem(listADT list){
     if(isEmpty(list))
         return -1;
-
     removeNode(list->first, list);
 
     return 0;
@@ -152,7 +151,6 @@ int delete(listADT list, void* element){
     nodeP current = list->first;
     if(!search(&current, element, list->equals))
         return 0;
-
     removeNode(current, list);
 
     return 1;
@@ -249,9 +247,7 @@ void* next(listADT list) {
 		toBegin(list);
 
     void* result = list->iteradorNext->value;
-	
     list->iteradorNext = list->iteradorNext->next;
-
 	return result;
 }
 

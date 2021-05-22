@@ -11,11 +11,9 @@ elem semVec[100];
 int semVecSize = 0; //cantidad de elemntos
 
 //private:
-int findFreeSpace();
+int findfreeSpaces();
 int sleepProcess(listADT blockedProcesses);
 int wakeUpProcess(listADT blockedProcesses);
-int strcpy2(char *dest, int* freeSpace, char * src);
-int delimiter(int *freeSpace, char *str, char* token);
 
 
 void createSem(char *semName, int initialValue, int* returnValue){
@@ -29,7 +27,7 @@ void createSem(char *semName, int initialValue, int* returnValue){
     
 
     //busco el primer espacio libre o si ya se creeo el semaforo
-    int semId = findFreeSpace(semName);
+    int semId = findfreeSpaces(semName);
     if(semVec[semId].name && strcmp(semVec[semId].name, semName) == 0 ){ 
         semVec[semId].numProcess ++; 
     }else{// se encotro un espacio libre
@@ -83,7 +81,6 @@ void semSleep(int semId, int* returnValue){
             return;
         }
         //se despierta solo si alguien hace un post
-        //  _xadd(-1,&(semVec[semId].value)); //semVec[semId]--; 
     }
 
 }
@@ -103,78 +100,41 @@ void semWakeUp(int semId, int* returnValue){
     return;
 }
 
-void printSem(char *str){
-    int i=0, j=0, buffDim=10, strFreeSpace = 100;
-    //char *str = malloc(sizeof(char*)*strFreeSpace+1); //+1 es por el \0
-    //char* str = [strFreeSpace+1]; //+1 es por el \0
-    char *title = "\nname\tvalue\t#process\t#blockProcess";
+void printSem(char *str, int strSize){
+    int i=0, j=0, buffDim=10;
+    strSize--; //reservo el lugar del \n
+    char *title = "\nname\tvalue\t#process\t#blockProcess\n";
     char auxBuf[buffDim];
 
     //armado del title
-    i += strcpy2(str+i, &strFreeSpace, title);
-    i += delimiter(&strFreeSpace, str+i, "\n");
-    if(i < 0){
-        str[i++] = '\0';
-        return;
-    }
+    strcat2(str, &i, strSize, title);
 
-    while(j < semVecSize){
+    for(j=0 ;j < semVecSize && i < strSize; j++){
     
         //nombre
-        i += strcpy2(str+i, &strFreeSpace, semVec[j].name);
-        i += delimiter(&strFreeSpace, str+i, "\t" );
-
-        if(i < 0){i++;break;}
+        strcat2(str, &i, strSize, semVec[j].name);
+        strcat2(str, &i, strSize, "\t\t\t\t");
 
         //valor del semaforo
         intToString(semVec[j].value, auxBuf);
-        i += strcpy2(str+i, &strFreeSpace, auxBuf);
-        i += delimiter(&strFreeSpace, str+i, "\t" );
-
-        if(i < 0){i++;break;}
+        strcat2(str, &i, strSize, auxBuf);
+        strcat2(str, &i, strSize, "\t\t\t\t\t\t\t");
 
         //numero de procesos usando el semaforo
         intToString(semVec[j].numProcess, auxBuf);
-        i += strcpy2(str+i, &strFreeSpace, auxBuf);
-        i += delimiter(&strFreeSpace, str+i, "\t" );
-
-        if(i < 0){i++;break;}
+        strcat2(str, &i, strSize, auxBuf);
+        strcat2(str, &i, strSize, "\t\t\t\t\t\t\t\t\t\t\t");
 
         //numero procesos bloqueados 
         intToString(size(semVec[j].blockedProcesses), auxBuf);
-        i += strcpy2(str+i, &strFreeSpace, auxBuf);
-        i += delimiter(&strFreeSpace, str+i, "\n" );
-
-        if(i < 0){i++;break;}
-        j++;
+        strcat2(str, &i, strSize, auxBuf);
+        strcat2(str, &i, strSize, "\n");
     }
     str[i] = '\0'; 
 }
 
 
 //private---------------
-int strcpy2(char * dest, int* freeSpace, char * src) {
-  int i;
-  for (i = 0; src[i] != 0 && *freeSpace != 0; i++) {
-    dest[i] = src[i];
-    (*freeSpace)--;
-  }
-  return i;
-}
-
-int delimiter(int *freeSpace, char *str, char* token){
-    int i = -1;    
-    if(*freeSpace == 0 ){
-        *str = '\0';
-        return i;
-    }
-    for (i = 0; token[i] != 0 && *freeSpace != 0; i++) {
-        str[i] = token[i];
-        (*freeSpace)--;
-   }
-   return i;
-}
-
 
 int sleepProcess(listADT blockedProcesses){
      //obtengo el pid del proceso actual
@@ -200,14 +160,14 @@ int wakeUpProcess(listADT blockedProcesses){
     }
     //lo despierto
     int pid = *((int*) check);
+    free(check);
     unlockProcess(pid);
-
     return 1;
 }
 
 
 
-int findFreeSpace(char *str){
+int findfreeSpaces(char *str){
     int i;
     int firstFree = -1;
     int foundFlag = 0;

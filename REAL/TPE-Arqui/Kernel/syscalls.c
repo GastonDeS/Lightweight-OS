@@ -13,6 +13,7 @@
 #include <scheduler.h>
 #include <MemMang.h>
 #include <sem.h>
+#include <checkMemdata.h>
 
 void getDateInfo(uint8_t mode, uint8_t * target);
 
@@ -156,7 +157,15 @@ void syscallHandler(registerStruct * registers) {
     break;
 
     case 29:
-    printSem((char*) registers->rdi);
+    printSem((char *)registers->rdi, (int)registers->rsi);
+    break;
+
+    case 30:
+    printMem((char *)registers->rdi, (int)registers->rsi);
+    break;
+
+    case 31:
+    checkMemory((struct checkMemdata*) registers->rdi);
     break;
   }
 }
