@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <string.h>
 
 typedef struct BUDDY_HEADER {
    struct BUDDY_HEADER* next;
@@ -39,3 +40,4 @@ void MM_end();
 int checkMemory();
 void addOccupied(void *header, uint64_t level);
 int8_t removeOccupied(void *header);
+uint64_t remainingBytes();
