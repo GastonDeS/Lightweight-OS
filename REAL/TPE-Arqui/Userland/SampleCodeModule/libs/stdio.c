@@ -28,7 +28,7 @@ void print(char * str, ...) {
   va_list vl;
   va_start(vl, str);
   char * auxPtr;
-  char buffer[1024] = {0};
+  char buffer[1024*5] = {0};
   char tmp[20];
   int i = 0, j = 0;
   while (str && str[i]) {

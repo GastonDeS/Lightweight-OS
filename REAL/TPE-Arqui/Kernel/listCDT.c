@@ -151,6 +151,8 @@ int delete(listADT list, void* element){
     nodeP current = list->first;
     if(!search(&current, element, list->equals))
         return 0;
+
+    if (list->iteradorNext == current) next(list);
     removeNode(current, list);
 
     return 1;
