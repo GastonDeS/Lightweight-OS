@@ -14,7 +14,7 @@ int pipeVecSize = 0; //cantidad de elemntos
 
 //private
 int findSpaces();
-char* creatSemName(pipeId);
+char* creatSemName(int pipeId);
 
 void pipe(int *returnValue){
     int pipeId;
@@ -68,7 +68,7 @@ void pipeWrite(int pipeId, char * addr, int n, int *returnValue){
         
         //falta algo
 
-        pipeVec[pipeId].data[ pipeVec[pipeId].writeIndex % PIPE_SIZE ] = addr[i]; 
+        pipeVec[pipeId].data[ pipeVec[pipeId].writeIndex++ % PIPE_SIZE ] = addr[i]; 
     }
 
     semWakeUp(pipeVec[pipeId].semId, returnValue);
@@ -90,9 +90,9 @@ void pipeRead(int pipeId, char * addr, int n, int *returnValue){
         return;
     
     for(int i = 0; i < n; i++){
-        if( pipeVec[pipeId].readIndex == pipeVec[pipeId].readIndex)
+        if( pipeVec[pipeId].readIndex >= pipeVec[pipeId].writeIndex)
             break;
-        pipeVec[pipeId].data[ pipeVec[pipeId].writeIndex % PIPE_SIZE ] = addr[i]; 
+        addr[i] = pipeVec[pipeId].data[ pipeVec[pipeId].readIndex++ % PIPE_SIZE ]; 
     }
 
     semWakeUp(pipeVec[pipeId].semId, returnValue);
@@ -112,9 +112,9 @@ int findSpaces(){
     return 0;
 }
 
-char* creatSemName(pipeId){
+char* creatSemName(int pipeId){
     int i=0, strSize=10;
-    char str[strSize];
+    char str = (char*) malloc(sizeof(char)*strSize);
     char auxBuff[2];
     char* title = "pipeSem";
     strcat2(str, &i, strSize, title);

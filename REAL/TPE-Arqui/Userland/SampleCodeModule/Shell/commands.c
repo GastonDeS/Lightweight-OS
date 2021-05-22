@@ -17,6 +17,7 @@
 #include <test_prio.h>
 #include <unistd.h>
 #include <test_process.h>
+#include <testPipe.h>
 
 void inforeg(char args[MAX_ARGS][MAX_ARG_LEN]){
   clearScreen(0);
@@ -78,12 +79,16 @@ void ps(char args[MAX_ARGS][MAX_ARG_LEN]) {
   // free(allProcess);
 }
 
+void test_pipe(char args[MAX_ARGS][MAX_ARG_LEN]){
+  print("\n");
+  testPipe();
+}
+
 void getPid(char args[MAX_ARGS][MAX_ARG_LEN]) {
   putChar('\n');
   uint64_t pid ;
   getPidSyscall(&pid);
   print("Pid: %d",pid);
-  
 }
 
 void niceS(char args[MAX_ARGS][MAX_ARG_LEN]){
