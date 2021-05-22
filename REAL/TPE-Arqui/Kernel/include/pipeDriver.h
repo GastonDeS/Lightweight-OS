@@ -4,6 +4,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <sem.h>
+#include <scheduler.h>
 
 #define BLOCK 100 //cantidad de semaforos permitdos
 #define PIPE_SIZE 256 //cantidad de semaforos permitdos

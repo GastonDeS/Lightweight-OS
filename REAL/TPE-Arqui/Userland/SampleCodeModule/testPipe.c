@@ -1,3 +1,5 @@
+
+
 #include <testPipe.h>
 
 void escritor(int id) {
