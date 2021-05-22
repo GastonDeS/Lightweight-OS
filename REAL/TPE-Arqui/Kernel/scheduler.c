@@ -70,14 +70,16 @@ void changeProcess(){
 
 void nice(uint64_t pid, uint64_t priority, int *result){
     process *processAux = malloc(sizeof(process));
+    process *toFree = processAux;
     (*processAux).pid = pid;
     processAux = (process*)getElem(processList, processAux);
     if (processAux!=NULL) {
         processAux->priority = priority; 
         (*result) = priority; 
+        free(toFree);
         return; 
     }  
-    free(processAux);
+    free(toFree);
     (*result) = -1;
 }
 
@@ -202,14 +204,15 @@ void unlockProcess(uint64_t pid, int *result){
 
 int changeState(uint64_t pid , State state){
     process *processAux = malloc(sizeof(process));
+    process *toFree = processAux;
     (*processAux).pid = pid;
     processAux = (process*)getElem(processList, processAux);
     if (processAux!=NULL) {
         (*processAux).state = state;  
-        free(processAux);
+        free(toFree);
         return 1; 
     }
-    free(processAux);
+    free(toFree);
     return 0;
 }
 
