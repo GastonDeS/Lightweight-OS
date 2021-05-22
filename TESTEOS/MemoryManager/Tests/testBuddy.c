@@ -137,7 +137,7 @@ void test_mm(){
     
     // Request as many blocks as we can
     while(rq < MAX_BLOCKS && total < MAX_MEMORY && cont){
-      mm_rqs[rq].size = randNum(1, 9000);
+      mm_rqs[rq].size = randNum(1, 15000);
       printf("creo %d \n", mm_rqs[rq].size);
       mm_rqs[rq].address = my_malloc(mm_rqs[rq].size); // TODO: Port this call as required
       for (uint i = 0; i < rq; i ++) {

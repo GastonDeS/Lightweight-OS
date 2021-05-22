@@ -1,3 +1,4 @@
+#if !defined MM_BUDDY
 #include <MemMang.h>
 
 
@@ -313,3 +314,4 @@ void printMem(char *str, int strSize){
         index--;
     str[i] = '\0'; 
 }
+#endif
