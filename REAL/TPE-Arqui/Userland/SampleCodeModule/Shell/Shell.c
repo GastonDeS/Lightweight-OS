@@ -73,7 +73,7 @@ static void drawShellLines() {
   int x = 0;
   for (int i = 0; i >= -TOTAL_LINES && i >= -currentLineNumber; i--) {
     y-=BASE_CHAR_HEIGHT;
-    if (lines[(i+currentLineNumber)%(TOTAL_LINES-1)][0] == '0') continue;
+    if (lines[(i+currentLineNumber)%(TOTAL_LINES-1)][0] == 0) continue;
     if (i == 0) {
       drawString(0, y, "> ", 3, LIGHT_GRAY, BLACK, 1, 0);
       x += BASE_CHAR_WIDTH*2;
