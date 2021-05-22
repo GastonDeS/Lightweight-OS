@@ -21,7 +21,7 @@ void test_mm(){
       mm_rqs[rq].size = GetUniform(MAX_MEMORY - total - 1) + 1;
       mm_rqs[rq].address = malloc(mm_rqs[rq].size);
       if(mm_rqs[rq].address == NULL)
-        print("la direccion: %d\n es NULL", rq);
+        print("la direccion: %d es NULL \n", rq);
       total += mm_rqs[rq].size;
       rq++;
     }
@@ -49,7 +49,7 @@ void test_mm(){
       if (mm_rqs[i].address != NULL)
         free(mm_rqs[i].address);
     
-    print("PASO!\n"); 
+    print("vuelta : %d de %d \n", i, N); 
   } 
 }
 

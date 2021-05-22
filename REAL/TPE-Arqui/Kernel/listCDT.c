@@ -18,7 +18,7 @@ typedef struct listCDT{
 //prtivate:
 int search(nodeP* current, void* element, int (*comparator)(void*, void*));
 nodeP createNode(int valueBytes, void* element);
-void removeNode(nodeP current, listADT list);
+void removeNode(nodeP current, listADT list, void (*deleteElemValue)(void* value));
 int size(const listADT list);
 
 
@@ -114,8 +114,9 @@ void* pop(listADT list){
 int deleteFirstElem(listADT list){
     if(isEmpty(list))
         return -1;
-    removeNode(list->first, list);
 
+    if (list->iteradorNext == list->first) next(list);
+    removeNode(list->first, list, NULL);
     return 0;
 }
 
@@ -129,12 +130,12 @@ int deleteCurrentElem(listADT list){
         deleteNode = list->first;
         while(deleteNode->next == NULL)
             deleteNode = deleteNode->next;
-        removeNode(deleteNode, list);
+        removeNode(deleteNode, list, NULL);
         return 0;
     }
 
     nodeP previousNode = deleteNode->previous; //guardo el nodo anteriror
-    removeNode(deleteNode, list); //elimino el node
+    removeNode(deleteNode, list, NULL); //elimino el node
 
     list->iteradorNext->previous = previousNode;
     if(previousNode != NULL)
@@ -153,10 +154,11 @@ int delete(listADT list, void* element){
         return 0;
 
     if (list->iteradorNext == current) next(list);
-    removeNode(current, list);
+    removeNode(current, list, NULL);
 
     return 1;
 }
+
 
 int deleteElem(listADT list, void* element, void (*deleteElemValue)(void* value)){
     
@@ -164,6 +166,9 @@ int deleteElem(listADT list, void* element, void (*deleteElemValue)(void* value)
     if(!search(&current, element, list->equals))
         return 0;
     
+    if (list->iteradorNext == current) next(list);
+    removeNode(current, list, deleteElemValue);
+    /*
     if(current->next != NULL)
         current->next->previous = current->previous;
     if(current->previous != NULL)
@@ -174,11 +179,11 @@ int deleteElem(listADT list, void* element, void (*deleteElemValue)(void* value)
 
     deleteElemValue(current->value);
     free(current);
-
+    */
     return 1;
 }
 
-void removeNode(nodeP current, listADT list){
+void removeNode(nodeP current, listADT list, void (*deleteElemValue)(void* value)){
 
     if(current == NULL)
         return;
@@ -190,7 +195,11 @@ void removeNode(nodeP current, listADT list){
     else
         list->first = current->next;
     list->size --;
-    free(current->value);
+
+    if(deleteElem == NULL)
+        free(current->value);
+    else
+        deleteElemValue(current->value);
     free(current);
 }
 

@@ -4,6 +4,7 @@
         "cstdlib": "c",
         "__locale": "c",
         "functional": "c",
-        "locale": "c"
+        "locale": "c",
+        "stdint.h": "c"
     }
 }
