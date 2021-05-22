@@ -13,6 +13,7 @@
 #include <scheduler.h>
 #include <MemMang.h>
 #include <sem.h>
+#include <checkMemdata.h>
 
 void getDateInfo(uint8_t mode, uint8_t * target);
 
@@ -96,27 +97,27 @@ void syscallHandler(registerStruct * registers) {
     break;
 
     case 14: //execv
-    createProcess((void (*)()) registers->rdi, (char **) registers->rsi);
+    createProcess((void (*)()) registers->rdi, (char **) registers->rsi,(uint64_t *) registers->rdx);
     break;
 
     case 15:
-    endProcessWrapper((uint64_t) registers->rdi);
+    endProcessWrapper((uint64_t) registers->rdi, (int *) registers->rsi);
     break;
 
     case 16: //getPid
     getPid((uint64_t *) registers->rdi);
     break;
 
-    // case 17: //ListAllProcess
-    // listAllProcess((char *)registers->rdi);
-    // break;
+    case 17: //ListAllProcess
+    ps((char *)registers->rdi);
+    break;
 
     case 18: //blockPid
-    blockProcess((uint64_t) registers->rdi);
+    blockProcess((uint64_t) registers->rdi,(int *) registers->rsi);
     break;
 
     case 19: // unlockProcess
-    unlockProcess((uint64_t) registers->rdi);
+    unlockProcess((uint64_t) registers->rdi,(int *) registers->rsi);
     break;
 
     case 20: //malloc
@@ -148,7 +149,23 @@ void syscallHandler(registerStruct * registers) {
     break;
     
     case 27:
-    nice((uint64_t) registers->rdi, (uint64_t) registers->rsi);
+    nice((uint64_t) registers->rdi, (uint64_t) registers->rsi,(int *) registers->rdx);
+    break;
+
+    case 28:
+    yield();
+    break;
+
+    case 29:
+    printSem((char *)registers->rdi, (int)registers->rsi);
+    break;
+
+    case 30:
+    printMem((char *)registers->rdi, (int)registers->rsi);
+    break;
+
+    case 31:
+    checkMemory((struct checkMemdata*) registers->rdi);
     break;
   }
 }

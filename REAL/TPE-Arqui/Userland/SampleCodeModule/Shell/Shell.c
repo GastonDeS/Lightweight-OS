@@ -28,9 +28,10 @@ static void exeCommand(char*);
 static int isCommand(char * name);
 void updateShell(char * buff, int dim);
 
-char commandsNames[][MAX_ARG_LEN]={"test","nice","unblockPid","blockPid","listAllProcess","getPid","kill","time","help","inforeg","chess","printmem","divZero","invalidOPCode","clear","echo","UWU"};
-void  (* run[])(char args[MAX_ARGS][MAX_ARG_LEN]) = {test,nice,unblockPid,blockPid,listAllProcess,getPid,kill,time,help,inforeg,chessO,printmem,divZero,invalidOPCode,clear,echo,uwu};
-static int totalCommands = 17;
+
+char commandsNames[][MAX_ARG_LEN]={"test_no_sync","test_mem","memCheck","mem","sem","test_processes","test_prio","test_sync","nice","unblockPid","blockPid","ps","getPid","kill","time","help","inforeg","chess","printmem","divZero","invalidOPCode","clear","echo","UWU"};
+void  (* run[])(char args[MAX_ARGS][MAX_ARG_LEN]) = {test_no_syncS,test_memS,memCheck,mem,sem,ProcessTester,prioTester,test_syncS,niceS,unblockPid,blockPid,ps,getPid,killS,time,help,inforeg,chessS,printmem,divZero,invalidOPCode,clear,echo,uwu};
+static int totalCommands = 24;
 
 void init_shell(int argc, char **argv) {
   setConsoleUpdateFunction(updateShell);
@@ -42,7 +43,7 @@ void init_shell(int argc, char **argv) {
 	}
 }
 void writeToLines(char * buff, int dim) {
-  for (int i = 0; i < dim && buff[i] != 0 && i < MAX_LINE_LENGTH; i++) {
+  for (int i = 0; i < dim && buff[i] != 0 /*&& i < MAX_LINE_LENGTH*/; i++) {
     if (buff[i] == '\n' || lineCursor == (MAX_LINE_LENGTH - 1)) { //El -1 es para que el ultimo elemento sea un 0
       addLine();
 

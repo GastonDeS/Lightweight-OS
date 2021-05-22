@@ -15,7 +15,7 @@ GLOBAL sbrkSyscall
 GLOBAL createProcessSyscall
 GLOBAL endProcessSyscall
 GLOBAL getPidSyscall
-GLOBAL listAllProcessSyscall
+GLOBAL psSyscall
 GLOBAL blockPidSyscall
 GLOBAL unblockPidSyscall
 GLOBAL mallocSyscall
@@ -27,8 +27,57 @@ GLOBAL semSleepSyscall
 GLOBAL semWakeUpSyscall
 GLOBAL niceSyscall
 
+GLOBAL yieldSyscall
+
+GLOBAL printSemSyscall
+GLOBAL printMemSyscall
+GLOBAL checkMemorySyscall
+
+
+
 section .text
 
+checkMemorySyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 31
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
+
+printMemSyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 30
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
+printSemSyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 29
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
+yieldSyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 28
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
 niceSyscall:
   push rbp
   mov rbp, rsp
@@ -137,7 +186,7 @@ blockPidSyscall:
   pop rbp
   ret
 
-listAllProcessSyscall:
+psSyscall:
   push rbp
   mov rbp, rsp
 

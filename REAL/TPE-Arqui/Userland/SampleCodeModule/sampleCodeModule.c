@@ -5,9 +5,9 @@
 #include <stdint.h>
 #include <unistd.h>
 #include <chess.h>
+#include <stddef.h>
 // #include <testProces.h>
 
-#define NULL (void *) 0
 
 char * v = (char*)0xB8000 + 79 * 2;
 
@@ -23,7 +23,7 @@ int main() {
 	argv[0] = "shell";
 	argv[1] = NULL;
 	createProcess(init_shell,argv);
-	niceSyscall(0,100);
+	nice(0,20);
 	// createProcess(chess,argv);
 	while (1)
 	{

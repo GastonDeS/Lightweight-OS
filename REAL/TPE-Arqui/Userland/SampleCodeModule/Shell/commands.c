@@ -11,6 +11,12 @@
 #include <timer.h>
 #include <test_sync.h>
 #include <chess.h>
+#include <stddef.h>
+#include <checkMemdata.h>
+#include <test_mm.h>
+#include <test_prio.h>
+#include <unistd.h>
+#include <test_process.h>
 
 void inforeg(char args[MAX_ARGS][MAX_ARG_LEN]){
   clearScreen(0);
@@ -54,20 +60,22 @@ void printmem(char args[MAX_ARGS][MAX_ARG_LEN]) {
 void blockPid(char args[MAX_ARGS][MAX_ARG_LEN]){
   putChar('\n');
   int pid = atoi(args[1]);
-  blockPidSyscall(pid);
+  block(pid);
 }
 
 void unblockPid(char args[MAX_ARGS][MAX_ARG_LEN]){
   putChar('\n');
   int pid = atoi(args[1]);
-  unblockPidSyscall(pid);
+  unblock(pid);
 }
 
-void listAllProcess(char args[MAX_ARGS][MAX_ARG_LEN]) {
-  char **allProcess = (void *)0;
-  listAllProcessSyscall(allProcess);
+void ps(char args[MAX_ARGS][MAX_ARG_LEN]) {
+  char allProcess[1024*5]; // TODO ajustar el tamño a variable
+  // allProcess = malloc(sizeof(char) * 1024);
+  psSyscall(allProcess);
   putChar('\n');
-  print("%s",*allProcess);
+  print("%s",allProcess);
+  // free(allProcess);
 }
 
 void getPid(char args[MAX_ARGS][MAX_ARG_LEN]) {
@@ -75,64 +83,32 @@ void getPid(char args[MAX_ARGS][MAX_ARG_LEN]) {
   uint64_t pid ;
   getPidSyscall(&pid);
   print("Pid: %d",pid);
+  
 }
 
-void nice(char args[MAX_ARGS][MAX_ARG_LEN]){
+void niceS(char args[MAX_ARGS][MAX_ARG_LEN]){
   int pid = atoi(args[1]);
   int priority = atoi(args[2]);
-  niceSyscall(pid, priority);
+  nice(pid, priority);
   print("pid %s priority set to: %s", args[1], args[2]);
 }
 
-void test1(int argc, char** argv){
-  while (1) {
-    for (int i = 0; i < 10; i++) {
-      print(" 1 ");
-    }
-  }
+void sem(char args[MAX_ARGS][MAX_ARG_LEN]){
+  printSem();
 }
 
-void chessO(){
+void chessS(char args[MAX_ARGS][MAX_ARG_LEN]){
   char *argv[2];
 	argv[0] = "chess";
 	argv[1] = NULL;
   createProcess(chess,argv);
 }
 
-void test2(int argc, char** argv){
-  while (1) {
-    for (int i = 0; i < 10; i++) {
-      print(" 2 ");
-    }
-  }
-}
-
-void test3(int argc, char** argv){
-  while (1) {
-    for (int i = 0; i < 10; i++) {
-      print(" 3 ");
-    }
-  }
-}
-
-
-
-void test(char args[MAX_ARGS][MAX_ARG_LEN]) {
-  char *argv[2];
-  argv[0] = "test ";
-  argv[1] = NULL;
-  createProcessSyscall(test1,argv);
-  createProcessSyscall(test2,argv);
-  createProcessSyscall(test3,argv);
-
-}
-
-
-void kill(char args[MAX_ARGS][MAX_ARG_LEN]) {
+void killS(char args[MAX_ARGS][MAX_ARG_LEN]) {
   putChar('\n');
   print("kill pid: %s",args[1]);
   int pid = atoi(args[1]);
-  endProcessSyscall(pid);
+  kill(pid);
 }
 
 void time(char args[MAX_ARGS][MAX_ARG_LEN]) { 
@@ -156,7 +132,7 @@ void help(char args[MAX_ARGS][MAX_ARG_LEN]) {
   print("\nAVAILABLE COMMANDS: \n");
   print("unblockPid [Pid] - unblocks a process given a pid\n");
   print("blockPid [Pid] - blocks a process given a pid\n");
-  print("printAllProcess - Prints all the process pcb\n");
+  print("ps - Prints all the process pcb\n");
   print("getPid - Prints the pid of the current process\n");
   print("kill [Pid] - kills a process given a Pid\n");
   print("time - Displays current time and date\n");
@@ -193,8 +169,65 @@ void uwu(char args[MAX_ARGS][MAX_ARG_LEN]) {
   print("\n\n\n");
 }
 
-void semTester(char args[MAX_ARGS][MAX_ARG_LEN]){
-
+void test_syncS(char args[MAX_ARGS][MAX_ARG_LEN]){
   test_sync();
+}
 
+void test_no_syncS(char args[MAX_ARGS][MAX_ARG_LEN]){
+  test_no_sync();
+}
+
+void mem(char args[MAX_ARGS][MAX_ARG_LEN]){
+  int strSize = 800;
+  char str[strSize];
+  printMemSyscall(str, strSize);
+  print("%s", str);
+}
+
+void memCheck(char args[MAX_ARGS][MAX_ARG_LEN]){
+  struct checkMemdata data = {0};
+  checkMemorySyscall(&data);
+  print("\n");
+  print("* Cantidad de bloques: %d\n", data.numeberOfBlocks);
+  print("    |-> Usados: %d\n", data.blockused);
+  print("    |-> Libre: %d\n", data.freeBlock);
+  print("\n");
+  print("* Cantidad total de bytes usados: %d Bytes\n", data.totalBytes);
+  print("    |-> Usados en infoBLocks: %d Bytes\n", data.bytesUsedByBLocks);
+  print("    |-> Usados por el usuario: %d Bytes\n", data.bytesUsedByUser);
+  print("    |-> No utilizados: %d Bytes\n", data.unusedBytes);
+  print("    |-> Usados para alinear: %d Bytes\n", data.bytesUsedByAlign);
+  print("    |-> Bytes perdidos: %d Bytes\n", data.lostBytes);
+  print("\n");
+  print("* Numero de errores: %d\n", data.numError);
+  print("    |-> Numero de bloque con error A: %d\n", data.freeBlocksTogether);
+  print("    |-> Numero de bloque con error B: %d\n", data.noAlignBlocks);
+  print("    |-> Numero de bloque con error C: %d\n", data.curNextPrev);
+  /*
+  Errores:
+    A: dos bloque libreos juntos
+    B: bloque no alineado a 8 bytes
+    C: que el previous no apunte el bloque anterior
+  */
+
+}
+
+void test_memS(char args[MAX_ARGS][MAX_ARG_LEN]){
+  test_mm();
+}
+
+void prioTester(char args[MAX_ARGS][MAX_ARG_LEN]) {
+  print("\n");
+  char *arg[2];
+  arg[0] = "test_prio";
+  arg[1] = NULL;
+  createProcess(test_prio,arg);
+}
+
+void ProcessTester(char args[MAX_ARGS][MAX_ARG_LEN]) {
+  print("\n");
+  char *arg[2];
+  arg[0] = "test_processes";
+  arg[1] = NULL;
+  createProcess(test_processes,arg);
 }

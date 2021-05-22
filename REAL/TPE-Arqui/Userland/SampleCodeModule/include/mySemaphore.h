@@ -2,6 +2,7 @@
 #define MYSEMAPHORE_H
 
 #include <syscallsASM.h>
+#include <stdio.h>
 
 
 //crea un nuevo semaforo
@@ -21,6 +22,8 @@ int sem_wait(int semId);
 //despierta al siguente proceso esperanso
 //si habia procesos esperando devulve 1 sino 0
 int sem_post(int semId);
+
+void printSem();
 
 
 

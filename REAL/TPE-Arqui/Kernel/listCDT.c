@@ -19,6 +19,7 @@ typedef struct listCDT{
 int search(nodeP* current, void* element, int (*comparator)(void*, void*));
 nodeP createNode(int valueBytes, void* element);
 void removeNode(nodeP current, listADT list);
+int size(const listADT list);
 
 
 listADT newList(int elemSize, int (*equals)(void* elem1, void* elem2)){
@@ -31,13 +32,16 @@ listADT newList(int elemSize, int (*equals)(void* elem1, void* elem2)){
     return list;
 }
 
-void printList(listADT list,void (*print)(void* n)){
-
+void * ListToArray(listADT list){
+    void **array = malloc(sizeof(void*)*(size(list)+1));
     nodeP current = list->first;
+    int i=0;
     while(current != NULL){
-        print(current->value);
+        array[i++] = current->value;
         current = current->next;
     }
+    array[i] = NULL;
+    return array;
 }
 
 int insertBeforeNext(listADT list, void* element){
@@ -110,7 +114,6 @@ void* pop(listADT list){
 int deleteFirstElem(listADT list){
     if(isEmpty(list))
         return -1;
-
     removeNode(list->first, list);
 
     return 0;
@@ -149,6 +152,7 @@ int delete(listADT list, void* element){
     if(!search(&current, element, list->equals))
         return 0;
 
+    if (list->iteradorNext == current) next(list);
     removeNode(current, list);
 
     return 1;
@@ -245,9 +249,7 @@ void* next(listADT list) {
 		toBegin(list);
 
     void* result = list->iteradorNext->value;
-	
     list->iteradorNext = list->iteradorNext->next;
-
 	return result;
 }
 

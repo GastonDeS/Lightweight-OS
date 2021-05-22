@@ -12,7 +12,7 @@ typedef struct listCDT *listADT;
 //crea una nueva lista
 listADT newList(int elemSize, int (*equals)(void* elem1, void* elem2));
 
-void printList(listADT list,void (*print)(void* n));
+void * ListToArray(listADT list);
 
 int insertBeforeNext(listADT list, void* element);  
 
@@ -23,6 +23,7 @@ int insert(listADT  list, void* element);
 
 
 //devuleve le primer elemento y lo elimina de la lista
+//IMPOTANTE: se debe hacer un free de lo devuelto por pop
 void* pop(listADT list);
 
 //se obtiene un puntero del elemento que se puede modificar y cambiar el elemento en la lista

@@ -2,6 +2,7 @@
 #define SYSCALLS_ASM_H
 
 #include <stdint.h>
+#include <checkMemdata.h>
 
 void drawStringSysCall(char * buff, uint64_t size, uint64_t x, uint64_t y, uint64_t fontColor, uint64_t backgroundColor, uint64_t fontSize, uint64_t alphaBackground);
 void isKeyboardEmptySyscall(uint64_t * target);
@@ -15,12 +16,12 @@ void getMemSyscall(uint64_t, uint64_t*);
 void readErrorSyscall(uint64_t *);
 void getTicksSyscall(uint64_t *);
 void sbrkSyscall(uint64_t size, void* result);
-void createProcessSyscall(void (*)(),char **);
-void endProcessSyscall(uint64_t pid);
+void createProcessSyscall(void (*)(),char **,uint64_t *newPid);
+void endProcessSyscall(uint64_t pid, int *result);
 void getPidSyscall(uint64_t *);
-void listAllProcessSyscall(char **);
-void blockPidSyscall(uint64_t pid);
-void unblockPidSyscall(uint64_t pid);
+void psSyscall(char *);
+void blockPidSyscall(uint64_t pid, int *result);
+void unblockPidSyscall(uint64_t pid, int *result);
 void mallocSyscall(uint64_t size, void* result);
 void freeSyscall(void *ptr);
 void reallocSyscall(void *ptr, uint64_t newSize, void* result);
@@ -28,6 +29,10 @@ void createSemSyscall(char *semName, int initialValue, int* returnValue);
 void removeSemSyscall(int semId, int* returnValue);
 void semSleepSyscall(int semId, int* returnValue);
 void semWakeUpSyscall(int semId, int* returnValue);
-void niceSyscall(uint64_t pid, uint64_t priority);
+void niceSyscall(uint64_t pid, uint64_t priority, int *result);
+void yieldSyscall();
+void printSemSyscall(char *str, int strSize);
+void printMemSyscall(char *str, int strSize);
+void checkMemorySyscall(struct checkMemdata* data);
 
 #endif
