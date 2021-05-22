@@ -119,6 +119,7 @@ void test_mm(){
   my_free(newTest7);
 
   printf("Total de errores: %d\n", errores);
+  sleep(2);
 
   printf("////////////////////////////////////////////////\n");
 
@@ -136,11 +137,21 @@ void test_mm(){
     
     // Request as many blocks as we can
     while(rq < MAX_BLOCKS && total < MAX_MEMORY && cont){
-      mm_rqs[rq].size = randNum(1024, 4000);
+      mm_rqs[rq].size = randNum(1, 9000);
       printf("creo %d \n", mm_rqs[rq].size);
       mm_rqs[rq].address = my_malloc(mm_rqs[rq].size); // TODO: Port this call as required
+      for (uint i = 0; i < rq; i ++) {
+        if (mm_rqs[i].address == mm_rqs[rq].address)
+        {
+          printf("igual adress");
+          return ;
+        }
+        
+      }
+      
       if(!checkMemory()) {
-        printf("error");
+        printf("error creando");
+        return;
       }
       if(mm_rqs[rq].address == NULL) {
         cont = 0;
@@ -160,7 +171,8 @@ void test_mm(){
     for (i = 0; i < rq; i++) {
       if (mm_rqs[i].address != NULL) {
         if(!checkMemory()) {
-        printf("error");
+        printf("error de free");
+        return;
       }
         my_free(mm_rqs[i].address);
         printf("free");
@@ -168,6 +180,7 @@ void test_mm(){
     }
 
     printf("\n\n\n");
+
   }
   }
 

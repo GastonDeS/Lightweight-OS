@@ -31,7 +31,6 @@ http://brokenthorn.com/Resources/OSDev26.html
 
 static BUDDY_HEADER *blocks[LEVELS]; //arreglo de listas de punteros a Bloques
 static char initialized = 0;
-static uint64_t totalRemainingBytes = MAX_BLOCK_SIZE;
 static BUDDY_HEADER *occupiedBlocks;
 
 void *my_malloc(uint64_t size){
@@ -53,7 +52,6 @@ void *my_malloc(uint64_t size){
    }
    //el puntero a devolver debe saltearse el header del bloque
    void *toReturn = recursiveMalloc(level) + BUDDY_HEADER_SIZE;
-   totalRemainingBytes -= SIZE_OF_BLOCKS_AT_LEVEL(level);
    addOccupied(toReturn -BUDDY_HEADER_SIZE, level);
    printf("%p    %ld \n", toReturn, level);
    printf("%ld  remaining post malloc\n" ,remainingBytes());
@@ -91,7 +89,6 @@ void my_free(void *ptr) { //si el puntero no es válido no hago nada
    uint64_t level = freeBlock->level;
    printf("ESTE ES EL EL LEVEL %ld", level);
    recursiveFree(freePtr, level);
-   totalRemainingBytes += SIZE_OF_BLOCKS_AT_LEVEL(level);
    printf("  y aca\n");
    printf("%ld remaining postFree\n" ,remainingBytes());
 
@@ -162,10 +159,8 @@ void insertBlock(void *header, uint64_t level) {
       toInsert->level =level;
       return;
    }
-   BUDDY_HEADER * aux = block;
 
    while (block->next != NULL && block ->next < toInsert) {
-      aux = block;
       block = block->next;
    }
    if (block ->next == NULL) {
@@ -174,7 +169,7 @@ void insertBlock(void *header, uint64_t level) {
    }
    else {
       toInsert ->next =block ->next;
-      aux -> next = toInsert;
+      block -> next = toInsert;
    }
    toInsert ->level = level;
 }
@@ -330,24 +325,12 @@ int checkMemory() {
          block = block->next;
       }
    }
-   printf("%ld, %ld \n", bytesLeft, totalRemainingBytes);
-   if (bytesLeft != totalRemainingBytes) {
-      return 0;
-   }
-   //tmb si los bloques que quedan mas los dados equivalen al total
-   bytesLeft = 0;
-   for (int i = 0; i < LEVELS; i++) {
-      BUDDY_HEADER *block = blocks[i];
-      while (block != NULL) {
-         bytesLeft += SIZE_OF_BLOCKS_AT_LEVEL(i);
-         block = block->next;
-      }
-   }
    BUDDY_HEADER *ocBlock = occupiedBlocks;
    while (ocBlock !=NULL) {
       bytesLeft += SIZE_OF_BLOCKS_AT_LEVEL(ocBlock->level);
       ocBlock = ocBlock->next;
    }
+   printf("%ld,   %ld", bytesLeft, MAX_BLOCK_SIZE);
    if (bytesLeft != MAX_BLOCK_SIZE) {
      return 0;
    }
