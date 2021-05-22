@@ -23,7 +23,7 @@ void createSem(char *semName, int initialValue, int* returnValue){
     if(semVec[semId].name && strcmp(semVec[semId].name, semName) == 0 ){ 
         semVec[semId].numProcess ++;
     }else{// se encotro un espacio libre
-        semVec[semId].value = initialValue;
+        semVec[semId].value = initialValue;  
         semVec[semId].name = semName;
         semVec[semId].numProcess = 1;
         semVec[semId].blockedProcesses = newList(sizeof(int),NULL);
@@ -50,7 +50,7 @@ void removeSem(int semId, int* returnValue){
         *returnValue = 0;
         return;
     }
-
+    free(semVec[semId].name);
     semVec[semId].name = NULL;
     semVec[semId].numProcess = 0;
     semVec[semId].value = -1;
@@ -61,7 +61,7 @@ void removeSem(int semId, int* returnValue){
     return;
 }
 
-void semSleep(int semId, int* returnValue){
+void semWait(int semId, int* returnValue){
     if(semId < 0  || semId > semVecSize){
         *returnValue = -1;
         return;
@@ -75,10 +75,10 @@ void semSleep(int semId, int* returnValue){
         }
         //se despierta solo si alguien hace un post
     }
-
 }
 
-void semWakeUp(int semId, int* returnValue){
+void semPost(int semId, int* returnValue){
+   
     if(semId < 0  || semId > semVecSize){
         *returnValue = -1;
         return;
@@ -91,7 +91,10 @@ void semWakeUp(int semId, int* returnValue){
     }
     
     return;
+    
 }
+
+
 
 void printSem(char *str, int strSize){
     int i=0, j=0, buffDim=10;
@@ -139,7 +142,7 @@ int sleepProcess(listADT blockedProcesses){
     result = addToTheEnd(blockedProcesses, &pid);
 
     //bloqueo al proceso
-    if (result ==0 ){
+    if (result == 0 ){
         int ans;
         blockProcess(pid, &ans); 
     }

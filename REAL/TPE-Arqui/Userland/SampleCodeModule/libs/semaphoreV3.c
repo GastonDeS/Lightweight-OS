@@ -17,14 +17,14 @@ int sem_close(int semId){
 
 int sem_wait(int semId){
     int result = 0;
-    semSleepSyscall(semId, &result);
+    semWaitSyscall(semId, &result);
     return result;
     
 }
 
 int sem_post(int semId){
     int result = 0;
-    semWakeUpSyscall(semId, &result);
+    semPostSyscall(semId, &result);
     return result;
 }
 

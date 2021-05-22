@@ -142,11 +142,11 @@ void syscallHandler(registerStruct * registers) {
     break;
 
     case 25:
-    semSleep((int) registers->rdi, (int *) registers->rsi);
+    semWait((int) registers->rdi, (int *) registers->rsi);
     break;
 
     case 26:
-    semWakeUp((int) registers->rdi, (int *) registers->rsi);
+    semPost((int) registers->rdi, (int *) registers->rsi);
     break;
     
     case 27:
