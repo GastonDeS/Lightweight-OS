@@ -128,7 +128,7 @@ infoBlockPtr getBlockPtr(void *ptr) {
 }
 
 void free(void *ptr){
-    if (ptr == NULL &&  ptr < getStartMemory())
+    if (ptr == NULL || ptr < getStartMemory())
         return;
     infoBlockPtr current = getBlockPtr(ptr);
     current->free = 1;
