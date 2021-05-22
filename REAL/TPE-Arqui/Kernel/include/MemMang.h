@@ -15,8 +15,8 @@ void* malloc(uint64_t size);
 void free(void *ptr);
 void *realloc(void *ptr, uint64_t newSize);
 
-void mallocSyscall(uint64_t size, void* result);
-void reallocSyscall(void *ptr, uint64_t newSize, void* result);
+void mallocSyscall(uint64_t size, void** result);
+void reallocSyscall(void *ptr, uint64_t newSize, void** result);
 
 //debugger
 void checkMemory(struct checkMemdata* data);

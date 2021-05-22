@@ -170,12 +170,12 @@ void *realloc(void *ptr, uint64_t newSize){
 
 
 
-void reallocSyscall(void *ptr, uint64_t newSize, void* result){
-    result = realloc(ptr, newSize);
+void reallocSyscall(void *ptr, uint64_t newSize, void** result){
+    (*result) = realloc(ptr, newSize);
 }
 
-void mallocSyscall(uint64_t size, void* result){
-    result = malloc(size);
+void mallocSyscall(uint64_t size, void** result){
+    (*result) = malloc(size);
 }
 
 //----------------------------------------------debugger---------------------------------------------------
@@ -274,17 +274,17 @@ void printMem(char *str, int strSize){
         
         intToString(index, auxBuf);
         strcat2(str, &i, strSize, auxBuf);
-        strcat2(str, &i, strSize, "\t\t\t\t\t\t");
+        strcat2(str, &i, strSize, "       ");
 
         if(current->free)
             strcat2(str, &i, strSize, "si");
         else
             strcat2(str, &i, strSize, "no");
-        strcat2(str, &i, strSize, "\t\t\t\t\t");
+        strcat2(str, &i, strSize, "     ");
 
         intToString(current->size, auxBuf);
         strcat2(str, &i, strSize, auxBuf);
-        strcat2(str, &i, strSize, "\n");
+        strcat2(str, &i, strSize, "\n ");
         
 
         /*//numero de bloque

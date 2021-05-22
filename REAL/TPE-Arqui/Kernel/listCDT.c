@@ -164,6 +164,8 @@ int deleteElem(listADT list, void* element, void (*deleteElemValue)(void* value)
     if(!search(&current, element, list->equals))
         return 0;
     
+    if (list->iteradorNext == current) next(list);
+    
     if(current->next != NULL)
         current->next->previous = current->previous;
     if(current->previous != NULL)

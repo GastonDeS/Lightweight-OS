@@ -183,9 +183,9 @@ char * strcpy(char * dest, char * src) {
 }
 
 void* malloc(long int size){
-  char result; 
-  mallocSyscall(size, &result);
-  return (void*) &result;
+  void **result = NULL; 
+  mallocSyscall(size, result);
+  return (void*) (*result);
 }
 
 void free(void *ptr){
@@ -193,15 +193,15 @@ void free(void *ptr){
 }
 
 void* sbrk(long int size){
-  char result; 
-  sbrkSyscall(size, &result);
-  return (void*) &result;
+  void **result = NULL; 
+  sbrkSyscall(size, result);
+  return (void*) (*result);
 }
 
 void* realloc(void *ptr, long int newSize){
-  char result; 
-  reallocSyscall(ptr, newSize, &result);
-  return (void*) &result;
+  void **result = NULL; 
+  reallocSyscall(ptr, newSize, result);
+  return (void*) (*result);
 }
 
 

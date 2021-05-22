@@ -93,7 +93,7 @@ void syscallHandler(registerStruct * registers) {
 
     case 13: //sbrk
     //rdi -> trae el size a pedir  rsi -> puntero a la memoria 
-    sbrSyscall((uint64_t) registers->rdi, (void*) registers->rsi);
+    sbrSyscall((uint64_t) registers->rdi, (void**) registers->rsi);
     break;
 
     case 14: //execv
@@ -121,7 +121,7 @@ void syscallHandler(registerStruct * registers) {
     break;
 
     case 20: //malloc
-    mallocSyscall((uint64_t) registers->rdi, (void*) registers->rsi);
+    mallocSyscall((uint64_t) registers->rdi, (void**) registers->rsi);
     break;
 
     case 21: //free
@@ -129,7 +129,7 @@ void syscallHandler(registerStruct * registers) {
     break;
 
     case 22:
-    reallocSyscall((void*) registers->rdi, (uint64_t) registers->rsi, (void*) registers->rdx);
+    reallocSyscall((void*) registers->rdi, (uint64_t) registers->rsi, (void**) registers->rdx);
     break;
 
     case 23:

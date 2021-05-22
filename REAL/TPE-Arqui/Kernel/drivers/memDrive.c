@@ -23,6 +23,6 @@ int availableMemCheck(uint64_t size){
     return (currentMemoryLimit-startMemory+size) <= HEAP_SIZE;
 }
 
-void sbrSyscall(uint64_t size, void* result){
-    result = sbrk(size);
+void sbrSyscall(uint64_t size, void** result){
+    (*result) = sbrk(size);
 }

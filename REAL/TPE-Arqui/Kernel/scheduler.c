@@ -12,6 +12,7 @@ typedef enum {ERROR, BLOCKED, KILLED, READY}State;
 typedef struct {
     uint64_t *BP;
     uint64_t *SP;
+    uint64_t *EP; // End Pointer 
     uint64_t pid;
     State state;
     char *name;
@@ -76,7 +77,7 @@ void nice(uint64_t pid, uint64_t priority, int *result){
         (*result) = priority; 
         return; 
     }  
-    //TODO free processAux
+    free(processAux);
     (*result) = -1;
 }
 
@@ -85,7 +86,7 @@ void yield(){
     _hlt();
 }
 
-void addProcess(uint64_t *currentProces, char *name,uint64_t *pid) {
+void addProcess(uint64_t *currentProces, char *name,uint64_t *pid,uint64_t *ep) {
     if(processList == NULL){
         processList = newList(sizeof(process),equals);
         if(processList == NULL)
@@ -97,7 +98,8 @@ void addProcess(uint64_t *currentProces, char *name,uint64_t *pid) {
     newProcess.state = READY;
     newProcess.foreground = 0;
     newProcess.BP = currentProces;
-    newProcess.name = name; // asi o lo copio en una dirreccion de memoria nueva paraguardarlo
+    newProcess.EP = ep;
+    newProcess.name = name;
     newProcess.priority = 3; 
     
     insertBeforeNext(processList, &newProcess);
@@ -110,17 +112,21 @@ void exceptionProcess(){
     processList = NULL;
 }
 
+void freeEP(process * aux) {
+    free(aux->EP);
+}
+
 void endProcessWrapper(uint64_t pid, int *result){
     if(pid > 0){
         process aux;
         aux.pid = pid;
-        if (delete(processList, &aux)){
+        if (deleteElem(processList, &aux,freeEP)){
             (*result) = 0;
             if (current->pid == pid) _hlt();
             return;
         }
     }
-    (*result) = 0;
+    (*result) = -1;
 }
 
 void getPid(uint64_t *pid) {
@@ -200,10 +206,11 @@ int changeState(uint64_t pid , State state){
     processAux = (process*)getElem(processList, processAux);
     if (processAux!=NULL) {
         (*processAux).state = state;  
+        free(processAux);
         return 1; 
     }
-    return -1;
-    //TODO fre processAux
+    free(processAux);
+    return 0;
 }
 
 
