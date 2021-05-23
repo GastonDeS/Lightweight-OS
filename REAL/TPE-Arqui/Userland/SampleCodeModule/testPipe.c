@@ -8,7 +8,7 @@ void escritor(int argc, char** argv) {
     int result;
     while (1) {
         sem_wait(semId);
-        pipeWriteSyscall(id,argv[2],13,&result);
+        pipeWriteSyscall(id,argv[2],10,&result);
         yieldSyscall();
         sem_post(semId);
         // for (int i = 0; i < 100000000; i++) {}
@@ -21,9 +21,9 @@ void lector(int  argc, char **argv) {
     int result;
     int semId = sem_open(SEM_NAME,1);
     while (1) {
-        sem_wait(semId);
+        // sem_wait(semId);
         pipeReadSyscall(id,pipeBuff,15,&result);
-        sem_post(semId);
+        // sem_post(semId);
         print(pipeBuff);
         print(" ");
         // for (int i = 0; i < 100000000; i++) {}

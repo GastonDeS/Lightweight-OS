@@ -5,73 +5,61 @@ typedef struct elem{
     char data[PIPE_SIZE];
     int readIndex;
     int writeIndex;
-
-    int semLock;
-    listADT processToRead;
-    listADT processToWrite;
+    int numProcess;
+    int semId;
+    char processWantRead;
+    char processWantsWrite;
 }elem;
 
 elem pipeVec[BLOCK];
 int pipeVecSize = 0; //cantidad de elemntos
 
-int equalsPipe(void* n1, void* n2){
-    int aux1 = *((int*)n1);
-    int aux2 = *((int*)n2);
-    return aux1 == aux2;
-}
 
 //private
 int findSpaces();
-char* createSemName(int pipeId);
-int addMeToList(listADT list);
-int removeMeOfList(listADT list);
-int popList(listADT list);
+char* creatSemName(int pipeId);
+int sleepProcess2();
+int wakeUpProcess2(int pid);
 
 void pipe(int *returnValue){
-    
-    int pipeId = findSpaces();
-    if(pipeId == -1 && pipeVecSize+1 < BLOCK ){
-        pipeId = pipeVecSize; //uso un nuevo espacio
-    }else{
-        *returnValue = -1;
-        return; //no hay mas epsacios
-    }
-    //creo el semaforo
-    createSem(createSemName(pipeId), 1, &pipeVec[pipeId].semLock);
-    if(pipeVec[pipeId].semLock == -1){
-        *returnValue =  -1;
+    int pipeId;
+    if((pipeId=findSpaces()) != 0){
+        pipeVec[pipeId].numProcess++; //encontro uno
+    }else if(pipeVecSize+1 < BLOCK){//no hay, usa uno nuevo
+        pipeId = pipeVecSize;
+        createSem(creatSemName(pipeId), 1, &pipeVec[pipeId].semId);
+        if(pipeVec[pipeId].semId == -1){
+            *returnValue =  -1;
+            return;
+        }
+        //crear listas
+        pipeVec[pipeId].processWantRead = 0;
+        pipeVec[pipeId].processWantsWrite= 0; 
+        //listas
+        pipeVec[pipeId].free = 0;
+        pipeVec[pipeId].readIndex = 0;
+        pipeVec[pipeId].writeIndex = 0;
+        pipeVec[pipeId].numProcess = 1;        
+        pipeVecSize++;
+        *returnValue =  pipeId;
         return;
     }
-    //listas
-    pipeVec[pipeId].processToWrite = newList(sizeof(int),equalsPipe);
-    pipeVec[pipeId].processToRead = newList(sizeof(int),equalsPipe);
-        
-    //lo demas
-    pipeVec[pipeId].free = 0;
-    pipeVec[pipeId].readIndex = 0;
-    pipeVec[pipeId].writeIndex = 0;    
-    //aumento en uno el size 
-    pipeVecSize++;
-    
-    *returnValue =  pipeId;
+    *returnValue =  -1;
     return;
 }
 
 
 void pipeClose(int pipeId, int *returnValue){
 
-    pipeVec[pipeId].free = 1;
-    removeSem(pipeVec[pipeId].semLock, NULL);
-
-    freeList(pipeVec[pipeId].processToRead);
-    freeList(pipeVec[pipeId].processToWrite);
-    
-    pipeVecSize--;
-    *returnValue = 1;
-    return;
-
-    *returnValue = 1;
+    if((pipeVec[pipeId].numProcess--) == 0){
+        pipeVec[pipeId].free = 1;
+        removeSem(pipeVec[pipeId].semId, NULL); //chequear
+        *returnValue = 1;
         return;
+    }
+
+    *returnValue = 0;
+    return;
 }
 
 void pipeWrite(int pipeId, char *addr, int n, int *returnValue){
@@ -80,29 +68,30 @@ void pipeWrite(int pipeId, char *addr, int n, int *returnValue){
         return;
     } 
 
-    addMeToList(pipeVec[pipeId].processToWrite);
-    semWait(pipeVec[pipeId].semLock, returnValue);
+    pipeVec[pipeId].processWantsWrite = 1;
+    semWait(pipeVec[pipeId].semId, returnValue);
     if(*returnValue == -1)
         return;
-    removeMeOfList(pipeVec[pipeId].processToWrite);
+    pipeVec[pipeId].processWantsWrite = 0;
     
-    for(int i = 0; i < n; i++){
+    for(int i = 0; i < n && addr[i] ; i++){
         
         while(pipeVec[pipeId].writeIndex == pipeVec[pipeId].readIndex + PIPE_SIZE){
-            if(!isEmpty(pipeVec[pipeId].processToRead)){
-                int readerPid = popList(pipeVec[pipeId].processToRead);
-                semPostPid(pipeVec[pipeId].semLock, readerPid);
-            }
-            addMeToList(pipeVec[pipeId].processToWrite);
-            semWait(pipeVec[pipeId].semLock, returnValue);
-            if(*returnValue == -1)
+            if(pipeVec[pipeId].processWantRead){
+                semPost(pipeVec[pipeId].semId, returnValue);
+                pipeVec[pipeId].processWantsWrite = 1;
+                semWait(pipeVec[pipeId].semId, returnValue);
+                if(*returnValue == -1)
+                    return;
+                pipeVec[pipeId].processWantsWrite = 0;
+            }else{
                 return;
-            removeMeOfList(pipeVec[pipeId].processToWrite);
+            }
         }
         pipeVec[pipeId].data[ pipeVec[pipeId].writeIndex++ % PIPE_SIZE ] = addr[i]; 
     }
-
-    semPost(pipeVec[pipeId].semLock, returnValue);
+    pipeVec[pipeId].data[ pipeVec[pipeId].writeIndex % PIPE_SIZE ] = 0;
+    semPost(pipeVec[pipeId].semId, returnValue);
     return;
 }
 
@@ -112,27 +101,27 @@ void pipeRead(int pipeId, char * addr, int n, int *returnValue){
         return;
     } 
 
-    addMeToList(pipeVec[pipeId].processToRead);
-    semWait(pipeVec[pipeId].semLock, returnValue);
+    pipeVec[pipeId].processWantRead = 1;
+    semWait(pipeVec[pipeId].semId, returnValue);
     if(*returnValue == -1)
         return;
-    removeMeOfList(pipeVec[pipeId].processToRead);
-    
-    for(int i = 0; i < n && pipeVec[pipeId].data[ pipeVec[pipeId].readIndex % PIPE_SIZE ]; i++){
+    pipeVec[pipeId].processWantRead = 0;
+    int i;
+    for( i = 0; i < n && pipeVec[pipeId].data[ pipeVec[pipeId].readIndex % PIPE_SIZE ]; i++){
        while( pipeVec[pipeId].readIndex == pipeVec[pipeId].writeIndex){
-            if(!isEmpty(pipeVec[pipeId].processToWrite)){
-                int readerPid = popList(pipeVec[pipeId].processToWrite);
-                semPostPid(pipeVec[pipeId].semLock, readerPid);
-            }
-            addMeToList(pipeVec[pipeId].processToRead);
-            semWait(pipeVec[pipeId].semLock, returnValue);
-            if(*returnValue == -1)
+            if(pipeVec[pipeId].processWantsWrite){
+                semPost(pipeVec[pipeId].semId, returnValue);
+                pipeVec[pipeId].processWantRead = 1;
+                semWait(pipeVec[pipeId].semId, returnValue);
+                pipeVec[pipeId].processWantRead = 0;
+            }else{
                 return;
-            removeMeOfList(pipeVec[pipeId].processToRead);
+            }
         }
         addr[i] = pipeVec[pipeId].data[ pipeVec[pipeId].readIndex++ % PIPE_SIZE ]; 
     }
-    semPost(pipeVec[pipeId].semLock, returnValue);
+    if (i != n) pipeVec[pipeId].readIndex++;
+    semPost(pipeVec[pipeId].semId, returnValue);
     return;
 }
 
@@ -144,50 +133,33 @@ int findSpaces(){
         if(pipeVec[i].free)
             return i;
     }
-    return -1;
+    return 0;
 }
 
-//title de no mas de 8 caracteres
-char* createSemName(int pipeId){
+char* creatSemName(int pipeId){
     int i=0, strSize=10;
     char *str = (char*) malloc(sizeof(char)*strSize);
     char auxBuff[2];
-    char* title = "pipeS:";
+    char* title = "pipeSem";
     strcat2(str, &i, strSize, title);
     intToString(pipeId, auxBuff);
     strcat2(str, &i, strSize, auxBuff);
     return str;
 } 
 
-int addMeToList(listADT list){
-    //obtengo el pid del proceso actual
+int sleepProcess2(){
+     //obtengo el pid del proceso actual
     uint64_t pid;
     getPid(&pid);
 
-    int result;
-    result = addToTheEnd(list, &pid);
-    return result;
+    int ans;
+    blockProcess(pid, &ans); 
+    return 0;
 }
 
-int popList(listADT list) {
-    void* check = pop(list);
+int wakeUpProcess2(int pid){
     
-    //checke si esta vacia la lista
-    if(check == NULL){
-        return 0;
-    }
-    //lo despierto
-    int pid = *((int*) check);
-    free(check);
-    return pid;
-}
-
-int removeMeOfList(listADT list){
-    uint64_t pid;
-    getPid(&pid);
-    
-    int result;
-    result = delete(list, &pid);
-    
-    return result;
+    int ans;
+    unlockProcess(pid, &ans);
+    return 1;
 }
