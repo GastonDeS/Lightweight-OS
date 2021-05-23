@@ -25,18 +25,18 @@ void test_mm(){
       total += mm_rqs[rq].size;
       rq++;
     }
-
     //set
     uint32_t i;
-    for (i = 0; i < rq; i++)
+    for (i = 0; i < rq; i++) {
       if (mm_rqs[i].address != NULL){
         uint64_t length = mm_rqs[i].size;
         uint8_t chr = (uint8_t)i;
 	      char * dst = (char*)mm_rqs[i].address;
-
-	      while(length--)
-		    dst[length] = chr;
+	      while(length--) {
+          dst[length] = chr;
+        }
       }
+    }
   
     //check  
     for (i = 0; i < rq; i++)
@@ -46,10 +46,10 @@ void test_mm(){
     
     //free
     for (i = 0; i < rq; i++)
-      if (mm_rqs[i].address != NULL)
+      if (mm_rqs[i].address != NULL) {
         free(mm_rqs[i].address);
-    
-    print("vuelta : %d de %d \n", k, N); 
+      }
+    print("vuelta : %d de %d \n", k + 1, N); 
   } 
 }
 
