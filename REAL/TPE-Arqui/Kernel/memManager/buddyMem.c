@@ -6,7 +6,7 @@
 #define HEAP_SIZE 1024*1024*4  // 4Mb entran aprox 1024 4kb sirve masomenos 
 
 //void *myStartMemory = (void *)0x600000;
-void *myStartMemory = NULL;
+void *myStartMemory = 0x600000;
 
 /*
 ** Basado en:
@@ -77,7 +77,7 @@ void *recursiveMalloc(uint64_t level) {
 
 void free(void *ptr) { //si el puntero no es válido no hago nada
 
-   if (ptr == NULL || !ptr ||removeOccupied(ptr - BUDDY_HEADER_SIZE) == -1) {
+   if (ptr == NULL ||removeOccupied(ptr - BUDDY_HEADER_SIZE) == -1) {
       return;
    }
    void *freePtr = ptr - BUDDY_HEADER_SIZE;
@@ -190,7 +190,7 @@ int8_t removeOccupied(void *header) {
       occupiedBlocks =(void *)block;
       return 1;
    }
-   while (block -> next != NULL || block -> next !=blockHeader) {
+   while (block -> next != NULL && block -> next !=blockHeader) {
       block = block->next;
    }
    if (block->next == NULL) {
@@ -209,18 +209,14 @@ void removeBlock(void * header, uint64_t level) {
       return;
    }
 
-   BUDDY_HEADER *aux;
-
-   while (block -> next != NULL) { //ni primero ni último
-      if (block -> next == toRemove) {
-         block -> next = toRemove->next;
-         return;
-      }
-      aux = block;
+   while (block -> next != NULL && block->next != toRemove) { //ni primero ni último
       block = block->next;
    }
-   if (block == toRemove) { //último
-      aux -> next = NULL;
+   if (block -> next == toRemove) {
+      block -> next = toRemove->next;
+      return;
+   }
+   if (block -> next == NULL) { //último
       return;
    }
 }
@@ -254,7 +250,6 @@ int64_t getLevel(uint64_t size){ //devuelvo el nivel adecuado para el tamaño re
 }
 
 void initialize() {
-   myStartMemory = sbrk(HEAP_SIZE);
    insertBlock((void *)myStartMemory, 0);
 }
 
