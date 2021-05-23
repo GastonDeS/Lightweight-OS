@@ -105,6 +105,8 @@ void addProcess(uint64_t *currentProces, char *name,uint64_t *pid,uint64_t *ep, 
     newProcess.EP = ep;
     newProcess.name = name;
     newProcess.priority = 3; 
+    newProcess.argc = argc;
+    newProcess.argv = argv;
     
     insertBeforeNext(processList, &newProcess);
     (*pid) = newProcess.pid;

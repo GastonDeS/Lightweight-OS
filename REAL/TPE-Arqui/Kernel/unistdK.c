@@ -14,7 +14,7 @@ void createProcess(void (*function)(),char **argv,uint64_t *pid){
     uint64_t argc = countArgv(argv);
     char **newArgv = copyArgv(argc, argv);
     uint64_t *SP = (uint64_t *) createProcessInt(function,answer,argc,newArgv);
-    addProcess(SP,argv[0], pid, answer - PAGESIZE, argc, argv);
+    addProcess(SP,argv[0], pid, answer - PAGESIZE, argc, newArgv);
 }
 
 

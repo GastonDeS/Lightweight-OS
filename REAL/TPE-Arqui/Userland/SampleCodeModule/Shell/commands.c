@@ -18,6 +18,7 @@
 #include <unistd.h>
 #include <test_process.h>
 #include <testPipe.h>
+#include <phylo.h>
 
 void inforeg(char args[MAX_ARGS][MAX_ARG_LEN]){
   clearScreen(0);
@@ -85,6 +86,14 @@ void test_pipe(char args[MAX_ARGS][MAX_ARG_LEN]){
 	argv[0] = "writer";
 	argv[1] = NULL;
   createProcess(testPipe,argv);
+}
+
+void phyloS(char args[MAX_ARGS][MAX_ARG_LEN]){
+  print("\n");
+  char *argv[2];
+	argv[0] = "phyloMaster";
+	argv[1] = NULL;
+  createProcess(phyloMaster,argv);
 }
 
 void getPid(char args[MAX_ARGS][MAX_ARG_LEN]) {

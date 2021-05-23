@@ -29,9 +29,9 @@ static int isCommand(char * name);
 void updateShell(char * buff, int dim);
 
 
-char commandsNames[][MAX_ARG_LEN]={"test_pipe","test_no_sync","test_mem","memCheck","mem","sem","test_processes","test_prio","test_sync","nice","unblockPid","blockPid","ps","getPid","kill","time","help","inforeg","chess","printmem","divZero","invalidOPCode","clear","echo"};
-void  (* run[])(char args[MAX_ARGS][MAX_ARG_LEN]) = {test_pipe,test_no_syncS,test_memS,memCheck,mem,sem,ProcessTester,prioTester,test_syncS,niceS,unblockPid,blockPid,ps,getPid,killS,time,help,inforeg,chessS,printmem,divZero,invalidOPCode,clear,echo};
-static int totalCommands = 24;
+char commandsNames[][MAX_ARG_LEN]={"phylo","test_pipe","test_no_sync","test_mem","memCheck","mem","sem","test_processes","test_prio","test_sync","nice","unblockPid","blockPid","ps","getPid","kill","time","help","inforeg","chess","printmem","divZero","invalidOPCode","clear","echo"};
+void  (* run[])(char args[MAX_ARGS][MAX_ARG_LEN]) = {phyloS,test_pipe,test_no_syncS,test_memS,memCheck,mem,sem,ProcessTester,prioTester,test_syncS,niceS,unblockPid,blockPid,ps,getPid,killS,time,help,inforeg,chessS,printmem,divZero,invalidOPCode,clear,echo};
+static int totalCommands = 25;
 
 void init_shell(int argc, char **argv) {
   setConsoleUpdateFunction(updateShell);

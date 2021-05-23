@@ -186,8 +186,10 @@ void removeNode(nodeP current, listADT list, void (*deleteElemValue)(void* value
 
     if(deleteElemValue == NULL)
         free(current->value);
-    else
+    else {
         deleteElemValue(current->value);
+        free(current->value);
+    }
     free(current);
 }
 
