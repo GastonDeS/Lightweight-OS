@@ -34,9 +34,20 @@ GLOBAL pipeSyscall
 GLOBAL pipeCloseSyscall
 GLOBAL pipeWriteSyscall
 GLOBAL pipeReadSyscall
+GLOBAL printPipeSyscall
 
 
 section .text
+printPipeSyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 36
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
 pipeReadSyscall:
   push rbp
   mov rbp, rsp

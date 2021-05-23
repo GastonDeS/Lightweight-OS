@@ -7,7 +7,10 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <commands.h>
+#include <mySemaphore.h>
 
 void testPipe();
+
+#define SEM_NAME "semPipe"
 
 #endif

@@ -9,8 +9,7 @@
 
 #define BLOCK 100 //cantidad de semaforos permitdos
 
-//crea un semaforo en kernel
-//si hubo un error returnValue = -1
+//si hubo un error returnValue = -1, sino retorna el semId
 void createSem(char *semName, int initialValue, int* returnValue);
 
 //elimina el semforo solo si no tiene procesos eperando
@@ -24,7 +23,8 @@ void semWait(int semId, int* returnValue);
 //si habia procesos en la cola returnValue = 1 sino 0
 void semPost(int semId, int*returnValue);
 
-//void semPostKernel(int semId, int flag,int* returnValue);
+//desbloque solo al proceso con ese pid, si esta
+int semPostPid(int semId, int pid);
 
 
 void printSem(char *result, int strSize);

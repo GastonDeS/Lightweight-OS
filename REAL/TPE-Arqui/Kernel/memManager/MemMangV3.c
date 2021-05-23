@@ -260,52 +260,39 @@ void checkMemory(struct checkMemdata *data){
 }
 
 void printMem(char *str, int strSize){
-    int i=0, buffDim=10;
+    int i=0, j,buffDim=10, aux;
     strSize--; //reservo el lugar del \n
+    char *title = "\n#block  free  size      addr\n";
     char auxBuf[buffDim];    
-    
     infoBlockPtr current = firstInfoBlock;
-    int j;
+
+    //avanzo hasta donde imprimi la ultima vez
     for(j= 0; j < index && current != NULL; j++)
         current = current->next;
-    
-    char *title = "\n#bloque\t\tfree\t\tsize\n ";
+
+    //armado del title
     strcat2(str, &i, strSize, title);
 
     while (current != NULL && i < strSize ){
         
-        intToString(index, auxBuf);
+        aux = intToString(index, auxBuf);
         strcat2(str, &i, strSize, auxBuf);
-        strcat2(str, &i, strSize, "       ");
+        addSpace(str, &i, strSize, 8-aux);
 
         if(current->free)
-            strcat2(str, &i, strSize, "si");
+            aux = strcat2(str, &i, strSize, "yes");
         else
-            strcat2(str, &i, strSize, "no");
-        strcat2(str, &i, strSize, "     ");
+            aux = strcat2(str, &i, strSize, "no");
+        addSpace(str, &i, strSize, 6-aux);
 
-        intToString(current->size, auxBuf);
+        aux = intToString(current->size, auxBuf);
         strcat2(str, &i, strSize, auxBuf);
-        strcat2(str, &i, strSize, "\n ");
-        
+        addSpace(str, &i, strSize, 10-aux);
 
-        /*//numero de bloque
-        strcat2(str, &i, strSize, "\nbloque: ");
-        intToString(index, auxBuf);
+        aux = intToBase((unsigned long long)(current+1), 16, auxBuf);
         strcat2(str, &i, strSize, auxBuf);
+        strcat2(str, &i, strSize, "\n");
 
-        //tamaño del bloque
-        strcat2(str, &i, strSize, "\n\t|-> size: ");
-        intToString(current->size, auxBuf);
-        strcat2(str, &i, strSize, auxBuf);
-
-        //si esta libre o no
-        strcat2(str, &i, strSize, "\n\t|-> free: ");
-        if(current->free)
-            strcat2(str, &i, strSize, "si");
-        else
-            strcat2(str, &i, strSize, "no");
-        */
         current = current->next;
         index++;
     }

@@ -185,6 +185,9 @@ void syscallHandler(registerStruct * registers) {
     pipeRead((int) registers->rdi,(char*) registers->rsi,(int) registers->rdx,(int*) registers->rcx);
     break;
 
+    case 36:
+    printPipe((char*) registers->rdi, (int) registers->rsi);
+    break;
   }
 }
 

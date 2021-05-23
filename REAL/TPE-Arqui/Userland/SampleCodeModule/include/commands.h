@@ -3,6 +3,8 @@
 #define MAX_ARGS 10
 #define MAX_ARG_LEN 32
 
+
+void phyloS(char args[MAX_ARGS][MAX_ARG_LEN]);
 void test_pipe(char args[MAX_ARGS][MAX_ARG_LEN]);
 void test_memS(char args[MAX_ARGS][MAX_ARG_LEN]);
 void ProcessTester(char args[MAX_ARGS][MAX_ARG_LEN]);

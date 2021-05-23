@@ -157,10 +157,7 @@ int intToString(int num, char * buffer){
 
 int strlen(char *str){
   int i =0;
-  for ( i = 0; *(str+i); i++)
-  {
-
-  }
+  for ( i = 0; *(str+i); i++){}
   return i;
 }
 
@@ -182,12 +179,27 @@ char * strcpy(char * dest, char * src) {
   return dest;
 }
 
-void strcat2(char * dest, int* from, int strSize, char * src){
+int strcat2(char * dest, int* from, int strSize, char * src){
   int j;
   for (j=0; src[j] != 0 && *from < strSize; j++, (*from)++) {
     dest[*from] = src[j];
   }
+  return j;
+}
+
+void addSpace(char *dest, int* from, int strSize, int numSpace){
+  int j;
+  for (j=0; j < numSpace && *from < strSize; j++, (*from)++){
+    dest[*from] = ' ';
+  }
   return;
+}
+
+char* strCopy(char* str){
+  int strSize = strlen(str);
+  char *copy = (char*) malloc(sizeof(char*)*strSize);
+  strcpy(copy, str);
+  return copy;
 }
 
 #endif

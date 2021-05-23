@@ -18,6 +18,7 @@
 #include <unistd.h>
 #include <test_process.h>
 #include <testPipe.h>
+#include <phylo.h>
 
 void inforeg(char args[MAX_ARGS][MAX_ARG_LEN]){
   clearScreen(0);
@@ -85,6 +86,14 @@ void test_pipe(char args[MAX_ARGS][MAX_ARG_LEN]){
 	argv[0] = "writer";
 	argv[1] = NULL;
   createProcess(testPipe,argv);
+}
+
+void phyloS(char args[MAX_ARGS][MAX_ARG_LEN]){
+  print("\n");
+  char *argv[2];
+	argv[0] = "phyloMaster";
+	argv[1] = NULL;
+  createProcess(phyloMaster,argv);
 }
 
 void getPid(char args[MAX_ARGS][MAX_ARG_LEN]) {
@@ -162,11 +171,6 @@ void echo(char args[MAX_ARGS][MAX_ARG_LEN]) {
 }
 
 void test_syncS(char args[MAX_ARGS][MAX_ARG_LEN]){
-  // print("\n");
-  // char *arg[2];
-  // arg[0] = "test_sync";
-  // arg[1] = NULL;
-  // createProcess(test_sync,arg);
   test_sync();
 }
 
@@ -175,7 +179,7 @@ void test_no_syncS(char args[MAX_ARGS][MAX_ARG_LEN]){
 }
 
 void mem(char args[MAX_ARGS][MAX_ARG_LEN]){
-  int strSize = 800;
+  int strSize = 1024; //lo que ntra en una pantalla
   char str[strSize];
   printMemSyscall(str, strSize);
   print("%s", str);
@@ -227,4 +231,11 @@ void ProcessTester(char args[MAX_ARGS][MAX_ARG_LEN]) {
   arg[0] = "test_processes";
   arg[1] = NULL;
   createProcess(test_processes,arg);
+}
+
+void pipe(char args[MAX_ARGS][MAX_ARG_LEN]){
+  int strSize = 1024;
+  char str[strSize];
+  printPipeSyscall(str, strSize);
+  print("%s", str);
 }
