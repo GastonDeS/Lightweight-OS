@@ -5,7 +5,8 @@
 void escritor(int id) {
     int result;
     while (1) {
-        pipeWriteSyscall(id,"hello world!",14,&result);
+        pipeWriteSyscall(id,"hello world!",13,&result);
+        for (int i = 0; i < 100000000; i++) {}
     }
 }
 
@@ -14,7 +15,7 @@ void lector(int  argc, char **argv) {
     char *pipeBuff = malloc(sizeof(char)*124);
     int result;
     while (1) {
-        pipeReadSyscall(id,pipeBuff,100,&result);
+        pipeReadSyscall(id,pipeBuff,15,&result);
         print(pipeBuff);
         print("\n");
         for (int i = 0; i < 100000000; i++) {}

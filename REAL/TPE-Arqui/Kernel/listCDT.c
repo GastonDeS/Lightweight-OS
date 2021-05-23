@@ -185,7 +185,7 @@ void removeNode(nodeP current, listADT list, void (*deleteElemValue)(void* value
         list->first = current->next;
     list->size --;
 
-    if(deleteElem == NULL)
+    if(deleteElemValue == NULL)
         free(current->value);
     else
         deleteElemValue(current->value);

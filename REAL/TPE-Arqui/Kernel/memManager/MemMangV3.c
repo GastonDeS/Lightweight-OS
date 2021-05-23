@@ -124,10 +124,11 @@ void *syscallManager(uint64_t size){
 
 infoBlockPtr getBlockPtr(void *ptr) {
     return (infoBlockPtr)ptr - 1;
+    
 }
 
 void free(void *ptr){
-    if (ptr == NULL)
+    if (ptr == NULL || ptr < getStartMemory())
         return;
     infoBlockPtr current = getBlockPtr(ptr);
     current->free = 1;

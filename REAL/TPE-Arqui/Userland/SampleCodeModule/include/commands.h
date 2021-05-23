@@ -27,5 +27,4 @@ void printmem(char args[MAX_ARGS][MAX_ARG_LEN]);
 void divZero(char args[MAX_ARGS][MAX_ARG_LEN]);
 void invalidOPCode(char args[MAX_ARGS][MAX_ARG_LEN]);
 void clear(char args[MAX_ARGS][MAX_ARG_LEN]);
-void uwu(char args[MAX_ARGS][MAX_ARG_LEN]);
 #endif

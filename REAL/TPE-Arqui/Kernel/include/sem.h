@@ -18,10 +18,14 @@ void createSem(char *semName, int initialValue, int* returnValue);
 void removeSem(int semId, int* returnValue);
 
 //si hubo un error returnValue = -1 sino 0
-void semSleep(int semId, int* returnValue);
+void semWait(int semId, int* returnValue);
+
 
 //si habia procesos en la cola returnValue = 1 sino 0
-void semWakeUp(int semId, int*returnValue);
+void semPost(int semId, int*returnValue);
+
+//void semPostKernel(int semId, int flag,int* returnValue);
+
 
 void printSem(char *result, int strSize);
 

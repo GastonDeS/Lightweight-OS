@@ -23,8 +23,8 @@ GLOBAL freeSyscall
 GLOBAL reallocSyscall
 GLOBAL createSemSyscall
 GLOBAL removeSemSyscall
-GLOBAL semSleepSyscall
-GLOBAL semWakeUpSyscall
+GLOBAL semWaitSyscall
+GLOBAL semPostSyscall
 GLOBAL niceSyscall
 GLOBAL yieldSyscall
 GLOBAL printSemSyscall
@@ -129,7 +129,7 @@ niceSyscall:
   pop rbp
   ret
 
-semWakeUpSyscall:
+semPostSyscall:
   push rbp
   mov rbp, rsp
 
@@ -139,7 +139,7 @@ semWakeUpSyscall:
   mov rsp, rbp
   pop rbp
   ret
-semSleepSyscall:
+semWaitSyscall:
   push rbp
   mov rbp, rsp
 

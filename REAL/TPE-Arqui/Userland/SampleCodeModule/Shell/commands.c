@@ -81,7 +81,10 @@ void ps(char args[MAX_ARGS][MAX_ARG_LEN]) {
 
 void test_pipe(char args[MAX_ARGS][MAX_ARG_LEN]){
   print("\n");
-  testPipe();
+  char *argv[2];
+	argv[0] = "writer";
+	argv[1] = NULL;
+  createProcess(testPipe,argv);
 }
 
 void getPid(char args[MAX_ARGS][MAX_ARG_LEN]) {
@@ -148,7 +151,6 @@ void help(char args[MAX_ARGS][MAX_ARG_LEN]) {
   print("clear - clears the shell\n");
   print("divZero - Forces a divZero exception (For testing purposes)\n");
   print("invalidOPCode - Forces a invalid opcode exception (For testing purposes)\n");
-  print("UWU - Surprise");
 }
 
 void echo(char args[MAX_ARGS][MAX_ARG_LEN]) {
@@ -159,22 +161,12 @@ void echo(char args[MAX_ARGS][MAX_ARG_LEN]) {
   }
 }
 
-void uwu(char args[MAX_ARGS][MAX_ARG_LEN]) {
-  print("\n\n\n");
-  print("  @@@@            @@@@                                    (@@@&           *@@@& \n");
-  print("  @@@@            @@@@                                    (@@@&           *@@@& \n");
-  print("  @@@@            @@@@    @@@@         &@&        @@@@    (@@@&           *@@@& \n");
-  print("  @@@@            @@@@    ,@@@@       @@@@@       @@@@    (@@@&           *@@@& \n");
-  print("  @@@@            @@@@     &@@@&     .@@@@@@     .@@@&    (@@@&           *@@@& \n");
-  print("  @@@@            @@@@      @@@@     @@@ @@@(    @@@@     (@@@&           *@@@& \n");
-  print("  @@@@.           @@@@       @@@@   @@@@ /@@@    @@@*     ,@@@@           #@@@# \n");
-  print("   @@@@.         @@@@#       ,@@@. &@@@   @@@@  @@@#       @@@@@         ,@@@@  \n");
-  print("    @@@@@@@&#&@@@@@@          @@@@@@@@     @@@@@@@,         *@@@@@@&#&@@@@@@&   \n");
-  print("       &@@@@@@@@@.             (@@@@        @@@@#              /@@@@@@@@@&      \n");
-  print("\n\n\n");
-}
-
 void test_syncS(char args[MAX_ARGS][MAX_ARG_LEN]){
+  // print("\n");
+  // char *arg[2];
+  // arg[0] = "test_sync";
+  // arg[1] = NULL;
+  // createProcess(test_sync,arg);
   test_sync();
 }
 
