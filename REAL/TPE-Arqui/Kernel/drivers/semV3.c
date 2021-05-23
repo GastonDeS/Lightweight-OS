@@ -75,8 +75,12 @@ void semWait(int semId, int* returnValue){
         *returnValue = -1;
         return;
     } 
-    if(semVec[semId].value >0)
+    // int pid2;
+    // getPid(&pid2);
+    if(semVec[semId].value >0) {
         _xadd(-1,&(semVec[semId].value)); 
+        (*returnValue) = 0;
+    }
     else{
         *returnValue = sleepProcess(semVec[semId].blockedProcesses);
         if(*returnValue ==  -1) {//si hubo un error al intentar dormir el proceso 
@@ -90,6 +94,9 @@ int semPostPid(int semId, int pid){
     if(semId < 0  || semId > semVecSize || pid < 0)
         return -1;
 
+    // int pid2;
+    // getPid(&pid2);
+    _xadd(1,&(semVec[semId].value));
     if(delete(semVec[semId].blockedProcesses, &pid)){
         int ans;
         unlockProcess(pid, &ans);

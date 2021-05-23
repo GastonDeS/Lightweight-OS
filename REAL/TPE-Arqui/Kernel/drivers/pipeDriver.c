@@ -14,6 +14,11 @@ typedef struct elem{
 elem pipeVec[BLOCK];
 int pipeVecSize = 0; //cantidad de elemntos
 
+int equalsPipe(void* n1, void* n2){
+    int aux1 = *((int*)n1);
+    int aux2 = *((int*)n2);
+    return aux1 == aux2;
+}
 
 //private
 int findSpaces();
@@ -38,8 +43,8 @@ void pipe(int *returnValue){
         return;
     }
     //listas
-    pipeVec[pipeId].processToWrite = newList(sizeof(int),NULL);
-    pipeVec[pipeId].processToRead = newList(sizeof(int),NULL);
+    pipeVec[pipeId].processToWrite = newList(sizeof(int),equalsPipe);
+    pipeVec[pipeId].processToRead = newList(sizeof(int),equalsPipe);
         
     //lo demas
     pipeVec[pipeId].free = 0;
@@ -87,16 +92,12 @@ void pipeWrite(int pipeId, char *addr, int n, int *returnValue){
             if(!isEmpty(pipeVec[pipeId].processToRead)){
                 int readerPid = popList(pipeVec[pipeId].processToRead);
                 semPostPid(pipeVec[pipeId].semLock, readerPid);
-
-                addMeToList(pipeVec[pipeId].processToWrite);
-                semWait(pipeVec[pipeId].semLock, returnValue);
-                if(*returnValue == -1)
-                    return;
-                removeMeOfList(pipeVec[pipeId].processToWrite);
-
-            }else{
-                return;
             }
+            addMeToList(pipeVec[pipeId].processToWrite);
+            semWait(pipeVec[pipeId].semLock, returnValue);
+            if(*returnValue == -1)
+                return;
+            removeMeOfList(pipeVec[pipeId].processToWrite);
         }
         pipeVec[pipeId].data[ pipeVec[pipeId].writeIndex++ % PIPE_SIZE ] = addr[i]; 
     }
@@ -122,15 +123,12 @@ void pipeRead(int pipeId, char * addr, int n, int *returnValue){
             if(!isEmpty(pipeVec[pipeId].processToWrite)){
                 int readerPid = popList(pipeVec[pipeId].processToWrite);
                 semPostPid(pipeVec[pipeId].semLock, readerPid);
-
-                addMeToList(pipeVec[pipeId].processToRead);
-                semWait(pipeVec[pipeId].semLock, returnValue);
-                if(*returnValue == -1)
-                    return;
-                removeMeOfList(pipeVec[pipeId].processToRead);
-            }else{
-                return;
             }
+            addMeToList(pipeVec[pipeId].processToRead);
+            semWait(pipeVec[pipeId].semLock, returnValue);
+            if(*returnValue == -1)
+                return;
+            removeMeOfList(pipeVec[pipeId].processToRead);
         }
         addr[i] = pipeVec[pipeId].data[ pipeVec[pipeId].readIndex++ % PIPE_SIZE ]; 
     }
@@ -167,7 +165,7 @@ int addMeToList(listADT list){
     getPid(&pid);
 
     int result;
-    result = insert(list, &pid);
+    result = addToTheEnd(list, &pid);
     return result;
 }
 
