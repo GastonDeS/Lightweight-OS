@@ -6,6 +6,7 @@ void escritor(int id) {
     int result;
     while (1) {
         pipeWriteSyscall(id,"hello world!",14,&result);
+        for (int i = 0; i < 100000000; i++) {}
     }
 }
 
