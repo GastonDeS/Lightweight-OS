@@ -137,7 +137,7 @@ int findSpaces(){
 
 char* creatSemName(int pipeId){
     int i=0, strSize=10;
-    char str = (char*) malloc(sizeof(char)*strSize);
+    char *str = (char*) malloc(sizeof(char)*strSize);
     char auxBuff[2];
     char* title = "pipeSem";
     strcat2(str, &i, strSize, title);
