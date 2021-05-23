@@ -107,7 +107,7 @@ void pipeRead(int pipeId, char * addr, int n, int *returnValue){
         return;
     pipeVec[pipeId].processWantRead = 0;
     
-    for(int i = 0; i < n; i++){
+    for(int i = 0; i < n && pipeVec[pipeId].data[ pipeVec[pipeId].readIndex % PIPE_SIZE ]; i++){
        while( pipeVec[pipeId].readIndex == pipeVec[pipeId].writeIndex){
             if(pipeVec[pipeId].processWantsWrite){
                 semPost(pipeVec[pipeId].semId, returnValue);
