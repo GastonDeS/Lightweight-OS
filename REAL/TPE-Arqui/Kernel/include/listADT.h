@@ -36,6 +36,7 @@ int deleteCurrentElem(listADT list);
 
 int deleteFirstElem(listADT list);
 
+//retorna 1 si lo elimino y 0 si no lo encontro
 int delete(listADT list, void* element);
 
 //en el caso que el elemento guarde un tipo de dato que necesite un free, solo

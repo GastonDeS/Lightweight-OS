@@ -146,7 +146,6 @@ int deleteCurrentElem(listADT list){
     return 0;
 }
 
-//se le podria pasar un puntero a funcion del compare
 //retorna 1 si lo elimino y 0 si no lo encontro
 int delete(listADT list, void* element){
     nodeP current = list->first;

@@ -24,7 +24,8 @@ void semWait(int semId, int* returnValue);
 //si habia procesos en la cola returnValue = 1 sino 0
 void semPost(int semId, int*returnValue);
 
-//void semPostKernel(int semId, int flag,int* returnValue);
+//desbloque solo al proceso con ese pid, si esta
+int semPostPid(int semId, int pid);
 
 
 void printSem(char *result, int strSize);

@@ -2,11 +2,11 @@
 
 #include <testPipe.h>
 
-void escritor(int id) {
+void escritor(int id, char* text) {
     int result;
     while (1) {
-        pipeWriteSyscall(id,"hello world!",13,&result);
-        for (int i = 0; i < 100000000; i++) {}
+        pipeWriteSyscall(id,text,13,&result);
+        //for (int i = 0; i < 100000000; i++) {}
     }
 }
 
@@ -18,7 +18,7 @@ void lector(int  argc, char **argv) {
         pipeReadSyscall(id,pipeBuff,15,&result);
         print(pipeBuff);
         print("\n");
-        for (int i = 0; i < 100000000; i++) {}
+        //for (int i = 0; i < 100000000; i++) {}
         
     }
 }
@@ -28,10 +28,14 @@ void testPipe() {
     pipeSyscall(&pipeID);
     char num[10];
     intToString(pipeID,num);
-    char *args[2];
+    char *args[4];
     args[0] = "lector";
     args[1] = num;
     args[2] = NULL;
     createProcess(lector,args);
-    escritor(pipeID);
+
+    escritor(pipeID, "escritor1");
+    //escritor(pipeID, "escritor2");
+    //escritor(pipeID, "escritor3");
+
 }

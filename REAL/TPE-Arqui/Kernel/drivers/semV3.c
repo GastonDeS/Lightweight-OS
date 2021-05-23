@@ -10,6 +10,12 @@ typedef struct elem{
 elem semVec[BLOCK];
 int semVecSize = 0; //cantidad de elemntos
 
+int equalsSem(void* n1, void* n2){
+    int aux1 = *((int*)n1);
+    int aux2 = *((int*)n2);
+    return aux1 == aux2;
+}
+
 //private:
 int findfreeSpaces();
 int sleepProcess(listADT blockedProcesses);
@@ -17,7 +23,10 @@ int wakeUpProcess(listADT blockedProcesses);
 
 
 void createSem(char *semName, int initialValue, int* returnValue){
-
+    if(semName == NULL){
+        *returnValue = -1;
+        return;
+    }
     //busco el primer espacio libre o si ya se creeo el semaforo
     int semId = findfreeSpaces(semName);
     if(semVec[semId].name && strcmp(semVec[semId].name, semName) == 0 ){ 
@@ -26,7 +35,7 @@ void createSem(char *semName, int initialValue, int* returnValue){
         semVec[semId].value = initialValue;  
         semVec[semId].name = semName;
         semVec[semId].numProcess = 1;
-        semVec[semId].blockedProcesses = newList(sizeof(int),NULL);
+        semVec[semId].blockedProcesses = newList(sizeof(int),equalsSem);
         semVecSize++;
     }
     *returnValue = semId; 
@@ -77,6 +86,19 @@ void semWait(int semId, int* returnValue){
     }
 }
 
+int semPostPid(int semId, int pid){
+    if(semId < 0  || semId > semVecSize || pid < 0)
+        return -1;
+
+    if(delete(semVec[semId].blockedProcesses, &pid)){
+        int ans;
+        unlockProcess(pid, &ans);
+        _xadd(-1,&(semVec[semId].value));
+        return ans;
+    }
+    return -1;
+}
+
 void semPost(int semId, int* returnValue){
    
     if(semId < 0  || semId > semVecSize){
@@ -90,11 +112,8 @@ void semPost(int semId, int* returnValue){
         _xadd(-1,&(semVec[semId].value)); //semVec[semId]--; 
     }
     
-    return;
-    
+    return;   
 }
-
-
 
 void printSem(char *str, int strSize){
     int i=0, j=0, buffDim=10;
