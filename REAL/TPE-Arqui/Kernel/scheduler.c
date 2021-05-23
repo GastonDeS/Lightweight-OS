@@ -12,7 +12,9 @@ typedef enum {ERROR, BLOCKED, KILLED, READY}State;
 typedef struct {
     uint64_t *BP;
     uint64_t *SP;
-    uint64_t *EP; // End Pointer 
+    uint64_t *EP; // End Pointer
+    char **argv;
+    uint64_t argc; 
     uint64_t pid;
     State state;
     char *name;
@@ -88,7 +90,7 @@ void yield(){
     _hlt();
 }
 
-void addProcess(uint64_t *currentProces, char *name,uint64_t *pid,uint64_t *ep) {
+void addProcess(uint64_t *currentProces, char *name,uint64_t *pid,uint64_t *ep, uint64_t argc, char** argv){
     if(processList == NULL){
         processList = newList(sizeof(process),equals);
         if(processList == NULL)
@@ -116,6 +118,10 @@ void exceptionProcess(){
 
 void freeEP(process * aux) {
     free(aux->EP);
+    free(aux->name);
+    for (int i = 0; i < aux->argc; i++)
+        free(aux->argv[i]);
+    free(aux->argv);
 }
 
 void endProcessWrapper(uint64_t pid, int *result){

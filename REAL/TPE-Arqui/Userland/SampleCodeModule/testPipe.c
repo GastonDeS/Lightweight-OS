@@ -2,16 +2,18 @@
 
 #include <testPipe.h>
 
+int N = 10;
+
 void escritor(int argc, char** argv) {
     int id = atoi(argv[1]);
     int semId = sem_open(SEM_NAME,1);
     int result;
-    while (1) {
+    for(int i=0; i<N; i++){
         sem_wait(semId);
         pipeWriteSyscall(id,argv[2],10,&result);
         yieldSyscall();
         sem_post(semId);
-        // for (int i = 0; i < 100000000; i++) {}
+        //for (int i = 0; i < 100000000; i++) {}
     }
 }
 
@@ -19,14 +21,11 @@ void lector(int  argc, char **argv) {
     int id = atoi(argv[1]);
     char *pipeBuff = malloc(sizeof(char)*124);
     int result;
-    int semId = sem_open(SEM_NAME,1);
-    while (1) {
-        // sem_wait(semId);
+    while(1){
         pipeReadSyscall(id,pipeBuff,15,&result);
-        // sem_post(semId);
         print(pipeBuff);
         print(" ");
-        // for (int i = 0; i < 100000000; i++) {}
+        //for (int i = 0; i < 100000000; i++) {}
         
     }
 }
@@ -53,13 +52,12 @@ void testPipe() {
     args2[2] = "escritor2";
     args2[3] = NULL;
     createProcess(escritor,args2);
-    // char *args3[4];
-    // args3[0] = "escritor";
-    // args3[1] = num;
-    // args3[2] = "escritor3";
-    // args3[3] = NULL;
-    // createProcess(escritor,args3);
-    // blockPidSyscall(0,pipeID);
+    char *args3[4];
+    args3[0] = "escritor";
+    args3[1] = num;
+    args3[2] = "escritor3";
+    args3[3] = NULL;
+    createProcess(escritor,args3);
     myExit();
 
 }

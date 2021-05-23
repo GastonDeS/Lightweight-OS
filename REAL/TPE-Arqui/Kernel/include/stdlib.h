@@ -13,5 +13,9 @@ char * strcpy(char * dest, char * src);
 int atohex(char * str);
 char toUpper(char letter);
 char toLower(char letter);
-void strcat2(char * dest, int* from, int strSize, char * src);
+int strcat2(char * dest, int* from, int strSize, char * src);
+void addSpace(char *dest, int* from, int strSize, int numSpace);
+//crea un copia de str. Usa malloc para crear el nuevo string, hay que 
+//liberarlo con free luego de usarlo
+char* strCopy(char* str);
 #endif

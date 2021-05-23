@@ -38,6 +38,6 @@ void pipeSyscall(int *returnValue);
 void pipeCloseSyscall(int pipeId, int *returnValue);
 void pipeWriteSyscall(int pipeId, char * addr, int n, int *returnValue);
 void pipeReadSyscall(int pipeId, char * addr, int n, int *returnValue);
-
+void printPipeSyscall(char *str, int strSize);
 
 #endif

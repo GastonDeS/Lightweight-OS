@@ -162,11 +162,6 @@ void echo(char args[MAX_ARGS][MAX_ARG_LEN]) {
 }
 
 void test_syncS(char args[MAX_ARGS][MAX_ARG_LEN]){
-  // print("\n");
-  // char *arg[2];
-  // arg[0] = "test_sync";
-  // arg[1] = NULL;
-  // createProcess(test_sync,arg);
   test_sync();
 }
 
@@ -175,7 +170,7 @@ void test_no_syncS(char args[MAX_ARGS][MAX_ARG_LEN]){
 }
 
 void mem(char args[MAX_ARGS][MAX_ARG_LEN]){
-  int strSize = 800;
+  int strSize = 1024; //lo que ntra en una pantalla
   char str[strSize];
   printMemSyscall(str, strSize);
   print("%s", str);
@@ -227,4 +222,11 @@ void ProcessTester(char args[MAX_ARGS][MAX_ARG_LEN]) {
   arg[0] = "test_processes";
   arg[1] = NULL;
   createProcess(test_processes,arg);
+}
+
+void pipe(char args[MAX_ARGS][MAX_ARG_LEN]){
+  int strSize = 1024;
+  char str[strSize];
+  printPipeSyscall(str, strSize);
+  print("%s", str);
 }
