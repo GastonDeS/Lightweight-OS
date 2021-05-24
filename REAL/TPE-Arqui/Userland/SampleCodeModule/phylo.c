@@ -21,6 +21,7 @@ void addPhylosopher();
 void closePhylosfers(int semId);
 void refreshAdd(int *forkR);
 void refreshRem(int *forkR);
+void printPhylos();
 
 void phylosofer(int argc, char **argv){
     int semId = sem_open(SEMPHYLO,1);
@@ -35,6 +36,7 @@ void phylosofer(int argc, char **argv){
     int forkR = sem_open(forkRS,1);
 
     while (phylosofers[phyloN].isAlive!=DEAD) {
+        printPhylos();
         if (phylosofers[phyloN].isAlive==REFRESHREM && phylosofers[phyloN].state!=EATING) 
             refreshRem(&forkR);
         else if(phylosofers[phyloN].isAlive==REFRESHADD && phylosofers[phyloN].state!=EATING) {
@@ -73,8 +75,8 @@ void phylosofer(int argc, char **argv){
     }
     if (phylosofers[phyloN].state==EATING) {
         if (phyloN%2){
-            sem_post(forkL);
             sem_post(forkR);
+            sem_post(forkL);
         } else {
             sem_post(forkL);
             sem_post(forkR);
@@ -98,7 +100,6 @@ void phyloMaster(int argc, char **argv) {
     
     admin(semId);
 
-    unblock(0);
     myExit();
 }
 
@@ -116,16 +117,17 @@ void admin(int semId) {
                 removePhylosofer();
             }
         }
-        sem_wait(semId);
-        for (int i = 0; i < phylosofersCount; i++) {
+        // yieldSyscall();
+    }
+}
+
+void printPhylos(){ 
+    for (int i = 0; i < phylosofersCount; i++) {
             char aux[5];
             intToString(phylosofers[i].state,aux);
             print(aux);
         }
-        print("\n");
-        sem_post(semId);
-        yieldSyscall();
-    }
+    print("\n");
 }
 
 void refreshRem(int *forkR){
