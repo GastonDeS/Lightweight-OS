@@ -38,11 +38,11 @@ void pipeCreate(int pipeId, int *returnValue){
         *returnValue = -1;
         return;
     }
-    
+
     if(!newPipe(pipeId)){
         *returnValue = -1;
     }
-        
+
     *returnValue =  pipeId;
     return;
 }
@@ -50,7 +50,7 @@ void pipeCreate(int pipeId, int *returnValue){
 
 
 void pipeClose(int pipeId, int *returnValue){
-    
+
     if(!findPipe(pipeId)){
         *returnValue = -1;
         return;
@@ -79,7 +79,7 @@ void pipeWrite(int pipeId, char *addr, int n, int *returnValue){
     pipe[pipeId].processToWrite = 1;
     semWait(pipe[pipeId].lockS, returnValue);
     pipe[pipeId].processToWrite = 0;
-    
+
     for(int i = 0; i < n ; i++){
         while(pipe[pipeId].writeIndex == pipe[pipeId].readIndex + BUFF_SIZE){
             semPost(pipe[pipeId].lockS, returnValue);
@@ -87,13 +87,10 @@ void pipeWrite(int pipeId, char *addr, int n, int *returnValue){
             yield();
             semWait(pipe[pipeId].lockS, returnValue);
             pipe[pipeId].processToWrite = 0;
-
-
         }
         pipe[pipeId].data[ pipe[pipeId].writeIndex++ % BUFF_SIZE ] = addr[i];
         if(addr[i] == '\0') break;
     }
-    pipe[pipeId].data[ pipe[pipeId].writeIndex % BUFF_SIZE ] = 0;
     semPost(pipe[pipeId].lockS, returnValue);
     return;
 }
@@ -117,7 +114,7 @@ void pipeRead(int pipeId, char * addr, int n, int *returnValue){
                 semWait(pipe[pipeId].lockS, returnValue);
                 pipe[pipeId].processToRead = 0;
         }
-        addr[i] = pipe[pipeId].data[ pipe[pipeId].readIndex++ % BUFF_SIZE ]; 
+        addr[i] = pipe[pipeId].data[ pipe[pipeId].readIndex++ % BUFF_SIZE ];
         if( addr[i] == '\0') break;
     }
     // if (i != n) pipe[pipeId].readIndex++;
@@ -139,7 +136,7 @@ void printPipe(char *str, int strSize){
 
         //salteo los pipes libres
         while(k < PIPE_MAX && pipe[k].state == FREE){k++;}
-    
+
         aux = intToString(k, auxBuf);
         strcat2(str, &i, strSize, auxBuf);
         addSpace(str, &i, strSize, 8-aux);
@@ -178,18 +175,18 @@ char* createSemName(int pipeId){
     intToString(pipeId, auxBuff);
     strcat2(str, &i, strSize, auxBuff);
     return str;
-} 
+}
 
 int newPipe(int pipeId){
     createSem(createSemName(pipeId), 1, &pipe[pipeId].lockS);
     if(pipe[pipeId].lockS == -1)
         return 0;
-    
+
     pipe[pipeId].processToRead = 0;
-    pipe[pipeId].processToWrite= 0; 
+    pipe[pipeId].processToWrite= 0;
     pipe[pipeId].state = IN_USE;
     pipe[pipeId].readIndex = 0;
-    pipe[pipeId].writeIndex = 0;      
+    pipe[pipeId].writeIndex = 0;
     numOfPipe++;
     return 1;
 }

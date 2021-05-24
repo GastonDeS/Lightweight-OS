@@ -2,7 +2,7 @@
 
 #include <testPipe.h>
 
-int N = 100;
+int N = 10;
 
 void escritor(int argc, char** argv) {
     int id = atoi(argv[1]);
@@ -14,9 +14,7 @@ void escritor(int argc, char** argv) {
         pipeWriteSyscall(id,argv[2],10,&result);
         sem_post(semId);
         yieldSyscall();
-        //for (int i = 0; i < 100000000; i++) {}
     }
-
     sem_close(semId);
     pipeCloseSyscall(id, &result);
     myExit();
