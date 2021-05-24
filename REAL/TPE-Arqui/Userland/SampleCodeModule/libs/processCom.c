@@ -13,11 +13,16 @@ void cat(int argc, char **argv) {
     char c;
     int i = 0;
     char toPrint[1024] = {0};
-    while ((c = getChar(pipeRead)) != EOF) {
+    int flagEnd = 1;
+    while ( flagEnd) {
+        c = getChar(pipeRead);
+        if (c == EOF) {
+            flagEnd = 0;
+        }
         if(!isPipe(pipeRead))
             putChar(-1, c);
         toPrint[i++] = c;
-        if (c == '\n') {
+        if (c == '\n' || c==EOF) {
             toPrint[i] = 0;
             print(pipeWrite, "%s", toPrint);
             i = 0;

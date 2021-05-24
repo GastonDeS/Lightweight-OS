@@ -1,6 +1,7 @@
 #include <loop.h>
 #include <commands.h>
 #include <stdint.h>
+#include <stddef.h>
 
 #define EOF -1
 

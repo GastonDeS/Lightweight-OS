@@ -74,7 +74,8 @@ void print(int pipeW, char * str, ...) {
 
 void putChar(int pipeW,char ch) {
   if (pipeW == -1) {
-    updateConsolePointer(&ch, 1);
+    if (ch != EOF)
+      updateConsolePointer(&ch, 1);
   }else {
     pipeWrite(pipeW, &ch, 1);
   }
@@ -97,15 +98,15 @@ void setConsoleUpdateFunction(void (*f)(char *, int)) {
   updateConsoleInitialized = 1;
 }
 
-char getChar(pipeR) {
+char getChar(int pipeR) {
   char ch = 0;
-  uint64_t count;
+  uint64_t count=0;
   if (pipeR == -1) {
     while(ch == 0 || count == 0) {
     readKeyboardSysCall(&ch, 1, &count);
     }
   }else {
-    while(ch == 0 || count == 0) {
+    while(ch == '\0' ) {
       pipeRead(pipeR, &ch, 1); //esto esta mal
     }
   }
