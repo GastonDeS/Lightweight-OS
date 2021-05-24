@@ -183,26 +183,27 @@ void memCheck(char args[MAX_ARGS][MAX_ARG_LEN]){
   struct checkMemdata data = {0};
   checkMemorySyscall(&data);
   print("\n");
-  print("* Cantidad de bloques: %d\n", data.numeberOfBlocks);
-  print("    |-> Usados: %d\n", data.blockused);
-  print("    |-> Libre: %d\n", data.freeBlock);
+  print("* Number of blocks: %d\n", data.numeberOfBlocks);
+  print("    |-> In use: %d\n", data.blockused);
+  print("    |-> Free: %d\n", data.freeBlock);
   print("\n");
-  print("* Cantidad total de bytes usados: %d Bytes\n", data.totalBytes);
-  print("    |-> Usados en infoBLocks: %d Bytes\n", data.bytesUsedByBLocks);
-  print("    |-> Usados por el usuario: %d Bytes\n", data.bytesUsedByUser);
-  print("    |-> No utilizados: %d Bytes\n", data.unusedBytes);
-  print("    |-> Usados para alinear: %d Bytes\n", data.bytesUsedByAlign);
-  print("    |-> Bytes perdidos: %d Bytes\n", data.lostBytes);
+  print("* Total number of bytes ordered: %d Bytes\n", data.totalBytes);
+  print("    |-> Used in infoBLox: %d Bytes\n", data.bytesUsedByBLocks);
+  print("    |-> Used by the user: %d Bytes\n", data.bytesUsedByUser);
+  print("    |-> Free: %d Bytes\n", data.freeBytes);
+  print("    |-> Lost: %d Bytes\n", data.lostBytes);
   print("\n");
-  print("* Numero de errores: %d\n", data.numError);
-  print("    |-> Numero de bloque con error A: %d\n", data.freeBlocksTogether);
-  print("    |-> Numero de bloque con error B: %d\n", data.noAlignBlocks);
-  print("    |-> Numero de bloque con error C: %d\n", data.curNextPrev);
+  print("* Total errors: %d\n", data.numError);
+  print("    |-> Number of errors A: %d\n", data.freeBlocksTogether);
+  print("    |-> Number of errors B: %d\n", data.curNextPrev);
+  print("    |-> Number of errors C: %d\n", data.memError);
+  print("    |-> Number of errors D: %d\n", data.bytesError);
   /*
   Errores:
     A: dos bloque libreos juntos
-    B: bloque no alineado a 8 bytes
-    C: que el previous no apunte el bloque anterior
+    B: que el previous no apunte el bloque anterior (current != current->next->previous))
+    C: si memoryDim - firstInfoBlock != data->totalBytes
+    D: sumatoria de los bytes no es igual a total bytes
   */
 
 }

@@ -180,7 +180,7 @@ void mallocSyscall(uint64_t size, void** result){
     (*result) = malloc(size);
 }
 
-//----------------------------------------------debugger---------------------------------------------------
+
 /*
   (*) No puede haber dos free juntos
   (*) distancia entre bloques - size - INFO_BLOCK_SIZE < MAX_DIFF_SIZE
@@ -192,7 +192,6 @@ void mallocSyscall(uint64_t size, void** result){
   (*) totalBytes es igual a la suma de bytesUsedByBLocks, bytesUsedByUser,
   unusedBytes y bytesUsedByAlign
   (*) numeberOfBlocks es igual a los bloque libre y usados
-  (*) los punteros devueltos por malloc tienen que estar alineados a 64 bit
 */
 void checkMemory(struct checkMemdata *data){
     infoBlockPtr current = firstInfoBlock;
@@ -206,30 +205,24 @@ void checkMemory(struct checkMemdata *data){
             data->blockused++;
         }
         data->bytesUsedByBLocks += INFO_BLOCK_SIZE;
-        data->bytesUsedByUser += current->size;
-        data->bytesUsedByAlign += 0;
         
         if (current->next != NULL){
-            data->unusedBytes += (long)current->next - (long)current - (int)current->size - INFO_BLOCK_SIZE;
+            data->lostBytes += (long)current->next - (long)current - (int)current->size - INFO_BLOCK_SIZE;
             data->totalBytes += (long)current->next - (long)current;
         }else{
-            data->unusedBytes += (long)memoryDim - (long)current - (int)current->size - INFO_BLOCK_SIZE;
+            data->lostBytes += (long)memoryDim - (long)current - (int)current->size - INFO_BLOCK_SIZE;
             data->totalBytes += (long)memoryDim - (long)current;
         }
         if (current->free){ // no puede haber dos free juntos
+            data->freeBytes += current->size;
             if (freeFlag){
                 data->freeBlocksTogether ++;
                 data->numError ++;
             }else
                 freeFlag = 1;
         }else
+            data->bytesUsedByUser += current->size;
             freeFlag = 0;
-
-        long ptr = (long)(current + 1);
-        if (ptr % 63 != 0){
-            data->noAlignBlocks ++;
-            data->numError ++;
-        }
 
         if (current->next != NULL){
             long notUsed = (long)current->next - (long)current - (int)current->size - INFO_BLOCK_SIZE;
@@ -244,7 +237,7 @@ void checkMemory(struct checkMemdata *data){
         }
         current = current->next;
     }
-    if (data->totalBytes != (data->bytesUsedByBLocks + data->bytesUsedByUser + data->unusedBytes + data->bytesUsedByAlign)){
+    if (data->totalBytes != (data->bytesUsedByBLocks + data->bytesUsedByUser + data->lostBytes + data->freeBytes)){
         data->bytesError = 1;
         data->numError ++;
     }
