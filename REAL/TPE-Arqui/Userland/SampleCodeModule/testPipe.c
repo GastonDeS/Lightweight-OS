@@ -7,15 +7,13 @@ int N = 2;
 void escritor(int argc, char** argv) {
     int id = atoi(argv[1]);
     int semId = sem_open(SEM_NAME,1);
-    
     pipeCreateSyscall(id, NULL);
-
     int result;
     for(int i=0; i< N; i++){
         sem_wait(semId);
         pipeWriteSyscall(id,argv[2],10,&result);
-        // yieldSyscall();
         sem_post(semId);
+        yieldSyscall();
         //for (int i = 0; i < 100000000; i++) {}
     }
 
@@ -33,7 +31,7 @@ void lector(int  argc, char **argv) {
         pipeReadSyscall(id,pipeBuff,15,&result);
         print(pipeBuff);
         print(" ");
-        //for (int i = 0; i < 100000000; i++) {}
+        for (int i = 0; i < 100000000; i++) {}
         
     }
     pipeCloseSyscall(id, &result);

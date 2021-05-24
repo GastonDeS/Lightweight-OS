@@ -203,6 +203,7 @@ int findFreeSem(){
 
 void newSem(int semId, char* semName, int initialValue){
 
+    sem[semId].state = IN_USE;
     sem[semId].value = initialValue;
     sem[semId].name = strCopy(semName);
     sem[semId].numProcess = 1;
