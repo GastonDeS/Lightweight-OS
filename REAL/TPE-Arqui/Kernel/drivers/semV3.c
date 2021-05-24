@@ -61,15 +61,13 @@ void removeSem(int semId, int* returnValue){
     //chequeo que sea el ultimo proceso usando el semaforo
     sem[semId].numProcess --;
     if(sem[semId].numProcess != 0){
-        *returnValue = 1; 
+        *returnValue = 0; 
         return;
     }
     
     //chequeo que no tenga procesos bloqueados
     if(!isEmpty(sem[semId].blockedProcesses)){
         while( wakeUpProcess(sem[semId].blockedProcesses) != 0);
-        *returnValue = 0;
-        return;
     }
 
     free(sem[semId].name);

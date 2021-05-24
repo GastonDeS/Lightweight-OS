@@ -6,7 +6,7 @@
 
 typedef struct elem{
     char state;
-    char data[BUFF_SIZE];
+    char *data;
     int readIndex;
     int writeIndex;
     char processToRead;
@@ -18,20 +18,18 @@ typedef struct elem{
 elem pipe[PIPE_MAX];
 int numOfPipe = 0; //cantidad de elemntos
 
-
 //private
 int newPipe(int pipeId);
 int findPipe(int pipeId);
 int findFreePipe();
+int removePipe(int pipeId);
 char* createSemName(int pipeId);
 
-
 void pipeOpen(int pipeId, int *returnValue){
-    if(findPipe(pipeId)){
+    if(!findPipe(pipeId)){
         *returnValue = -1;
         return;
     }
-
     pipe[pipeId].numProcess++;
     *returnValue = pipeId;
     return;
@@ -54,25 +52,26 @@ void pipeCreate(int *returnValue){
 }
 
 
-
 void pipeClose(int pipeId, int *returnValue){
-
     if(!findPipe(pipeId)){
         *returnValue = -1;
         return;
     }
-    pipe[pipeId].numProcess--;
 
+    pipe[pipeId].numProcess--;
     if(pipe[pipeId].numProcess > 0){
         *returnValue = 0;
         return;
     }
 
-    removeSem(pipe[pipeId].lockS, returnValue);
+    *returnValue = removePipe(pipeId);
+    return;
+    /*removeSem(pipe[pipeId].lockS, returnValue);
+    free(pipe[pipeId].data);
     pipe[pipeId].state = FREE;
     numOfPipe--;
-    return;
-
+    *returnValue = 1;
+    return;*/
 }
 
 
@@ -101,7 +100,7 @@ void pipeWrite(int pipeId, char *addr, int n, int *returnValue){
     return;
 }
 
-void pipeRead(int pipeId, char * addr, int n, int *returnValue){
+void pipeRead(int pipeId, char *addr, int n, int *returnValue){
     if(!findPipe(pipeId)){
         *returnValue = -1;
         return;
@@ -184,10 +183,16 @@ char* createSemName(int pipeId){
 }
 
 int newPipe(int pipeId){
-    createSem(createSemName(pipeId), 1, &pipe[pipeId].lockS);
+    char *pipeSemName = createSemName(pipeId);
+    createSem(pipeSemName, 1, &pipe[pipeId].lockS);
+    free(pipeSemName);
     if(pipe[pipeId].lockS == -1)
         return 0;
-
+    
+    pipe[pipeId].data = malloc(sizeof(char)*BUFF_SIZE);
+    if(pipe[pipeId].data == NULL)
+        return 0;
+    
     pipe[pipeId].processToRead = 0;
     pipe[pipeId].processToWrite= 0;
     pipe[pipeId].state = IN_USE;
@@ -196,6 +201,16 @@ int newPipe(int pipeId){
     pipe[pipeId].numProcess = 0;
     numOfPipe++;
     return 1;
+}
+
+int removePipe(int pipeId){
+    int result;
+    removeSem(pipe[pipeId].lockS, &result);
+    free(pipe[pipeId].data);
+    pipe[pipeId].state = FREE;
+    numOfPipe--;
+
+    return result;
 }
 
 int findPipe(int pipeId){

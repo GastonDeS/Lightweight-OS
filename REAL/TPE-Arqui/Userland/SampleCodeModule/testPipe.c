@@ -11,26 +11,28 @@ void escritor(int argc, char** argv) {
     int result;
     for(int i=0; i< N; i++){
         sem_wait(semId);
-        pipeWriteSyscall(id,argv[2],10,&result);
+        pipeWrite(id,argv[2],10);
         sem_post(semId);
         yieldSyscall();
     }
     sem_close(semId);
-    pipeCloseSyscall(id, &result);
+    pipeClose(id);
     myExit();
 }
 
 void lector(int  argc, char **argv) {
     int id = atoi(argv[1]);
-    char *pipeBuff = malloc(sizeof(char)*124);
+    char *pipeBuff = malloc(sizeof(char)*15);
     int result;
     pipeOpen(id);
     for(int i=0; i<N*3; i++){
-        pipeReadSyscall(id,pipeBuff,15,&result);
+        pipeRead(id,pipeBuff,15);
         print(STDOUT, pipeBuff);
         print(STDOUT, " ");
     }
-    pipeCloseSyscall(id, &result);
+    pipeClose(id);
+    
+    //free(pipeBuff);
     myExit();
 }
 

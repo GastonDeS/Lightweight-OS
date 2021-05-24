@@ -6,9 +6,13 @@
         "functional": "c",
         "locale": "c",
         "stdint.h": "c",
+<<<<<<< HEAD
         "unistd.h": "c",
         "stdlib.h": "c",
         "loop.h": "c",
         "processcom.h": "c"
+=======
+        "typeinfo": "c"
+>>>>>>> 1c426d7738c6519c56d97cf00d3280b420d908f7
     }
 }
