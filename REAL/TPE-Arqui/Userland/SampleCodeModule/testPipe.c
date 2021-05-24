@@ -2,7 +2,7 @@
 
 #include <testPipe.h>
 
-int N = 2;
+int N = 100;
 
 void escritor(int argc, char** argv) {
     int id = atoi(argv[1]);
@@ -27,12 +27,10 @@ void lector(int  argc, char **argv) {
     char *pipeBuff = malloc(sizeof(char)*124);
     int result;
     pipeCreateSyscall(id, NULL);
-    for(int i=0; i<6; i++){
+    for(int i=0; i<N*3; i++){
         pipeReadSyscall(id,pipeBuff,15,&result);
         print(pipeBuff);
         print(" ");
-        for (int i = 0; i < 100000000; i++) {}
-        
     }
     pipeCloseSyscall(id, &result);
     myExit();
