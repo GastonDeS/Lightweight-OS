@@ -127,6 +127,9 @@ void addProcess(uint64_t *currentProces, char *name,uint64_t *pid,uint64_t *ep,i
 
 void exceptionProcess(){
     freeList(processList);
+    freeList(fgBlocked);
+    fgBlocked = NULL; 
+    current = NULL;
     processList = NULL;
 }
 
