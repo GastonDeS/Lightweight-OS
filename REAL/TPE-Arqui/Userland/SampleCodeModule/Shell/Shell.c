@@ -202,7 +202,7 @@ static int isCommand(char * name){
 }
 
 void keyPressedShell(char ch) {
-  if (ch) {
+  if (ch>0) {
     if (ch == '\n' && lineCursor > 0) {
       buffShell[shellCursor] = 0;
       if (lineCursor!=shellCursor)
