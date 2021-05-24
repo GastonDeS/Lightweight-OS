@@ -19,6 +19,7 @@
 #include <test_process.h>
 #include <testPipe.h>
 #include <phylo.h>
+#include <processCom.h>
 
 void inforeg(char args[MAX_ARGS][MAX_ARG_LEN]){
   clearScreen(0);
@@ -179,7 +180,7 @@ void test_no_syncS(char args[MAX_ARGS][MAX_ARG_LEN]){
 }
 
 void mem(char args[MAX_ARGS][MAX_ARG_LEN]){
-  int strSize = 1024; //lo que ntra en una pantalla
+  int strSize = 2048; //lo que ntra en una pantalla
   char str[strSize];
   printMemSyscall(str, strSize);
   print("%s", str);
@@ -238,4 +239,31 @@ void pipe(char args[MAX_ARGS][MAX_ARG_LEN]){
   char str[strSize];
   printPipeSyscall(str, strSize);
   print("%s", str);
+}
+
+void cat(char args[MAX_ARGS][MAX_ARG_LEN]) {
+  print("\n");
+  char *argv[2];
+  argv[0] = "cat";
+	argv[1] = NULL;
+  createProcess(interCat, argv);
+  return;
+}
+
+void wc(char args[MAX_ARGS][MAX_ARG_LEN]) {
+  print("\n");
+  char *argv[2];
+  argv[0] = "wc";
+	argv[1] = NULL;
+  createProcess(interWc, argv);
+  return;
+}
+
+void filter(char args[MAX_ARGS][MAX_ARG_LEN]) {
+  print("\n");
+  char *argv[2];
+  argv[0] = "filter";
+	argv[1] = NULL;
+  createProcess(interFilter, argv);
+  return;
 }

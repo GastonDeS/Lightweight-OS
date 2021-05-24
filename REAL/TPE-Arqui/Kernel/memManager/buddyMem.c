@@ -1,12 +1,11 @@
 #ifdef MM_BUDDY
-#include "buddyMem.h"
 #include "MemMang.h"
 //para test con el malloc del heap hacer free a final
 
 #define HEAP_SIZE 1024*1024*4  // 4Mb entran aprox 1024 4kb sirve masomenos 
 
 //void *myStartMemory = (void *)0x600000;
-void *myStartMemory = 0x600000;
+void *myStartMemory =(void *) 0x600000;
 
 /*
 ** Basado en:
@@ -28,12 +27,46 @@ http://brokenthorn.com/Resources/OSDev26.html
    ya que debemos sumarle el tamaño del header. De esta manera, no se busca en la liste del
    nivel 3, sino en la de nivel 2.
 */
+#define HEAP_SIZE 1024*1024*4 
+
+typedef struct BUDDY_HEADER {
+   struct BUDDY_HEADER* next;
+   uint64_t level;
+}BUDDY_HEADER;
+
+#define BUDDY_HEADER_SIZE sizeof(BUDDY_HEADER)
+
+#define BLOCKS_PER_LEVEL(level) (int64_t)(1<<(level))
+#define SIZE_OF_BLOCKS_AT_LEVEL(level) (uint64_t)(1 << (MAX_BLOCK_SIZE_LOG2 - level))
+
+#define MIN_BLOCK_SIZE_LOG2 5
+#define MIN_BLOCK_SIZE ((uint64_t) 1<<MIN_BLOCK_SIZE_LOG2)
+
+#define MAX_BLOCK_SIZE_LOG2 22
+#define MAX_BLOCK_SIZE ((uint64_t)1<<MAX_BLOCK_SIZE_LOG2)
+
+
+#define LEVELS (MAX_BLOCK_SIZE_LOG2 - MIN_BLOCK_SIZE_LOG2)+1
+
+#define INDEX_OF_POINTER_IN_LEVEL(pointer,level,memory_start) ((pointer)-(memory_start)) / (SIZE_OF_BLOCKS_AT_LEVEL(level))
 
 
 
 static BUDDY_HEADER *blocks[LEVELS]; //arreglo de listas de punteros a Bloques
 static char initialized = 0;
 static BUDDY_HEADER *occupiedBlocks;
+
+void *recursiveMalloc(uint64_t level);
+void recursiveFree(void *header, uint64_t level);
+void insertBlock(void *header, uint64_t level);
+void removeBlock(void * header, uint64_t level);
+void *removeHeadBlock(uint64_t level);
+int64_t getLevel(uint64_t size);
+uint64_t getBlockNumber(BUDDY_HEADER *header);
+void initialize();
+void addOccupied(void *header, uint64_t level);
+int8_t removeOccupied(void *header);
+uint64_t remainingBytes();
 
 void *malloc(uint64_t size){
   //en el primer  hay que inicializarlo
@@ -280,43 +313,72 @@ void *realloc(void *ptr, uint64_t newSize){
     return newPtr;
 }
 
-void reallocSyscall(void *ptr, uint64_t newSize, void* result){
+void reallocSyscall(void *ptr, uint64_t newSize, void** result){
     result = realloc(ptr, newSize);
 }
 
-void mallocSyscall(uint64_t size, void* result){
-    result = malloc(size);
+void mallocSyscall(uint64_t size, void** result){
+    (*result) = malloc(size);
 }
 
-//imprimo la lista de bloques restante tambien
-//checkeo si los bloques que quedan mas los dados equivalen al total
-int checkMemory() {
-   for (int i = 0; i < LEVELS; i ++) {
-      BUDDY_HEADER * block = (BUDDY_HEADER *) blocks[i];
-      while(block != NULL) {
-         block = block ->next;
-      }
-   }
-   uint64_t bytesLeft = 0;
-   for (int i = 0; i < LEVELS; i++) {
-      BUDDY_HEADER *block = blocks[i];
-      while (block != NULL) {
-         bytesLeft += SIZE_OF_BLOCKS_AT_LEVEL(i);
-         block = block->next;
-      }
-   }
-   BUDDY_HEADER *ocBlock = occupiedBlocks;
-   while (ocBlock !=NULL) {
-      bytesLeft += SIZE_OF_BLOCKS_AT_LEVEL(ocBlock->level);
-      ocBlock = ocBlock->next;
-   }
-   if (bytesLeft != MAX_BLOCK_SIZE) {
-     return 0;
-   }
-   return 1;   
+//debugger
+void checkMemory(struct checkMemdata* data){
+   return;
 }
 
 void printMem(char *str, int strSize){
-   return;
+   int i=0, buffDim=10, currentLevel = 0, aux;
+   strSize--; //reservo el lugar del \n
+   char auxBuf[buffDim];
+   char *title = "\n\nFREE BLOCKS";
+   char *title1 = "\n#level  #index   size       addr\n";
+   char *title2 = "\nUSED BLOCKS\n";
+   strcat2(str, &i, strSize, title);
+   strcat2(str, &i, strSize, title1);
+
+   for (currentLevel; currentLevel < LEVELS; currentLevel++) {
+      BUDDY_HEADER * block = (BUDDY_HEADER *) blocks[currentLevel];
+      while(block != NULL) {
+         aux = intToString(currentLevel, auxBuf);
+         strcat2(str, &i, strSize, auxBuf);
+         addSpace(str, &i, strSize, 8-aux);
+
+         aux = intToString(INDEX_OF_POINTER_IN_LEVEL((void *)block ,currentLevel, myStartMemory), auxBuf);
+         strcat2(str, &i, strSize, auxBuf);
+         addSpace(str, &i, strSize, 9-aux);
+
+         aux = intToString(SIZE_OF_BLOCKS_AT_LEVEL(currentLevel), auxBuf);
+         strcat2(str, &i, strSize, auxBuf);
+         addSpace(str, &i, strSize, 11-aux);
+
+         aux = intToBase((unsigned long long)(block), 16, auxBuf);
+         strcat2(str, &i, strSize, auxBuf);
+         strcat2(str, &i, strSize, "\n");
+         
+         block = block ->next;
+      }
+   }
+   strcat2(str, &i, strSize, title2);
+   strcat2(str, &i, strSize, title1);
+   BUDDY_HEADER *ocBlock = (BUDDY_HEADER *)occupiedBlocks;
+   while(ocBlock != NULL) {
+      aux = intToString(ocBlock ->level, auxBuf);
+      strcat2(str, &i, strSize, auxBuf);
+      addSpace(str, &i, strSize, 8-aux);
+
+      aux = intToString(INDEX_OF_POINTER_IN_LEVEL((void *)ocBlock ,currentLevel, myStartMemory), auxBuf);
+      strcat2(str, &i, strSize, auxBuf);
+      addSpace(str, &i, strSize, 9-aux);
+
+      aux = intToString(SIZE_OF_BLOCKS_AT_LEVEL(ocBlock->level), auxBuf);
+      strcat2(str, &i, strSize, auxBuf);
+      addSpace(str, &i, strSize, 11-aux);
+
+      aux = intToBase((unsigned long long)(ocBlock), 16, auxBuf);
+      strcat2(str, &i, strSize, auxBuf);
+      strcat2(str, &i, strSize, "\n");
+         
+      ocBlock = ocBlock ->next;
+   }
 }
 #endif
