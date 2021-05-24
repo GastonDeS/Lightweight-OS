@@ -30,7 +30,7 @@ int pipeRead(int pipeId, char * addr, int n){
     return result;
 }
 
-int printPipe(){
+void printPipe(){
     int strSize = 1024;
     char str[strSize];
     printPipeSyscall(str, strSize);

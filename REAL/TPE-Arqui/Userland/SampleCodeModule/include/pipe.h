@@ -14,6 +14,6 @@ int pipeWrite(int pipeId, char * addr, int n);
 
 int pipeRead(int pipeId, char * addr, int n);
 
-int printPipe();
+void printPipe();
 
 #endif
