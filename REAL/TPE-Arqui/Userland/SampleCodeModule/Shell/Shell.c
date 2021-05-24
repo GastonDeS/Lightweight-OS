@@ -33,8 +33,8 @@ void updateShell(char * buff, int dim);
 
 
 static int iSbuiltIn(char *name);
-static int isPipe(char *name);
-
+int isPipe(char *name);
+int isAmpersand(char * name);
 
 char noBuiltIn[][MAX_ARG_LEN]={"loop","filter","wc","cat","phylo"};
 char commandsNames[][MAX_ARG_LEN]={"pipe","loop","filter","wc","cat","phylo","test_pipe","test_no_sync","test_mem","memCheck","mem","sem","test_processes","test_prio","test_sync","nice","unblockPid","blockPid","ps","getPid","kill","time","help","inforeg","chess","printmem","divZero","invalidOPCode","clear","echo"};
@@ -137,9 +137,14 @@ static void exeCommand(char * line){
   }
 
   if(!isPipe(commandArgs[1])){
-    if( iSbuiltIn(commandArgs[0])){
+    if(!iSbuiltIn(commandArgs[0])){
+      if (isAmpersand(commandArgs[1])) {
+        intToString(0, argv[1]);
+      }
+      else {
+        intToString(1, argv[1]);
+      }
       intToString(-1, argv[0]);
-      intToString(1, argv[1]);
       run[i](argv);
       return;
     }
@@ -178,8 +183,12 @@ static int iSbuiltIn(char *name){
     return 1;
 }
 
-static int isPipe(char *name){
+int isPipe(char *name){
   return name[0] == '|';
+}
+
+int isAmpersand(char *name) {
+  return name[0] == '&';
 }
 
 //devuelve que comando es si no esta  devuelve -1
