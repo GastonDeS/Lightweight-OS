@@ -271,5 +271,5 @@ void loopS(char args[MAX_ARGS][MAX_ARG_LEN]) {
   char *argv[2];
   argv[0] = "loop";
 	argv[1] = NULL;
-  createProcess(loop,1, argv);
+  createProcess(loop,0, argv);
 }

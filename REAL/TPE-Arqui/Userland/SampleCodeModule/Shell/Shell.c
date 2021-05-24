@@ -15,6 +15,8 @@
 #include <unistd.h>
 
 static char lines[TOTAL_LINES][MAX_LINE_LENGTH];// = {0};
+static char buffShell[MAX_LINE_LENGTH];
+static int shellCursor = 0;
 static uint8_t lineCursor = 0;
 static uint8_t currentLineNumber = 0;
 
@@ -123,7 +125,10 @@ static void exeCommand(char * line){
     } else {
       print(" - INVALID COMMAND");
     }
-
+  for (; shellCursor >= 0 ; shellCursor--) {
+    buffShell[shellCursor] = 0;
+  }
+  
 }
 
 //devuelve que comando es si no esta  devuelve -1
@@ -139,8 +144,11 @@ static int isCommand(char * name){
 void keyPressedShell(char ch) {
   if (ch) {
     if (ch == '\n' && lineCursor > 0) {
-      exeCommand(lines[(currentLineNumber)%(TOTAL_LINES-1)]);
+      print("\n%s",buffShell);
+      exeCommand(buffShell);
+       //lines[(currentLineNumber)%(TOTAL_LINES-1)
     }
+    buffShell[shellCursor++] = ch;
     putChar(ch);
   }
 }
