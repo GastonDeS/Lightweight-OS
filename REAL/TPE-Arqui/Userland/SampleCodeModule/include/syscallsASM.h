@@ -34,7 +34,7 @@ void yieldSyscall();
 void printSemSyscall(char *str, int strSize);
 void printMemSyscall(char *str, int strSize);
 void checkMemorySyscall(struct checkMemdata* data);
-void pipeSyscall(int *returnValue);
+void pipeCreateSyscall(int pipeId, int *returnValue);
 void pipeCloseSyscall(int pipeId, int *returnValue);
 void pipeWriteSyscall(int pipeId, char * addr, int n, int *returnValue);
 void pipeReadSyscall(int pipeId, char * addr, int n, int *returnValue);

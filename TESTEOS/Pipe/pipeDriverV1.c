@@ -1,10 +1,11 @@
-#include <pipeDriver.h>
-
 typedef struct elem{
     char free;
     char data[PIPE_SIZE];
     int readIndex;
     int writeIndex;
+
+    char processToRead;
+    char processToWrite;
 
     int semLock;
     listADT processToRead;
@@ -21,6 +22,7 @@ char* createSemName(int pipeId);
 int addMeToList(listADT list);
 int removeMeOfList(listADT list);
 int popList(listADT list);
+int blockMe();
 
 void pipe(int *returnValue){
     
@@ -42,6 +44,8 @@ void pipe(int *returnValue){
     pipeVec[pipeId].processToRead = newList(sizeof(int),NULL);
         
     //lo demas
+    pipeVec[pipeId].processToRead = 0;
+    pipeVec[pipeId].processToWrite= 0; 
     pipeVec[pipeId].free = 0;
     pipeVec[pipeId].readIndex = 0;
     pipeVec[pipeId].writeIndex = 0;    
@@ -54,6 +58,12 @@ void pipe(int *returnValue){
 
 
 void pipeClose(int pipeId, int *returnValue){
+
+    //solo elimina el pipe si no hay procesos bloquedos
+    if(pipeVec[pipeId].processToRead  || pipeVec[pipeId].processToWrite){
+        *returnValue  = 0;
+        return; 
+    }
 
     pipeVec[pipeId].free = 1;
     removeSem(pipeVec[pipeId].semLock, NULL);
@@ -75,16 +85,29 @@ void pipeWrite(int pipeId, char *addr, int n, int *returnValue){
         return;
     } 
 
-    addMeToList(pipeVec[pipeId].processToWrite);
+    pipeVec[pipeId].processToWrite = 1;
     semWait(pipeVec[pipeId].semLock, returnValue);
     if(*returnValue == -1)
         return;
-    removeMeOfList(pipeVec[pipeId].processToWrite);
+    pipeVec[pipeId].processToWrite = 0;
     
     for(int i = 0; i < n; i++){
         
         while(pipeVec[pipeId].writeIndex == pipeVec[pipeId].readIndex + PIPE_SIZE){
-            if(!isEmpty(pipeVec[pipeId].processToRead)){
+            if(pipeVec[pipeId].processToRead){
+                semPost(pipeVec[pipeId].semLock, returnValue);
+                pipeVec[pipeId].processToWrite = 1;
+                semWait(pipeVec[pipeId].semLock, returnValue);
+                if(*returnValue == -1)
+                    return;
+                pipeVec[pipeId].processToWrite = 0;
+            }else{
+                addMeToList(pipeVec[pipeId].processToWrite);
+                semPost(pipeVec[pipeId].semLock, returnValue);
+                blockMe();
+            }
+        
+            /*if(!isEmpty(pipeVec[pipeId].processToRead)){
                 int readerPid = popList(pipeVec[pipeId].processToRead);
                 semPostPid(pipeVec[pipeId].semLock, readerPid);
 
@@ -97,7 +120,7 @@ void pipeWrite(int pipeId, char *addr, int n, int *returnValue){
             }else{
                 semPost(pipeVec[pipeId].semLock, returnValue);
                 return;
-            }
+            }*/
         }
         pipeVec[pipeId].data[ pipeVec[pipeId].writeIndex++ % PIPE_SIZE ] = addr[i]; 
     }
@@ -112,23 +135,23 @@ void pipeRead(int pipeId, char * addr, int n, int *returnValue){
         return;
     } 
 
-    addMeToList(pipeVec[pipeId].processToRead);
+    addMeToList(pipeVec[pipeId].)
     semWait(pipeVec[pipeId].semLock, returnValue);
     if(*returnValue == -1)
         return;
-    removeMeOfList(pipeVec[pipeId].processToRead);
+    pipeVec[pipeId].processToRead = 0;
     
     for(int i = 0; i < n && pipeVec[pipeId].data[ pipeVec[pipeId].readIndex % PIPE_SIZE ]; i++){
        while( pipeVec[pipeId].readIndex == pipeVec[pipeId].writeIndex){
-            if(!isEmpty(pipeVec[pipeId].processToWrite)){
-                int readerPid = popList(pipeVec[pipeId].processToWrite);
-                semPostPid(pipeVec[pipeId].semLock, readerPid);
-
-                addMeToList(pipeVec[pipeId].processToRead);
-                semWait(pipeVec[pipeId].semLock, returnValue);
-                if(*returnValue == -1)
-                    return;
-                removeMeOfList(pipeVec[pipeId].processToRead);
+            if(pipeVec[pipeId].processToWrite || !isEmpty(pipeVec[pipeId].processToWrite)){
+                
+                //int readerPid = popList(pipeVec[pipeId].processToWrite);
+                //semPostPid(pipeVec[pipeId].semLock, readerPid);
+                //addMeToList(pipeVec[pipeId].processToRead);
+                //semWait(pipeVec[pipeId].semLock, returnValue);
+                //if(*returnValue == -1)
+                //    return;
+                //removeMeOfList(pipeVec[pipeId].processToRead);
             }else{
                 semPost(pipeVec[pipeId].semLock, returnValue);
                 return;
@@ -184,6 +207,21 @@ int popList(listADT list) {
     int pid = *((int*) check);
     free(check);
     return pid;
+}
+
+int unlockProcess(int pid){
+
+
+}
+
+int blockMe(){
+    //obtengo el pid del proceso actual
+    uint64_t pid;
+    getPid(&pid);
+
+    int ans;
+    blockProcess(pid, &ans); 
+    return ans;
 }
 
 int removeMeOfList(listADT list){

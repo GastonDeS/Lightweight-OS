@@ -2,6 +2,7 @@
 #define STDLIB_H
 
 #include <stddef.h>
+#include <MemMang.h>
 
 int atoi(char * str);
 int intToString(int num, char * buffer);

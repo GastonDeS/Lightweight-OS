@@ -11,6 +11,6 @@
 
 void testPipe();
 
-#define SEM_NAME "semPipe"
+#define SEM_NAME "testP"
 
 #endif

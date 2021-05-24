@@ -1,130 +1,133 @@
+  
 #include <pipeDriver.h>
 
+#define IN_USE 1
+#define FREE 0
+
 typedef struct elem{
-    char free;
-    char data[PIPE_SIZE];
+    char state;
+    char data[BUFF_SIZE];
     int readIndex;
     int writeIndex;
-    int semLock;
     char processToRead;
     char processToWrite;
+    int lockS;
+    int numProcess;
 }elem;
 
-elem pipeVec[BLOCK];
-int pipeVecSize = 0; //cantidad de elemntos
+elem pipe[PIPE_MAX];
+int numOfPipe = 0; //cantidad de elemntos
+
 
 //private
-int findSpaces();
-char* creatSemName(int pipeId);
+int newPipe(int pipeId);
+int findPipe(int pipeId);
+int findFreePipe(int pipeId);
+char* createSemName(int pipeId);
 
-void pipe(int *returnValue){
-    int pipeId = findSpaces();
-    if(pipeId == -1 && pipeVecSize+1 < BLOCK ){
-        pipeId = pipeVecSize; //uso un nuevo espacio
-    }else{
-        *returnValue = -1;
-        return; //no hay mas epsacios
-    }
-    pipeId = pipeVecSize;
-    createSem(creatSemName(pipeId), 1, &pipeVec[pipeId].semLock);
-    if(pipeVec[pipeId].semLock == -1){
-        *returnValue =  -1;
+
+void pipeCreate(int pipeId, int *returnValue){
+    if(findPipe(pipeId)){
+        pipe[pipeId].numProcess++;
+        *returnValue = pipeId;
         return;
     }
-    pipeVec[pipeId].processToRead = 0;
-    pipeVec[pipeId].processToWrite= 0; 
-    pipeVec[pipeId].free = 0;
-    pipeVec[pipeId].readIndex = 0;
-    pipeVec[pipeId].writeIndex = 0;      
-    pipeVecSize++;
+
+    pipeId = findFreePipe(pipeId);
+    if(pipeId == -1){
+        *returnValue = -1;
+        return;
+    }
+    
+    if(!newPipe(pipeId)){
+        *returnValue = -1;
+    }
+        
     *returnValue =  pipeId;
     return;
-
 }
+
 
 
 void pipeClose(int pipeId, int *returnValue){
-    //solo elimina el pipe si se puede eliminar el sem
-    pipeVec[pipeId].free = 1;
-    removeSem(pipeVec[pipeId].semLock, returnValue);
-    if(*returnValue)//si se elimino el sem returnValue=1, sino =0
-        pipeVecSize--;
-    return;
-}
-
-void pipeWrite(int pipeId, char *addr, int n, int *returnValue){
-    if(pipeId < 0  || pipeId > pipeVecSize){
+    
+    if(!findPipe(pipeId)){
         *returnValue = -1;
         return;
-    } 
+    }
+    pipe[pipeId].numProcess--;
 
-    pipeVec[pipeId].processToWrite = 1;
-    semWait(pipeVec[pipeId].semLock, returnValue);
-    if(*returnValue == -1)
+    if(pipe[pipeId].numProcess > 0){
+        *returnValue = 0;
         return;
-    pipeVec[pipeId].processToWrite = 0;
+    }
+
+    removeSem(pipe[pipeId].lockS, returnValue);
+    pipe[pipeId].state = FREE;
+    numOfPipe--;
+    return;
+
+}
+
+
+void pipeWrite(int pipeId, char *addr, int n, int *returnValue){
+    if(!findPipe(pipeId)){
+        *returnValue = -1;
+        return;
+    }
+
+    pipe[pipeId].processToWrite = 1;
+    semWait(pipe[pipeId].lockS, returnValue);
+    pipe[pipeId].processToWrite = 0;
     
     for(int i = 0; i < n ; i++){
-        
-        while(pipeVec[pipeId].writeIndex == pipeVec[pipeId].readIndex + PIPE_SIZE){
-            //if(pipeVec[pipeId].processToRead){
-                semPost(pipeVec[pipeId].semLock, returnValue);
-                pipeVec[pipeId].processToWrite = 1;
-                semWait(pipeVec[pipeId].semLock, returnValue);
-                if(*returnValue == -1)
-                    return;
-                pipeVec[pipeId].processToWrite = 0;
-            //}
-            //else{
-            //    semPost(pipeVec[pipeId].semLock, returnValue);
-            //    return;
-            //}
+        while(pipe[pipeId].writeIndex == pipe[pipeId].readIndex + BUFF_SIZE){
+            semPost(pipe[pipeId].lockS, returnValue);
+            pipe[pipeId].processToWrite = 1;
+            yield();
+            semWait(pipe[pipeId].lockS, returnValue);
+            pipe[pipeId].processToWrite = 0;
+
+
         }
-        pipeVec[pipeId].data[ pipeVec[pipeId].writeIndex++ % PIPE_SIZE ] = addr[i];
+        pipe[pipeId].data[ pipe[pipeId].writeIndex++ % BUFF_SIZE ] = addr[i];
         if(addr[i] == '\0') break;
     }
-    pipeVec[pipeId].data[ pipeVec[pipeId].writeIndex % PIPE_SIZE ] = 0;
-    semPost(pipeVec[pipeId].semLock, returnValue);
+    pipe[pipeId].data[ pipe[pipeId].writeIndex % BUFF_SIZE ] = 0;
+    semPost(pipe[pipeId].lockS, returnValue);
     return;
 }
 
 void pipeRead(int pipeId, char * addr, int n, int *returnValue){
-    if(pipeId < 0  || pipeId > pipeVecSize){
+    if(!findPipe(pipeId)){
         *returnValue = -1;
         return;
-    } 
+    }
 
-    pipeVec[pipeId].processToRead = 1;
-    semWait(pipeVec[pipeId].semLock, returnValue);
-    if(*returnValue == -1)
-        return;
-    pipeVec[pipeId].processToRead = 0;
+    pipe[pipeId].processToRead = 1;
+    semWait(pipe[pipeId].lockS, returnValue);
+    pipe[pipeId].processToRead = 0;
+
     int i;
     for( i = 0; i < n ; i++){
-       while( pipeVec[pipeId].readIndex == pipeVec[pipeId].writeIndex){
-            //if(pipeVec[pipeId].processToWrite){
-                semPost(pipeVec[pipeId].semLock, returnValue);
-                pipeVec[pipeId].processToRead = 1;
-                semWait(pipeVec[pipeId].semLock, returnValue);
-                pipeVec[pipeId].processToRead = 0;
-            //}
-            //else{
-            //    agrego a la lista de bloqueados para leer
-            //    semPost(pipeVec[pipeId].semLock, returnValue);
-            //          
-            //    return;
-            //}
+       while( pipe[pipeId].readIndex == pipe[pipeId].writeIndex){
+                semPost(pipe[pipeId].lockS, returnValue);
+                pipe[pipeId].processToRead = 1;
+                yield();
+                semWait(pipe[pipeId].lockS, returnValue);
+                pipe[pipeId].processToRead = 0;
         }
-        addr[i] = pipeVec[pipeId].data[ pipeVec[pipeId].readIndex++ % PIPE_SIZE ]; 
-        if( pipeVec[pipeId].data[ pipeVec[pipeId].readIndex % PIPE_SIZE ] == '\0') break;
+        addr[i] = pipe[pipeId].data[ pipe[pipeId].readIndex++ % BUFF_SIZE ]; 
+        if( pipe[pipeId].data[ pipe[pipeId].readIndex % BUFF_SIZE ] == '\0') break;
     }
-    if (i != n) pipeVec[pipeId].readIndex++;
-    semPost(pipeVec[pipeId].semLock, returnValue);
+    if (i != n) pipe[pipeId].readIndex++;
+    semPost(pipe[pipeId].lockS, returnValue);
     return;
 }
 
+
 void printPipe(char *str, int strSize){
-    int i=0, j=0, buffDim=10, aux;
+    int i=0, j=0, k=0, buffDim=10, aux;
     strSize--; //reservo el lugar del \n
     char *title = "\npipeId  rIndex    WIndex    rBLock  wBlock\n";
     char auxBuf[buffDim];
@@ -132,27 +135,30 @@ void printPipe(char *str, int strSize){
     //armado del title
     strcat2(str, &i, strSize, title);
 
-    for(j=0 ;j < pipeVecSize && i < strSize; j++){
+    for(j=0 ;j < numOfPipe && i < strSize; j++, k++){
+
+        //salteo los pipes libres
+        while(k < PIPE_MAX && pipe[k].state == FREE){k++;}
     
-        aux = intToString(j, auxBuf);
+        aux = intToString(k, auxBuf);
         strcat2(str, &i, strSize, auxBuf);
         addSpace(str, &i, strSize, 8-aux);
 
-        aux = intToString(pipeVec[j].readIndex, auxBuf);
+        aux = intToString(pipe[k].readIndex, auxBuf);
         strcat2(str, &i, strSize, auxBuf);
         addSpace(str, &i, strSize, 10-aux);
 
-        aux = intToString(pipeVec[j].writeIndex, auxBuf);
+        aux = intToString(pipe[k].writeIndex, auxBuf);
         strcat2(str, &i, strSize, auxBuf);
         addSpace(str, &i, strSize, 10-aux);
 
-        if(pipeVec[j].processToRead)
+        if(pipe[k].processToRead)
            aux = strcat2(str, &i, strSize, "yes");
         else
             aux = strcat2(str, &i, strSize, "no");
         addSpace(str, &i, strSize, 8-aux);
 
-        if(pipeVec[j].processToWrite)
+        if(pipe[k].processToWrite)
            aux = strcat2(str, &i, strSize, "yes");
         else
             aux = strcat2(str, &i, strSize, "no");
@@ -161,23 +167,41 @@ void printPipe(char *str, int strSize){
     str[i] = '\0';
 }
 
-//private:
-int findSpaces(){
-    int i;
-    for (i = 0; i < pipeVecSize; i++){
-        if(pipeVec[i].free)
-            return i;
-    }
-    return -1;
-}
 
-char* creatSemName(int pipeId){
+//private:
+char* createSemName(int pipeId){
     int i=0, strSize=10;
     char *str = (char*) malloc(sizeof(char)*strSize);
     char auxBuff[2];
-    char* title = "semP:";
+    char* title = "pipeS:";
     strcat2(str, &i, strSize, title);
     intToString(pipeId, auxBuff);
     strcat2(str, &i, strSize, auxBuff);
     return str;
 } 
+
+int newPipe(int pipeId){
+    createSem(createSemName(pipeId), 1, &pipe[pipeId].lockS);
+    if(pipe[pipeId].lockS == -1)
+        return 0;
+    
+    pipe[pipeId].processToRead = 0;
+    pipe[pipeId].processToWrite= 0; 
+    pipe[pipeId].state = IN_USE;
+    pipe[pipeId].readIndex = 0;
+    pipe[pipeId].writeIndex = 0;      
+    numOfPipe++;
+    return 1;
+}
+
+int findPipe(int pipeId){
+    return pipe[pipeId].state == IN_USE;
+}
+
+int findFreePipe(int pipeId){
+    for (int i = 0; i < PIPE_MAX; i++){
+        if(pipe[i].state == FREE)
+            return i;
+    }
+    return -1;
+}

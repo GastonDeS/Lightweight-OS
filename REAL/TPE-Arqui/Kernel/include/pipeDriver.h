@@ -5,11 +5,12 @@
 #include <stdlib.h>
 #include <sem.h>
 
-#define BLOCK 100 //cantidad de semaforos permitdos
-#define PIPE_SIZE 256 //cantidad de semaforos permitdos
+
+#define PIPE_MAX 20   //cantidad de semaforos permitdos
+#define BUFF_SIZE 256  //cantidad de semaforos permitdos
 
 //devuelve el pipeId y si hubo un error devuelve -1
-void pipe(int *returnValue);
+void pipeCreate(int pipeId, int *returnValue);
 
 //si borro la el pipe devuelve 1 sino 0
 //solo eliminar el pipe si pudo eliminar el sem
