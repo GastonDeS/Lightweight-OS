@@ -37,7 +37,7 @@ void phylosofer(int argc, char **argv){
     int semId = sem_open(SEMPHYLO,1);
     int phyloN = atoi(argv[1]);
 
-    while (phylosofers[phyloN].isAlive!=DEAD) {
+    while (phylosofers[phyloN].isAlive!=DEAD || phylosofers[phyloN].state==EATING) {
         sem_wait(semId);
         if (phylosofers[phyloN].state) {
             leaveFork(phyloN);
@@ -63,7 +63,7 @@ void phyloMaster(int argc, char **argv) {
     sem_post(semId);
     
     admin(semId);
-
+    sem_close(semId);
     myExit();
 }
 
@@ -77,13 +77,13 @@ void admin(int semId) {
                 return;
             } else if (buf[0] == 'a' ){
                 if (phylosofersCount<MAXPHYLOS) {
-                    print("A new phylosophers join. You have %d philosophers now\n",phylosofersCount);
+                    print("A new phylosophers join. You have %d philosophers now\n",phylosofersCount+1);
                     addPhylosopher();
                 } else 
                     print("The table is full you can\'t add more than %d philosophers.\n",MAXPHYLOS);
             } else if (buf[0] == 'r' ) {
                 if (phylosofersCount>MINPHYLOS) {
-                    print("You remove one philosopher of the problem\n");
+                    print("You remove one philosopher of the problem, %d left\n",phylosofersCount-1);
                     removePhylosofer();
                 } else {
                     print("Can't leave only one philosopher he will be sad\n");
@@ -114,7 +114,6 @@ void closePhylosfers(int semId){
     for (int i = 0; i < phylosofersCount; i++) {
         phylosofers[i].isAlive = DEAD;
     }
-    sem_close(semId);
 }
 
 void addPhylosopher() {

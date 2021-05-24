@@ -274,7 +274,7 @@ void phyloS(char args[MAX_ARGS][MAX_ARG_LEN]){
   print("\n");
   char *argv[3];
 	argv[0] = "phyloMaster";
-  argv[2] = args[0];
-	argv[3] = NULL;
+  argv[1] = args[0];
+	argv[2] = NULL;
   createProcess(phyloMaster, atoi(args[1]),argv);
 }
