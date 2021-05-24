@@ -98,7 +98,7 @@ void syscallHandler(registerStruct * registers) {
     break;
 
     case 14: //execv
-    createProcess((void (*)()) registers->rdi, (char **) registers->rsi,(uint64_t *) registers->rdx);
+    createProcess((void (*)()) registers->rdi, (int) registers->rsi, (char **) registers->rdx,(uint64_t *) registers->rcx);
     break;
 
     case 15:

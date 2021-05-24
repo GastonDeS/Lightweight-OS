@@ -16,7 +16,7 @@ void getMemSyscall(uint64_t, uint64_t*);
 void readErrorSyscall(uint64_t *);
 void getTicksSyscall(uint64_t *);
 void sbrkSyscall(uint64_t size, void** result);
-void createProcessSyscall(void (*)(),char **,uint64_t *newPid);
+void createProcessSyscall(void (*)(),int fg,char **,uint64_t *newPid);
 void endProcessSyscall(uint64_t pid, int *result);
 void getPidSyscall(uint64_t *);
 void psSyscall(char *);

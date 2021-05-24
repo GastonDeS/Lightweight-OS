@@ -7,14 +7,14 @@ uint64_t countArgv(char **argv);
 char** copyArgv(int argc, char **argv);
 
 
-void createProcess(void (*function)(),char **argv,uint64_t *pid){
+void createProcess(void (*function)(),int foreground,char **argv,uint64_t *pid){
     void *answer;
     answer = malloc(PAGESIZE);
     answer+=PAGESIZE;
     uint64_t argc = countArgv(argv);
     char **newArgv = copyArgv(argc, argv);
     uint64_t *SP = (uint64_t *) createProcessInt(function,answer,argc,newArgv);
-    addProcess(SP,argv[0], pid, answer - PAGESIZE, argc, newArgv);
+    addProcess(SP,newArgv[0], pid, answer - PAGESIZE,foreground, argc, newArgv);
 }
 
 

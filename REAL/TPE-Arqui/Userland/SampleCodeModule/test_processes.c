@@ -14,7 +14,7 @@ uint64_t my_create_processProcess(char * name){
   char *args[2];
   args[0] = name;
   args[1] = NULL;
-  return createProcess(endless_loopProcess,args);
+  return createProcess(endless_loopProcess,0,args);
 }
 
 uint64_t my_killProcess(uint64_t pid){

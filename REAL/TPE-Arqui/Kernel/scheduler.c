@@ -29,6 +29,7 @@ int equals(void* n1, void* n2){
 }
 
 listADT processList = NULL;
+listADT fgBlocked = NULL; 
 
 process *current = NULL;
 
@@ -90,17 +91,22 @@ void yield(){
     _hlt();
 }
 
-void addProcess(uint64_t *currentProces, char *name,uint64_t *pid,uint64_t *ep, uint64_t argc, char** argv){
+void addProcess(uint64_t *currentProces, char *name,uint64_t *pid,uint64_t *ep,int foreground, uint64_t argc, char** argv){
     if(processList == NULL){
         processList = newList(sizeof(process),equals);
         if(processList == NULL)
+            return;
+    }
+    if (fgBlocked == NULL) {
+        fgBlocked = newList(sizeof(int),NULL);
+        if (fgBlocked == NULL)
             return;
     }
     process newProcess;
     newProcess.SP = currentProces;
     newProcess.pid = size(processList);
     newProcess.state = READY;
-    newProcess.foreground = 0;
+    newProcess.foreground = foreground;
     newProcess.BP = currentProces;
     newProcess.EP = ep;
     newProcess.name = name;
@@ -109,6 +115,12 @@ void addProcess(uint64_t *currentProces, char *name,uint64_t *pid,uint64_t *ep, 
     newProcess.argv = argv;
     
     insertBeforeNext(processList, &newProcess);
+    //BLOCK al foreground anterior
+    if ( current != NULL && newProcess.foreground) {
+        insert(fgBlocked,(void*)&(current->pid));
+        int aux;
+        blockProcess(current->pid,&aux);
+    }
     (*pid) = newProcess.pid;
     return;
 }
@@ -130,10 +142,16 @@ void endProcessWrapper(uint64_t pid, int *result){
     if(pid > 0){
         process aux;
         aux.pid = pid;
+        process aux2 = *(process*)getElem(processList,&aux);
+        if (aux2.foreground==1) {
+            void* check= pop(fgBlocked);
+            int pidA = *((int*) check);
+            int res;
+            unlockProcess(pidA,&res);
+        }
         if (deleteElem(processList, &aux,freeEP)){
             (*result) = 0;
-            if (current->pid == pid) 
-                yield();
+            if (current->pid == pid) yield();
             return;
         }
     }

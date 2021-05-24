@@ -7,8 +7,9 @@
 #include <mySemaphore.h>
 #include <syscallsASM.h>
 
-#define INITIALPHYLOFERS 5
+#define INITIALPHYLOSOFERS 5
 #define MAXPHYLOS 10
+#define MINPHYLOS 2
 #define SEMPHYLO "phylos"
 
 void phyloMaster(int argc, char **argv);

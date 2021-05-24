@@ -19,6 +19,8 @@
 #include <test_process.h>
 #include <testPipe.h>
 #include <phylo.h>
+#include <processCom.h>
+#include <loop.h>
 
 void inforeg(char args[MAX_ARGS][MAX_ARG_LEN]){
   clearScreen(0);
@@ -85,7 +87,7 @@ void test_pipe(char args[MAX_ARGS][MAX_ARG_LEN]){
   char *argv[2];
 	argv[0] = "writer";
 	argv[1] = NULL;
-  createProcess(testPipe,argv);
+  createProcess(testPipe,1,argv);
 }
 
 void phyloS(char args[MAX_ARGS][MAX_ARG_LEN]){
@@ -93,7 +95,7 @@ void phyloS(char args[MAX_ARGS][MAX_ARG_LEN]){
   char *argv[2];
 	argv[0] = "phyloMaster";
 	argv[1] = NULL;
-  createProcess(phyloMaster,argv);
+  createProcess(phyloMaster,1,argv);
 }
 
 void getPid(char args[MAX_ARGS][MAX_ARG_LEN]) {
@@ -118,7 +120,7 @@ void chessS(char args[MAX_ARGS][MAX_ARG_LEN]){
   char *argv[2];
 	argv[0] = "chess";
 	argv[1] = NULL;
-  createProcess(chess,argv);
+  createProcess(chess,1,argv);
 }
 
 void killS(char args[MAX_ARGS][MAX_ARG_LEN]) {
@@ -179,7 +181,7 @@ void test_no_syncS(char args[MAX_ARGS][MAX_ARG_LEN]){
 }
 
 void mem(char args[MAX_ARGS][MAX_ARG_LEN]){
-  int strSize = 1024; //lo que ntra en una pantalla
+  int strSize = 2048; //lo que ntra en una pantalla
   char str[strSize];
   printMemSyscall(str, strSize);
   print("%s", str);
@@ -222,7 +224,7 @@ void prioTester(char args[MAX_ARGS][MAX_ARG_LEN]) {
   char *arg[2];
   arg[0] = "test_prio";
   arg[1] = NULL;
-  createProcess(test_prio,arg);
+  createProcess(test_prio,1,arg);
 }
 
 void ProcessTester(char args[MAX_ARGS][MAX_ARG_LEN]) {
@@ -230,7 +232,7 @@ void ProcessTester(char args[MAX_ARGS][MAX_ARG_LEN]) {
   char *arg[2];
   arg[0] = "test_processes";
   arg[1] = NULL;
-  createProcess(test_processes,arg);
+  createProcess(test_processes,1,arg);
 }
 
 void pipe(char args[MAX_ARGS][MAX_ARG_LEN]){
@@ -238,4 +240,39 @@ void pipe(char args[MAX_ARGS][MAX_ARG_LEN]){
   char str[strSize];
   printPipeSyscall(str, strSize);
   print("%s", str);
+}
+
+void catS(char args[MAX_ARGS][MAX_ARG_LEN]) {
+  print("\n");
+  char *argv[2];
+  argv[0] = "cat";
+	argv[1] = NULL;
+  createProcess(cat,1, argv);
+  return;
+}
+
+void wcS(char args[MAX_ARGS][MAX_ARG_LEN]) {
+  print("\n");
+  char *argv[2];
+  argv[0] = "wc";
+	argv[1] = NULL;
+  createProcess(wc,1, argv);
+  return;
+}
+
+void filterS(char args[MAX_ARGS][MAX_ARG_LEN]) {
+  print("\n");
+  char *argv[2];
+  argv[0] = "filter";
+	argv[1] = NULL;
+  createProcess(filter,1, argv);
+  return;
+}
+
+void loopS(char args[MAX_ARGS][MAX_ARG_LEN]) {
+  print("\n");
+  char *argv[2];
+  argv[0] = "loop";
+	argv[1] = NULL;
+  createProcess(loop,1, argv);
 }

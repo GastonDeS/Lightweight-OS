@@ -12,7 +12,7 @@ uint64_t my_create_process(char * name){ // devuelve el pid nuevo
   char *args[2];
   args[0] = name;
   args[1] = NULL;
-  return createProcess(endless_loop,args);;
+  return createProcess(endless_loop,0,args);;
 }
 
 uint64_t my_nice(uint64_t pid, uint64_t newPrio){

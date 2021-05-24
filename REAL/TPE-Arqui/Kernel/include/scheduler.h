@@ -7,7 +7,7 @@
 
 void yield();
 uint64_t * scheduler(uint64_t *currentProces);
-void addProcess(uint64_t *currentProces, char *name,uint64_t *pid,uint64_t *ep, uint64_t argc, char** argv);
+void addProcess(uint64_t *currentProces, char *name,uint64_t *pid,uint64_t *ep,int foreground, uint64_t argc, char** argv);
 void endProcessWrapper(uint64_t pid, int *result);
 void getPid(uint64_t *pid);
 void listAllProcess(char **ProcessList);
