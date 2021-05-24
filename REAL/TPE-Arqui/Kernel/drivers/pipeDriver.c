@@ -22,7 +22,7 @@ int numOfPipe = 0; //cantidad de elemntos
 //private
 int newPipe(int pipeId);
 int findPipe(int pipeId);
-int findFreePipe(int pipeId);
+int findFreePipe();
 char* createSemName(int pipeId);
 
 
@@ -39,7 +39,7 @@ void pipeOpen(int pipeId, int *returnValue){
 
 void pipeCreate(int *returnValue){
     
-    int pipeId = findFreePipe(pipeId);
+    int pipeId = findFreePipe();
     if(pipeId == -1){
         *returnValue = -1;
         return;
@@ -202,7 +202,7 @@ int findPipe(int pipeId){
     return pipe[pipeId].state == IN_USE;
 }
 
-int findFreePipe(int pipeId){
+int findFreePipe(){
     for (int i = 0; i < PIPE_MAX; i++){
         if(pipe[i].state == FREE)
             return i;
