@@ -90,14 +90,6 @@ void test_pipe(char args[MAX_ARGS][MAX_ARG_LEN]){
   createProcess(testPipe,1,argv);
 }
 
-void phyloS(char args[MAX_ARGS][MAX_ARG_LEN]){
-  print("\n");
-  char *argv[2];
-	argv[0] = "phyloMaster";
-	argv[1] = NULL;
-  createProcess(phyloMaster,1,argv);
-}
-
 void getPid(char args[MAX_ARGS][MAX_ARG_LEN]) {
   putChar('\n');
   uint64_t pid ;
@@ -130,7 +122,7 @@ void killS(char args[MAX_ARGS][MAX_ARG_LEN]) {
   kill(pid);
 }
 
-void time(char args[MAX_ARGS][MAX_ARG_LEN]) { 
+void time(char args[MAX_ARGS][MAX_ARG_LEN]) {
   putChar('\n');
   print("%d:%d:%d %d/%d/%d", readHours(), readMinutes(), readSeconds(), readDays(), readMonths(), readYear());
 }
@@ -241,35 +233,48 @@ void pipe(char args[MAX_ARGS][MAX_ARG_LEN]){
 
 void catS(char args[MAX_ARGS][MAX_ARG_LEN]) {
   print("\n");
-  char *argv[2];
+  char *argv[3];
   argv[0] = "cat";
-	argv[1] = NULL;
-  createProcess(cat,1, argv);
+  argv[1] = args[0];
+	argv[2] = NULL;
+  createProcess(cat,atoi(args[1]), argv);
   return;
 }
 
 void wcS(char args[MAX_ARGS][MAX_ARG_LEN]) {
   print("\n");
-  char *argv[2];
+  char *argv[3];
   argv[0] = "wc";
-	argv[1] = NULL;
-  createProcess(wc,1, argv);
+  argv[1] = args[0];
+	argv[2] = NULL;
+  createProcess(wc,atoi(args[1]), argv);
   return;
 }
 
 void filterS(char args[MAX_ARGS][MAX_ARG_LEN]) {
   print("\n");
-  char *argv[2];
+  char *argv[3];
   argv[0] = "filter";
-	argv[1] = NULL;
-  createProcess(filter,1, argv);
+  argv[1] = args[0];
+	argv[2] = NULL;
+  createProcess(filter,atoi(args[1]), argv);
   return;
 }
 
 void loopS(char args[MAX_ARGS][MAX_ARG_LEN]) {
   print("\n");
-  char *argv[2];
+  char *argv[3];
   argv[0] = "loop";
-	argv[1] = NULL;
-  createProcess(loop,0, argv);
+  argv[1] = args[0];
+	argv[2] = NULL;
+  createProcess(loop, atoi(args[1]), argv);
+}
+
+void phyloS(char args[MAX_ARGS][MAX_ARG_LEN]){
+  print("\n");
+  char *argv[3];
+	argv[0] = "phyloMaster";
+  argv[2] = args[0];
+	argv[3] = NULL;
+  createProcess(phyloMaster,atoi(args[1]),argv);
 }

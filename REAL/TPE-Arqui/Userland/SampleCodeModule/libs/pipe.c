@@ -1,9 +1,14 @@
 #include <pipe.h>
 
-
 int pipeOpen(int pipeId){
     int result = 0;
-    pipeCreateSyscall(pipeId, &result);
+    pipeOpenSyscall(pipeId, &result);
+    return result;
+}
+
+int pipeCreate(){
+    int result = 0;
+    pipeCreateSyscall(&result);
     return result;
 }
 

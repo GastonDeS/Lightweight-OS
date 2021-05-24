@@ -7,7 +7,7 @@ int N = 10;
 void escritor(int argc, char** argv) {
     int id = atoi(argv[1]);
     int semId = sem_open(SEM_NAME,1);
-    pipeCreateSyscall(id, NULL);
+    pipeOpen(id);
     int result;
     for(int i=0; i< N; i++){
         sem_wait(semId);
@@ -24,7 +24,7 @@ void lector(int  argc, char **argv) {
     int id = atoi(argv[1]);
     char *pipeBuff = malloc(sizeof(char)*124);
     int result;
-    pipeCreateSyscall(id, NULL);
+    pipeOpen(id);
     for(int i=0; i<N*3; i++){
         pipeReadSyscall(id,pipeBuff,15,&result);
         print(pipeBuff);
@@ -35,7 +35,8 @@ void lector(int  argc, char **argv) {
 }
 
 void testPipe() {
-    int pipeID = 0;
+    int pipeID = pipeCreate();
+
     char num[10];
     intToString(pipeID,num);
     char *args[4];
@@ -61,6 +62,6 @@ void testPipe() {
     args3[2] = "escritor3";
     args3[3] = NULL;
     createProcess(escritor,0,args3);
-    myExit();
 
+    myExit();
 }

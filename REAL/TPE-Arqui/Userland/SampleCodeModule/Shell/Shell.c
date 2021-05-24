@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <timer.h>
 #include <unistd.h>
+#include <pipe.h>
 
 static char lines[TOTAL_LINES][MAX_LINE_LENGTH];// = {0};
 static char buffShell[MAX_LINE_LENGTH];
@@ -31,9 +32,15 @@ static int isCommand(char * name);
 void updateShell(char * buff, int dim);
 
 
+static int iSbuiltIn(char *name);
+static int isPipe(char *name);
+
+
+char noBuiltIn[][MAX_ARG_LEN]={"loop","filter","wc","cat","phylo"};
 char commandsNames[][MAX_ARG_LEN]={"pipe","loop","filter","wc","cat","phylo","test_pipe","test_no_sync","test_mem","memCheck","mem","sem","test_processes","test_prio","test_sync","nice","unblockPid","blockPid","ps","getPid","kill","time","help","inforeg","chess","printmem","divZero","invalidOPCode","clear","echo"};
 void  (* run[])(char args[MAX_ARGS][MAX_ARG_LEN]) = {pipe,loopS,filterS,wcS,catS,phyloS,test_pipe,test_no_syncS,test_memS,memCheck,mem,sem,ProcessTester,prioTester,test_syncS,niceS,unblockPid,blockPid,ps,getPid,killS,time,help,inforeg,chessS,printmem,divZero,invalidOPCode,clear,echo};
 static int totalCommands = 30;
+static int totalNoBuiltIn = 5;
 
 void init_shell(int argc, char **argv) {
   setConsoleUpdateFunction(updateShell);
@@ -90,7 +97,7 @@ static void clearShellLine(uint8_t line) {
   for (int i = 0; i < MAX_LINE_LENGTH; i++) {
     lines[line%(TOTAL_LINES-1)][i] = 0;
   }
-} 
+}
 
 static void drawBottomLine() {
   clearScreenLine(0);
@@ -104,6 +111,7 @@ static void clearScreenLine(uint8_t line){
 
 //ejecutaria los commands
 static void exeCommand(char * line){
+  char argv[10][32] = {{0}};
   char commandArgs[10][32] = {{0}}; //Maximo 10 argumentos de 32 caracteres c/u
   int foundArgs = 0;
   int index = 0;
@@ -119,16 +127,60 @@ static void exeCommand(char * line){
     index++;
   }
 
-    int i = isCommand(commandArgs[0]);
-    if (i >= 0) {
-      run[i](commandArgs);
-    } else {
-      print(" - INVALID COMMAND");
+  int i = isCommand(commandArgs[0]);
+  if(i == -1){
+    print(" - INVALID COMMAND");
+    return;
+  }
+
+  if(!isPipe(commandArgs[1])){
+    if( iSbuiltIn(commandArgs[0])){
+      intToString(-1, argv[0]);
+      intToString(1, argv[1]);
+      run[i](argv);
+      return;
     }
   for (; shellCursor >= 0 ; shellCursor--) {
     buffShell[shellCursor] = 0;
   }
-  
+
+    run[i](commandArgs);
+    return;
+  }
+
+  if( iSbuiltIn(commandArgs[0]) || iSbuiltIn(commandArgs[2])){
+    print(" - INVALID PIPE ");
+    return;
+  }
+
+  int pipeId = pipeCreate();
+  if(pipeId == -1){
+    print(" - PIPE ERROR ");
+    return;
+  }
+
+  //i = isCommand(commandArgs[0]);
+  intToString(pipeId, argv[0]);
+  intToString(1, argv[1]);
+  run[i](argv);
+
+  i = isCommand(commandArgs[2]);
+  intToString(0, argv[1]);
+  run[i](argv);
+
+}
+
+
+static int iSbuiltIn(char *name){
+    for (int i = 0; i < totalNoBuiltIn; i++) {
+      if( strcmp(noBuiltIn[i], name) == 0)
+          return 0;
+    }
+    return 1;
+}
+
+static int isPipe(char *name){
+  return name[0] == '|';
 }
 
 //devuelve que comando es si no esta  devuelve -1

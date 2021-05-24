@@ -170,9 +170,8 @@ void syscallHandler(registerStruct * registers) {
     break;
 
     case 32:
-    pipeCreate((int) registers->rdi,(int*) registers->rsi);
+    pipeCreate((int*) registers->rsi);
     break;
-
 
     case 33:
     pipeClose((int) registers->rdi,(int*) registers->rsi);
@@ -188,6 +187,10 @@ void syscallHandler(registerStruct * registers) {
 
     case 36:
     printPipe((char*) registers->rdi, (int) registers->rsi);
+    break;
+
+    case 37:
+    pipeOpen((int) registers->rdi, (int*) registers->rsi);
     break;
   }
 }

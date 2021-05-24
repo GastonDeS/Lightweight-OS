@@ -6,6 +6,8 @@
 
 int pipeOpen(int pipeId);
 
+int pipeCreate();
+
 int pipeClose(int pipeId);
 
 int pipeWrite(int pipeId, char * addr, int n);
