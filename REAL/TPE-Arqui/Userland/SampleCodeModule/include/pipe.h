@@ -17,4 +17,16 @@ int pipeRead(int pipeId, char * addr, int n);
 
 void printPipe();
 
+int isPipe(int pipeId);
+
+void pipesOpen(int pipeId1, int pipeId2);
+
+void pipesClose(int pipeId1, int pipeId2);
+
+int isPipe(int pipeId);
+
+void pipesOpen(int pipeId1, int pipeId2);
+
+void pipesClose(int pipeId1, int pipeId2);
+
 #endif
