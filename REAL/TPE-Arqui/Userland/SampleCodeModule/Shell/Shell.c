@@ -204,6 +204,7 @@ static int isCommand(char * name){
 void keyPressedShell(char ch) {
   if (ch) {
     if (ch == '\n' && lineCursor > 0) {
+      buffShell[shellCursor] = 0;
       if (lineCursor!=shellCursor)
         print("\n%s",buffShell);
       exeCommand(buffShell);
