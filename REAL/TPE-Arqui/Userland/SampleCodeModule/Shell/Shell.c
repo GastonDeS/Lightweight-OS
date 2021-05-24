@@ -126,6 +126,9 @@ static void exeCommand(char * line){
     }
     index++;
   }
+  for (; shellCursor >= 0 ; shellCursor--) {
+    buffShell[shellCursor] = 0;
+  }
 
   int i = isCommand(commandArgs[0]);
   if(i == -1){
@@ -140,9 +143,6 @@ static void exeCommand(char * line){
       run[i](argv);
       return;
     }
-  for (; shellCursor >= 0 ; shellCursor--) {
-    buffShell[shellCursor] = 0;
-  }
 
     run[i](commandArgs);
     return;
@@ -167,7 +167,6 @@ static void exeCommand(char * line){
   i = isCommand(commandArgs[2]);
   intToString(0, argv[1]);
   run[i](argv);
-
 }
 
 
