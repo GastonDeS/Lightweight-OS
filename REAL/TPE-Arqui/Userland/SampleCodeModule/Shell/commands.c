@@ -63,13 +63,19 @@ void printmem(char args[MAX_ARGS][MAX_ARG_LEN]) {
 void blockPid(char args[MAX_ARGS][MAX_ARG_LEN]){
   putChar(STDOUT, '\n');
   int pid = atoi(args[1]);
-  block(pid);
+  if (block(pid)==0) 
+    print(STDOUT,"Process %s blocked",args[1]);
+  else
+    print(STDOUT,"Process %s cannot be blocked",args[1]);
 }
 
 void unblockPid(char args[MAX_ARGS][MAX_ARG_LEN]){
   putChar(STDOUT, '\n');
   int pid = atoi(args[1]);
-  unblock(pid);
+  if (unblock(pid)==0) 
+    print(STDOUT,"Process %s unblocked",args[1]);
+  else
+    print(STDOUT,"Process %s cannot be unblocked",args[1]);
 }
 
 void ps(char args[MAX_ARGS][MAX_ARG_LEN]) {
@@ -97,10 +103,17 @@ void getPid(char args[MAX_ARGS][MAX_ARG_LEN]) {
 }
 
 void niceS(char args[MAX_ARGS][MAX_ARG_LEN]){
+  putChar(STDOUT, '\n');
   int pid = atoi(args[1]);
   int priority = atoi(args[2]);
-  nice(pid, priority);
-  print(STDOUT, "pid %s priority set to: %s", args[1], args[2]);
+  if (priority<=0 || pid < 0) {
+    print(STDOUT, "Invalid pid/priority");
+    return;
+  }
+  if (nice(pid, priority)>0)
+    print(STDOUT, "pid %s priority set to: %s", args[1], args[2]);
+  else 
+    print(STDOUT, "Cannot set pid %s to priority = %s", args[1], args[2]);
 }
 
 void sem(char args[MAX_ARGS][MAX_ARG_LEN]){
@@ -116,9 +129,11 @@ void chessS(char args[MAX_ARGS][MAX_ARG_LEN]){
 
 void killS(char args[MAX_ARGS][MAX_ARG_LEN]) {
   putChar(STDOUT, '\n');
-  print(STDOUT, "kill pid: %s",args[1]);
   int pid = atoi(args[1]);
-  kill(pid);
+  if (kill(pid)==0)
+    print(STDOUT, "Kill pid: %s",args[1]);
+  else
+    print(STDOUT, "Pid %s cannot be killed",args[1]);
 }
 
 void time(char args[MAX_ARGS][MAX_ARG_LEN]) {
@@ -181,27 +196,28 @@ void mem(char args[MAX_ARGS][MAX_ARG_LEN]){
 void memCheck(char args[MAX_ARGS][MAX_ARG_LEN]){
   struct checkMemdata data = {0};
   checkMemorySyscall(&data);
-  print(STDOUT, "\n");
-  print(STDOUT, "* Cantidad de bloques: %d\n", data.numeberOfBlocks);
-  print(STDOUT, "    |-> Usados: %d\n", data.blockused);
-  print(STDOUT, "    |-> Libre: %d\n", data.freeBlock);
-  print(STDOUT, "\n");
-  print(STDOUT, "* Cantidad total de bytes usados: %d Bytes\n", data.totalBytes);
-  print(STDOUT, "    |-> Usados en infoBLocks: %d Bytes\n", data.bytesUsedByBLocks);
-  print(STDOUT, "    |-> Usados por el usuario: %d Bytes\n", data.bytesUsedByUser);
-  print(STDOUT, "    |-> No utilizados: %d Bytes\n", data.unusedBytes);
-  print(STDOUT, "    |-> Usados para alinear: %d Bytes\n", data.bytesUsedByAlign);
-  print(STDOUT, "    |-> Bytes perdidos: %d Bytes\n", data.lostBytes);
-  print(STDOUT, "\n");
-  print(STDOUT, "* Numero de errores: %d\n", data.numError);
-  print(STDOUT, "    |-> Numero de bloque con error A: %d\n", data.freeBlocksTogether);
-  print(STDOUT, "    |-> Numero de bloque con error B: %d\n", data.noAlignBlocks);
-  print(STDOUT, "    |-> Numero de bloque con error C: %d\n", data.curNextPrev);
+  print("\n");
+  print("* Number of blocks: %d\n", data.numeberOfBlocks);
+  print("    |-> In use: %d\n", data.blockused);
+  print("    |-> Free: %d\n", data.freeBlock);
+  print("\n");
+  print("* Total number of bytes ordered: %d Bytes\n", data.totalBytes);
+  print("    |-> Used in infoBLox: %d Bytes\n", data.bytesUsedByBLocks);
+  print("    |-> Used by the user: %d Bytes\n", data.bytesUsedByUser);
+  print("    |-> Free: %d Bytes\n", data.freeBytes);
+  print("    |-> Lost: %d Bytes\n", data.lostBytes);
+  print("\n");
+  print("* Total errors: %d\n", data.numError);
+  print("    |-> Number of errors A: %d\n", data.freeBlocksTogether);
+  print("    |-> Number of errors B: %d\n", data.curNextPrev);
+  print("    |-> Number of errors C: %d\n", data.memError);
+  print("    |-> Number of errors D: %d\n", data.bytesError);
   /*
   Errores:
     A: dos bloque libreos juntos
-    B: bloque no alineado a 8 bytes
-    C: que el previous no apunte el bloque anterior
+    B: que el previous no apunte el bloque anterior (current != current->next->previous))
+    C: si memoryDim - firstInfoBlock != data->totalBytes
+    D: sumatoria de los bytes no es igual a total bytes
   */
 
 }
@@ -240,11 +256,6 @@ void catS(char args[MAX_ARGS][MAX_ARG_LEN]) {
   createProcess(cat,atoi(args[0]), argv);
   return;
 }
-
-//odas las que terminan con S (ejempo wcS) no son built in
-//reciben en args[0] si son foreground o background,
-//en args[1] el pipePid de entrada
-//en args[2] el pipePid de salida
 
 void wcS(char args[MAX_ARGS][MAX_ARG_LEN]) {
   print(STDOUT, "\n");

@@ -6,9 +6,7 @@ https://mgarciaisaia.github.io/tutorial-c/blog/2014/12/26/un-tutorial-rapido-par
 **   -> Si el tamaño del bloque devuelto por findFreeBlock() supera en MAX_DIFF_SIZE al tamaño neceasrio entonces se divide el bolque
 **   ->pasar int free a char free
      ->mejora de diseño en la funciones de debugger y se le agrego agumento que
-permite imprimir falta:
-        ->que la memoria este alineada
-        ->
+
 */
 #include "MemMang.h"
 

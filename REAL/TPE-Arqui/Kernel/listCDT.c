@@ -65,7 +65,6 @@ int insertBeforeNext(listADT list, void* element){
 }
 
 int addToTheEnd(listADT list, void* element){
-
     if(isEmpty(list))//es el primer elemento
         return insert(list, element);
 
@@ -160,7 +159,6 @@ int delete(listADT list, void* element){
 
 
 int deleteElem(listADT list, void* element, void (*deleteElemValue)(void* value)){
-
     nodeP current = list->first;
     if(!search(&current, element, list->equals))
         return 0;
@@ -172,7 +170,6 @@ int deleteElem(listADT list, void* element, void (*deleteElemValue)(void* value)
 }
 
 void removeNode(nodeP current, listADT list, void (*deleteElemValue)(void* value)){
-
     if(current == NULL)
         return;
 
