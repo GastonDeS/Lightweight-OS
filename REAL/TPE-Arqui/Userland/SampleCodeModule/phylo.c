@@ -57,6 +57,7 @@ void phylosofer(int argc, char **argv){
 void phyloMaster(int argc, char **argv) {
     phylosofersCount = INITIALPHYLOSOFERS;
     int semId = sem_open(SEMPHYLO,1);
+    printInst();
     sem_wait(semId);
     addPhylos();
     sem_post(semId);
@@ -74,13 +75,29 @@ void admin(int semId) {
             if (buf[0]=='e'){
                 closePhylosfers(semId);
                 return;
-            } else if (buf[0] == 'a' && phylosofersCount<MAXPHYLOS ){
-                addPhylosopher();
-            } else if (buf[0] == 'r' && phylosofersCount>MINPHYLOS) {
-                removePhylosofer();
+            } else if (buf[0] == 'a' ){
+                if (phylosofersCount<MAXPHYLOS) {
+                    print("A new phylosophers join. You have %d philosophers now\n",phylosofersCount);
+                    addPhylosopher();
+                } else 
+                    print("The table is full you can\'t add more than %d philosophers.\n",MAXPHYLOS);
+            } else if (buf[0] == 'r' ) {
+                if (phylosofersCount>MINPHYLOS) {
+                    print("You remove one philosopher of the problem\n");
+                    removePhylosofer();
+                } else {
+                    print("Can't leave only one philosopher he will be sad\n");
+                }
             }
         }
     }
+}
+
+void printInst() {
+    print("Welcome to the philosophers pronlem!\n");
+    print("You are going to start with %d philosophers\nYou have a maximun of %d philosophers and have a minimun of %d\n", phylosofersCount, MAXPHYLOS, MINPHYLOS);
+    print("You can add then with \'a\', delete them with \'d\' and exit with \'e\'.\n");
+    print("The state of each will be displayed as E (EATING) or . (HUNGRY)\n");
 }
 
 void printPhylos(){ 
