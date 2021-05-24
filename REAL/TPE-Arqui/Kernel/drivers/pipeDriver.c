@@ -87,13 +87,10 @@ void pipeWrite(int pipeId, char *addr, int n, int *returnValue){
             yield();
             semWait(pipe[pipeId].lockS, returnValue);
             pipe[pipeId].processToWrite = 0;
-
-
         }
         pipe[pipeId].data[ pipe[pipeId].writeIndex++ % BUFF_SIZE ] = addr[i];
         if(addr[i] == '\0') break;
     }
-    pipe[pipeId].data[ pipe[pipeId].writeIndex % BUFF_SIZE ] = 0;
     semPost(pipe[pipeId].lockS, returnValue);
     return;
 }
@@ -118,9 +115,8 @@ void pipeRead(int pipeId, char * addr, int n, int *returnValue){
                 pipe[pipeId].processToRead = 0;
         }
         addr[i] = pipe[pipeId].data[ pipe[pipeId].readIndex++ % BUFF_SIZE ]; 
-        if( pipe[pipeId].data[ pipe[pipeId].readIndex % BUFF_SIZE ] == '\0') break;
+        if(addr[i] == '\0') break;
     }
-    if (i != n) pipe[pipeId].readIndex++;
     semPost(pipe[pipeId].lockS, returnValue);
     return;
 }

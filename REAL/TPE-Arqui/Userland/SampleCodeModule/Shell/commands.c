@@ -236,10 +236,7 @@ void ProcessTester(char args[MAX_ARGS][MAX_ARG_LEN]) {
 }
 
 void pipe(char args[MAX_ARGS][MAX_ARG_LEN]){
-  int strSize = 1024;
-  char str[strSize];
-  printPipeSyscall(str, strSize);
-  print("%s", str);
+  printPipe();
 }
 
 void catS(char args[MAX_ARGS][MAX_ARG_LEN]) {
