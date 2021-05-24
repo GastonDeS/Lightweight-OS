@@ -130,8 +130,9 @@ static void exeCommand(char * line){
   for (; shellCursor >= 0 ; shellCursor--) {
     buffShell[shellCursor] = 0;
   }
-
+  shellCursor = 0;
   int i = isCommand(commandArgs[0]);
+  int j = isCommand(commandArgs[2]);
   if(i == -1){
     print(STDOUT, " - INVALID COMMAND");
     return;
@@ -155,6 +156,11 @@ static void exeCommand(char * line){
     return;
   }
 
+  if(j == -1){
+    print(STDOUT, " - INVALID COMMAND");
+    return;
+  }
+
   if( iSbuiltIn(commandArgs[0]) || iSbuiltIn(commandArgs[2])){
     print(STDOUT, " - INVALID PIPE ");
     return;
@@ -168,18 +174,16 @@ static void exeCommand(char * line){
 
   char argv1[10][32] = {{0}};
 
-  int aux = i;
-  i = isCommand(commandArgs[2]);
   intToString(0, argv1[0]); //background
   intToString(pipeId, argv1[1]); //pipe de input
   intToString(-1, argv1[2]); //stdout
-  run[i](argv1);
+  run[j](argv1);
 
   //i = isCommand(commandArgs[0]);
   intToString(1, argv[0]);
   intToString(-1, argv[1]); //stdin
   intToString(pipeId, argv[2]); //pipe de output
-  run[aux](argv);
+  run[i](argv);
 }
 
 
