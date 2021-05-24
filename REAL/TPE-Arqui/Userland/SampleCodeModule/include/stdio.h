@@ -9,8 +9,8 @@
 int readKeyboard(char * buffer, int size);
 void setConsoleUpdateFunction(void (*f)(char *, int));
 char getChar();
-void print(char *, ...);
-void putChar(char ch);
-void scan(char *);
+void print(int pipeW, char *, ...);
+void putChar(int pipeW, char ch);
+void scan(int pipeR, int pipeW, char * buff);
 uint64_t getError();
 #endif

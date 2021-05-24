@@ -3,6 +3,7 @@
 
 #include <syscallsASM.h>
 #include <stdio.h>
+#include <stddef.h>
 
 
 //crea un nuevo semaforo

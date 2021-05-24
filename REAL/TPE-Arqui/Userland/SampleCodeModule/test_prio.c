@@ -44,7 +44,7 @@ void endless_loop(){
   uint64_t pid = my_getpid();
 
   while(1){
-    print("%d ",pid);
+    print(STDOUT, "%d ",pid);
     bussy_wait(MINOR_WAIT);
   }
 }
@@ -59,7 +59,7 @@ void test_prio(){
     pids[i] = my_create_process("endless_loop");
 
   bussy_wait(WAIT);
-  print("\nCHANGING PRIORITIES...\n");
+  print(STDOUT, "\nCHANGING PRIORITIES...\n");
 
   for(i = 0; i < TOTAL_PROCESSES; i++){
     switch (i % 3){
@@ -76,12 +76,12 @@ void test_prio(){
   }
 
   bussy_wait(WAIT);
-  print("\nBLOCKING...\n");
+  print(STDOUT, "\nBLOCKING...\n");
 
   for(i = 0; i < TOTAL_PROCESSES; i++)
     my_block(pids[i]);
 
-  print("CHANGING PRIORITIES WHILE BLOCKED...\n");
+  print(STDOUT, "CHANGING PRIORITIES WHILE BLOCKED...\n");
   for(i = 0; i < TOTAL_PROCESSES; i++){
     switch (i % 3){
       case 0:
@@ -96,13 +96,13 @@ void test_prio(){
     }
   }
 
-  print("UNBLOCKING...\n");
+  print(STDOUT, "UNBLOCKING...\n");
 
   for(i = 0; i < TOTAL_PROCESSES; i++)
     my_unblock(pids[i]);
 
   bussy_wait(WAIT);
-  print("\nKILLING...\n");
+  print(STDOUT, "\nKILLING...\n");
   for(i = 0; i < TOTAL_PROCESSES; i++)
     my_kill(pids[i]);
   myExit();

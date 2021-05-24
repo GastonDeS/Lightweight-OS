@@ -16,9 +16,7 @@ void escritor(int argc, char** argv) {
         yieldSyscall();
     }
     sem_close(semId);
-    if(pipeClose(id)){
-        print("\n cerror el sem del pipe %s \n",argv[0] );
-    }
+    pipeClose(id);
     myExit();
 }
 
@@ -29,12 +27,11 @@ void lector(int  argc, char **argv) {
     pipeOpen(id);
     for(int i=0; i<N*3; i++){
         pipeRead(id,pipeBuff,15);
-        print(pipeBuff);
-        print(" ");
+        print(STDOUT, pipeBuff);
+        print(STDOUT, " ");
     }
-    if(pipeClose(id)){
-        print("\n cerror el sem del pipe %s \n",argv[0] );
-    }
+    pipeClose(id);
+    
     //free(pipeBuff);
     myExit();
 }

@@ -127,6 +127,9 @@ void addProcess(uint64_t *currentProces, char *name,uint64_t *pid,uint64_t *ep,i
 
 void exceptionProcess(){
     freeList(processList);
+    freeList(fgBlocked);
+    fgBlocked = NULL; 
+    current = NULL;
     processList = NULL;
 }
 
@@ -214,7 +217,10 @@ void strcat(char *dest, char *src, int *j) {
 }
 
 void blockProcess(uint64_t pid, int *result){
-    // if (pid==0) return;
+    if ( pid==0 && !size(fgBlocked) ) {
+        (*result) = -1;
+        return;
+    }
     if (changeState(pid, BLOCKED)) {
         (*result) = 0;
         if (current->pid == pid) 
