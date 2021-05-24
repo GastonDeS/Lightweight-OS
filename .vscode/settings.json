@@ -5,6 +5,10 @@
         "__locale": "c",
         "functional": "c",
         "locale": "c",
-        "stdint.h": "c"
+        "stdint.h": "c",
+        "unistd.h": "c",
+        "stdlib.h": "c",
+        "loop.h": "c",
+        "processcom.h": "c"
     }
 }
