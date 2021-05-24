@@ -1,14 +1,18 @@
 #include <sem.h>
 
+#define IN_USE 1
+#define FREE 0
+
 typedef struct elem{
+    char state;
     int value;
     int numProcess;
     char *name;
     listADT blockedProcesses;
 }elem;
 
-elem semVec[BLOCK];
-int semVecSize = 0; //cantidad de elemntos
+elem sem[SEM_MAX]; 
+int numOfSem = 0;  //cantidad de semaforos
 
 int equalsSem(void* n1, void* n2){
     int aux1 = *((int*)n1);
@@ -17,7 +21,10 @@ int equalsSem(void* n1, void* n2){
 }
 
 //private:
-int findfreeSpaces();
+int findSem(char *semName);
+int isSem(int semId);
+int findFreeSem();
+void newSem(int semId, char* semName, int initialValue);
 int sleepProcess(listADT blockedProcesses);
 int wakeUpProcess(listADT blockedProcesses);
 
@@ -27,62 +34,68 @@ void createSem(char *semName, int initialValue, int* returnValue){
         *returnValue = -1;
         return;
     }
-    //busco el primer espacio libre o si ya se creeo el semaforo
-    int semId = findfreeSpaces(semName);
-    if(semVec[semId].name && strcmp(semVec[semId].name, semName) == 0 ){ 
-        semVec[semId].numProcess ++;
-    }else{// se encotro un espacio libre
-        semVec[semId].value = initialValue;
-        semVec[semId].name = strCopy(semName);
-        semVec[semId].numProcess = 1;
-        semVec[semId].blockedProcesses = newList(sizeof(int),equalsSem);
-        semVecSize++;
-    }
-    *returnValue = semId; 
+
+    int semId = findSem(semName);
+    
+    if(semId != -1)
+        sem[semId].numProcess++;
+    else{
+        semId = findFreeSem();
+        if(semId == -1){
+            *returnValue = -1;
+            return;
+        }
+        newSem(semId, semName, initialValue);
+    }   
+
+    *returnValue = semId;
+    return;
 }
 
 void removeSem(int semId, int* returnValue){
-    
-    if(semId < 0  || semId > semVecSize){
+    if(!isSem(semId)){
         *returnValue = -1; 
         return;
     }
+
     //chequeo que sea el ultimo proceso usando el semaforo
-    semVec[semId].numProcess --;
-    if(semVec[semId].numProcess != 0){
+    sem[semId].numProcess --;
+    if(sem[semId].numProcess != 0){
         *returnValue = 1; 
         return;
     }
     
     //chequeo que no tenga procesos bloqueados
-    if(!isEmpty(semVec[semId].blockedProcesses)){
+    if(!isEmpty(sem[semId].blockedProcesses)){
+        while( wakeUpProcess(sem[semId].blockedProcesses) != 0);
         *returnValue = 0;
         return;
     }
-    free(semVec[semId].name);
-    semVec[semId].name = NULL;
-    semVec[semId].numProcess = 0;
-    semVec[semId].value = -1;
-    freeList(semVec[semId].blockedProcesses);
-    
-    semVecSize--;
+
+    free(sem[semId].name);
+    freeList(sem[semId].blockedProcesses);
+    sem[semId].name = NULL;
+    sem[semId].numProcess = 0;
+    sem[semId].value = 0;
+    sem[semId].state = FREE;
+    numOfSem--;
+
     *returnValue = 1;
     return;
 }
 
 void semWait(int semId, int* returnValue){
-    if(semId < 0  || semId > semVecSize){
-        *returnValue = -1;
+    if(!isSem(semId)){
+        *returnValue = -1; 
         return;
-    } 
-    // int pid2;
-    // getPid(&pid2);
-    if(semVec[semId].value >0) {
-        _xadd(-1,&(semVec[semId].value)); 
+    }
+
+    if(sem[semId].value > 0) {
+        _xadd(-1,&(sem[semId].value)); 
         (*returnValue) = 0;
     }
     else{
-        *returnValue = sleepProcess(semVec[semId].blockedProcesses);
+        *returnValue = sleepProcess(sem[semId].blockedProcesses);
         if(*returnValue ==  -1) {//si hubo un error al intentar dormir el proceso 
             return;
         }
@@ -90,80 +103,113 @@ void semWait(int semId, int* returnValue){
     }
 }
 
-int semPostPid(int semId, int pid){
-    if(semId < 0  || semId > semVecSize || pid < 0)
-        return -1;
-
-    // int pid2;
-    // getPid(&pid2);
-    _xadd(1,&(semVec[semId].value));
-    if(delete(semVec[semId].blockedProcesses, &pid)){
-        int ans;
-        unlockProcess(pid, &ans);
-        _xadd(-1,&(semVec[semId].value));
-        return ans;
-    }
-    return -1;
-}
-
 void semPost(int semId, int* returnValue){
-   
-    if(semId < 0  || semId > semVecSize){
-        *returnValue = -1;
+    if(!isSem(semId)){
+        *returnValue = -1; 
         return;
     }
-    _xadd(1,&(semVec[semId].value));
 
-    *returnValue = wakeUpProcess(semVec[semId].blockedProcesses);
+    _xadd(1,&(sem[semId].value));
+
+    *returnValue = wakeUpProcess(sem[semId].blockedProcesses);
     if (*returnValue) {
-        _xadd(-1,&(semVec[semId].value)); //semVec[semId]--; 
+        _xadd(-1,&(sem[semId].value)); 
     }
     
     return;   
 }
 
 void printSem(char *str, int strSize){
-    int i=0, j=0,k=0, buffDim=10, aux;
+    int i=0, j=0, k=0, buffDim=10, aux;
     strSize--; //reservo el lugar del \n
-    char *title = "\nname      value   #process   #blockProcess\n";
+    char *title = "\nname         value  #process  #blockProcess\n";
     char auxBuf[buffDim];
 
     //armado del title
     strcat2(str, &i, strSize, title);
 
-    for(j=0 ;j < semVecSize && i < strSize; j++){
-        for ( k = j; k < BLOCK; k++) {
-            if (semVec[k].numProcess) {
-                //nombre
-                aux = strlen(semVec[k].name);
-                strcat2(str, &i, strSize, semVec[k].name);
-                addSpace(str, &i, strSize, 10-aux);
-
-                //valor del semaforo
-                aux = intToString(semVec[k].value, auxBuf);
-                strcat2(str, &i, strSize, auxBuf);
-                addSpace(str, &i, strSize, 8-aux);
-
-                //numero de procesos usando el semaforo
-                aux = intToString(semVec[k].numProcess, auxBuf);
-                strcat2(str, &i, strSize, auxBuf);
-                addSpace(str, &i, strSize, 11-aux);
-
-                //numero procesos bloqueados 
-                aux = intToString(size(semVec[k].blockedProcesses), auxBuf);
-                strcat2(str, &i, strSize, auxBuf);
-                strcat2(str, &i, strSize, "\n");
-                j++;
-            }
-            
-        }
+    for(j=0 ;j < numOfSem && i < strSize; j++, k++){
         
+        //salteo los semaforos libres
+        while(k < SEM_MAX && sem[k].state == FREE){k++;}
+
+        //nombre
+        aux = strlen(sem[k].name);
+        strcat2(str, &i, strSize, sem[k].name);
+        addSpace(str, &i, strSize, 13-aux);
+
+        //valor del semaforo
+        aux = intToString(sem[k].value, auxBuf);
+        strcat2(str, &i, strSize, auxBuf);
+        addSpace(str, &i, strSize, 7-aux);
+
+        //numero de procesos usando el semaforo
+        aux = intToString(sem[k].numProcess, auxBuf);
+        strcat2(str, &i, strSize, auxBuf);
+        addSpace(str, &i, strSize, 10-aux);
+
+        //numero procesos bloqueados 
+        aux = intToString(size(sem[k].blockedProcesses), auxBuf);
+        strcat2(str, &i, strSize, auxBuf);
+        strcat2(str, &i, strSize, "\n");
     }
     str[i] = '\0'; 
 }
 
+int semPidBlock(int semId){
+    if(!isSem(semId))
+        return -1; 
+
+    return sleepProcess(sem[semId].blockedProcesses);
+}
+
+int semPostPid(int semId, int pid){
+    if(!isSem(semId))
+        return -1;
+
+        
+    _xadd(1,&(sem[semId].value));
+    
+    if(delete(sem[semId].blockedProcesses, &pid)){
+        int ans;
+        unlockProcess(pid, &ans);
+        _xadd(-1,&(sem[semId].value));
+        return ans;
+    }
+    return -1;
+}
+
+
 
 //private---------------
+int findSem(char *semName){
+    for(int i = 0; i < SEM_MAX; i++)
+        if(sem[i].state == IN_USE && strcmp(sem[i].name, semName) == 0)
+                return i;
+    return -1;
+}
+
+int isSem(int semId){
+    return sem[semId].state == IN_USE;
+}
+
+int findFreeSem(){
+    for (int i = 0; i < SEM_MAX; i++)
+        if(sem[i].state == FREE)
+            return i;
+    
+    return -1;
+}
+
+void newSem(int semId, char* semName, int initialValue){
+
+    sem[semId].state = IN_USE;
+    sem[semId].value = initialValue;
+    sem[semId].name = strCopy(semName);
+    sem[semId].numProcess = 1;
+    sem[semId].blockedProcesses = newList(sizeof(int),equalsSem);
+    numOfSem++;
+}
 
 int sleepProcess(listADT blockedProcesses){
      //obtengo el pid del proceso actual
@@ -196,27 +242,4 @@ int wakeUpProcess(listADT blockedProcesses){
     int ans;
     unlockProcess(pid, &ans);
     return 1;
-}
-
-
-
-int findfreeSpaces(char *str){
-    int i;
-    int firstFree = -1;
-    int foundFlag = 0;
-    for (i = 0; i < semVecSize && !foundFlag; i++){
-        if(firstFree == -1 && semVec[i].value == -1 )
-            firstFree = i;
-        
-        if(strcmp(semVec[i].name, str) == 0)
-            foundFlag = 1; 
-    }
-
-    if(foundFlag)
-        return i-1;
-    //si no lo encontro foundFlag = 0
-    if(firstFree == -1) 
-        return i;
-    
-    return firstFree;
 }

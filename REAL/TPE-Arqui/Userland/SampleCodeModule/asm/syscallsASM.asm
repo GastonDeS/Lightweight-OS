@@ -30,7 +30,7 @@ GLOBAL yieldSyscall
 GLOBAL printSemSyscall
 GLOBAL printMemSyscall
 GLOBAL checkMemorySyscall
-GLOBAL pipeSyscall
+GLOBAL pipeCreateSyscall
 GLOBAL pipeCloseSyscall
 GLOBAL pipeWriteSyscall
 GLOBAL pipeReadSyscall
@@ -78,7 +78,7 @@ pipeCloseSyscall:
   mov rsp, rbp
   pop rbp
   ret
-pipeSyscall:
+pipeCreateSyscall:
   push rbp
   mov rbp, rsp
 

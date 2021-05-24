@@ -29,6 +29,7 @@ void printmem(char args[MAX_ARGS][MAX_ARG_LEN]);
 void divZero(char args[MAX_ARGS][MAX_ARG_LEN]);
 void invalidOPCode(char args[MAX_ARGS][MAX_ARG_LEN]);
 void clear(char args[MAX_ARGS][MAX_ARG_LEN]);
+void pipe(char args[MAX_ARGS][MAX_ARG_LEN]);
 void catS(char args[MAX_ARGS][MAX_ARG_LEN]);
 void wcS(char args[MAX_ARGS][MAX_ARG_LEN]);
 void filterS(char args[MAX_ARGS][MAX_ARG_LEN]);
