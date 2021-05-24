@@ -85,7 +85,7 @@ void test_pipe(char args[MAX_ARGS][MAX_ARG_LEN]){
   char *argv[2];
 	argv[0] = "writer";
 	argv[1] = NULL;
-  createProcess(testPipe,argv);
+  createProcess(testPipe,1,argv);
 }
 
 void phyloS(char args[MAX_ARGS][MAX_ARG_LEN]){
@@ -93,7 +93,7 @@ void phyloS(char args[MAX_ARGS][MAX_ARG_LEN]){
   char *argv[2];
 	argv[0] = "phyloMaster";
 	argv[1] = NULL;
-  createProcess(phyloMaster,argv);
+  createProcess(phyloMaster,1,argv);
 }
 
 void getPid(char args[MAX_ARGS][MAX_ARG_LEN]) {
@@ -118,7 +118,7 @@ void chessS(char args[MAX_ARGS][MAX_ARG_LEN]){
   char *argv[2];
 	argv[0] = "chess";
 	argv[1] = NULL;
-  createProcess(chess,argv);
+  createProcess(chess,1,argv);
 }
 
 void killS(char args[MAX_ARGS][MAX_ARG_LEN]) {
@@ -222,7 +222,7 @@ void prioTester(char args[MAX_ARGS][MAX_ARG_LEN]) {
   char *arg[2];
   arg[0] = "test_prio";
   arg[1] = NULL;
-  createProcess(test_prio,arg);
+  createProcess(test_prio,1,arg);
 }
 
 void ProcessTester(char args[MAX_ARGS][MAX_ARG_LEN]) {
@@ -230,7 +230,7 @@ void ProcessTester(char args[MAX_ARGS][MAX_ARG_LEN]) {
   char *arg[2];
   arg[0] = "test_processes";
   arg[1] = NULL;
-  createProcess(test_processes,arg);
+  createProcess(test_processes,1,arg);
 }
 
 void pipe(char args[MAX_ARGS][MAX_ARG_LEN]){

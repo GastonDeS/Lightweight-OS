@@ -48,13 +48,13 @@ void test_sync(int argc,char ** argv){
     argv1[2] = "1";         //valor a sumar al shMem
     argv1[3] = "10";      //cantidad de entradas al shMem
     argv1[4] = NULL;
-    createProcess(inc, argv1);
+    createProcess(inc,0, argv1);
     argv2[0] = "inc-";
     argv2[1] = "1";
     argv2[2] = "-1";
     argv2[3] = "10";
     argv2[4] = NULL;
-    createProcess(inc, argv2);
+    createProcess(inc,0, argv2);
   }
 }
 
@@ -69,12 +69,12 @@ void test_no_sync(){
     argv1[2] = "1";
     argv1[3] = "10";
     argv1[4] = NULL;
-    createProcess(inc, argv1);
+    createProcess(inc,0, argv1);
     argv2[0] = "inc-";
     argv2[1] = "0";
     argv2[2] = "-1";
     argv2[3] = "10";
     argv2[4] = NULL;
-    createProcess(inc, argv2);
+    createProcess(inc,0, argv2);
   }
 }

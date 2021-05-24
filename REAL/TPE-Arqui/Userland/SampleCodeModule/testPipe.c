@@ -39,25 +39,25 @@ void testPipe() {
     args[0] = "lector";
     args[1] = num;
     args[2] = NULL;
-    createProcess(lector,args);
+    createProcess(lector,0,args);
     char *args1[4];
     args1[0] = "escritor";
     args1[1] = num;
     args1[2] = "escritor1";
     args1[3] = NULL;
-    createProcess(escritor,args1);
+    createProcess(escritor,0,args1);
     char *args2[4];
     args2[0] = "escritor";
     args2[1] = num;
     args2[2] = "escritor2";
     args2[3] = NULL;
-    createProcess(escritor,args2);
+    createProcess(escritor,0,args2);
     char *args3[4];
     args3[0] = "escritor";
     args3[1] = num;
     args3[2] = "escritor3";
     args3[3] = NULL;
-    createProcess(escritor,args3);
+    createProcess(escritor,0,args3);
     myExit();
 
 }

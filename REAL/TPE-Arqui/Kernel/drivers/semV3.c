@@ -123,7 +123,7 @@ void semPost(int semId, int* returnValue){
 }
 
 void printSem(char *str, int strSize){
-    int i=0, j=0, buffDim=10, aux;
+    int i=0, j=0,k=0, buffDim=10, aux;
     strSize--; //reservo el lugar del \n
     char *title = "\nname      value   #process   #blockProcess\n";
     char auxBuf[buffDim];
@@ -132,26 +132,32 @@ void printSem(char *str, int strSize){
     strcat2(str, &i, strSize, title);
 
     for(j=0 ;j < semVecSize && i < strSize; j++){
-    
-        //nombre
-        aux = strlen(semVec[j].name);
-        strcat2(str, &i, strSize, semVec[j].name);
-        addSpace(str, &i, strSize, 10-aux);
+        for ( k = j; k < BLOCK; k++) {
+            if (semVec[k].numProcess) {
+                //nombre
+                aux = strlen(semVec[k].name);
+                strcat2(str, &i, strSize, semVec[k].name);
+                addSpace(str, &i, strSize, 10-aux);
 
-        //valor del semaforo
-        aux = intToString(semVec[j].value, auxBuf);
-        strcat2(str, &i, strSize, auxBuf);
-        addSpace(str, &i, strSize, 8-aux);
+                //valor del semaforo
+                aux = intToString(semVec[k].value, auxBuf);
+                strcat2(str, &i, strSize, auxBuf);
+                addSpace(str, &i, strSize, 8-aux);
 
-        //numero de procesos usando el semaforo
-        aux = intToString(semVec[j].numProcess, auxBuf);
-        strcat2(str, &i, strSize, auxBuf);
-        addSpace(str, &i, strSize, 11-aux);
+                //numero de procesos usando el semaforo
+                aux = intToString(semVec[k].numProcess, auxBuf);
+                strcat2(str, &i, strSize, auxBuf);
+                addSpace(str, &i, strSize, 11-aux);
 
-        //numero procesos bloqueados 
-        aux = intToString(size(semVec[j].blockedProcesses), auxBuf);
-        strcat2(str, &i, strSize, auxBuf);
-        strcat2(str, &i, strSize, "\n");
+                //numero procesos bloqueados 
+                aux = intToString(size(semVec[k].blockedProcesses), auxBuf);
+                strcat2(str, &i, strSize, auxBuf);
+                strcat2(str, &i, strSize, "\n");
+                j++;
+            }
+            
+        }
+        
     }
     str[i] = '\0'; 
 }

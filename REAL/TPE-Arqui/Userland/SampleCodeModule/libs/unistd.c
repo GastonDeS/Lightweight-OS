@@ -4,9 +4,9 @@ void yield(){
     yieldSyscall();
 }
 
-uint64_t createProcess(void (*function)(),char **argv){
+uint64_t createProcess(void (*function)(), int foreground,char **argv){
     uint64_t pid;
-    createProcessSyscall(function,argv, &pid);
+    createProcessSyscall(function,foreground,argv, &pid);
     return pid;
 }
 
