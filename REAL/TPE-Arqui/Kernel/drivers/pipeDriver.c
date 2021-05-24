@@ -100,7 +100,7 @@ void pipeWrite(int pipeId, char *addr, int n, int *returnValue){
     return;
 }
 
-void pipeRead(int pipeId, char * addr, int n, int *returnValue){
+void pipeRead(int pipeId, char *addr, int n, int *returnValue){
     if(!findPipe(pipeId)){
         *returnValue = -1;
         return;

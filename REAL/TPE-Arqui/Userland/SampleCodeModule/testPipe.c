@@ -11,7 +11,7 @@ void escritor(int argc, char** argv) {
     int result;
     for(int i=0; i< N; i++){
         sem_wait(semId);
-        pipeWriteSyscall(id,argv[2],10,&result);
+        pipeWrite(id,argv[2],10);
         sem_post(semId);
         yieldSyscall();
     }
@@ -24,17 +24,18 @@ void escritor(int argc, char** argv) {
 
 void lector(int  argc, char **argv) {
     int id = atoi(argv[1]);
-    char *pipeBuff = malloc(sizeof(char)*124);
+    char *pipeBuff = malloc(sizeof(char)*15);
     int result;
     pipeOpen(id);
     for(int i=0; i<N*3; i++){
-        pipeReadSyscall(id,pipeBuff,15,&result);
+        pipeRead(id,pipeBuff,15);
         print(pipeBuff);
         print(" ");
     }
     if(pipeClose(id)){
         print("\n cerror el sem del pipe %s \n",argv[0] );
     }
+    //free(pipeBuff);
     myExit();
 }
 
