@@ -5,6 +5,7 @@
         "__locale": "c",
         "functional": "c",
         "locale": "c",
-        "stdint.h": "c"
+        "stdint.h": "c",
+        "typeinfo": "c"
     }
 }

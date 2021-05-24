@@ -138,7 +138,7 @@ static void exeCommand(char * line){
 
   if(!isPipe(commandArgs[1])){
     if(!iSbuiltIn(commandArgs[0])){
-      if (isAmpersand(commandArgs[1])) {
+      if(isAmpersand(commandArgs[1])) {
         intToString(0, argv[1]);
       }
       else {

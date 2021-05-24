@@ -16,7 +16,9 @@ void escritor(int argc, char** argv) {
         yieldSyscall();
     }
     sem_close(semId);
-    pipeCloseSyscall(id, &result);
+    if(pipeClose(id)){
+        print("\n cerror el sem del pipe %s \n",argv[0] );
+    }
     myExit();
 }
 
@@ -30,7 +32,9 @@ void lector(int  argc, char **argv) {
         print(pipeBuff);
         print(" ");
     }
-    pipeCloseSyscall(id, &result);
+    if(pipeClose(id)){
+        print("\n cerror el sem del pipe %s \n",argv[0] );
+    }
     myExit();
 }
 
