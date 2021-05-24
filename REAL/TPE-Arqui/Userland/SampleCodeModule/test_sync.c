@@ -1,5 +1,5 @@
 #include <test_sync.h>
-#include <commands.h>
+
 
 static int global; //shared memory
 //private:
@@ -17,13 +17,13 @@ void inc(int argc, char **argv){
   int i, semId;
   int sem = atoi(argv[1]);
   int value = atoi( argv[2] );
-  int N = atoi(argv[3]);
+  int n = atoi(argv[3]);
 
   if (sem && (semId = sem_open(SEM_ID, 1)) == -1){
     print(STDOUT, "ERROR OPENING SEM\n");
     return;
   }
-  for (i = 0; i < N; i++){
+  for (i = 0; i < n; i++){
     if (sem) sem_wait(semId);
     slowInc(&global, value);
     if (sem) sem_post(semId);

@@ -3,6 +3,27 @@
 #define MAX_ARGS 10
 #define MAX_ARG_LEN 32
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdGraphics.h>
+#include <timer.h>
+#include <inforeg.h>
+#include <Shell.h>
+#include <stdint.h>
+#include <syscallsASM.h>
+#include <forcedExceptions.h>
+#include <test_sync.h>
+#include <chess.h>
+#include <stddef.h>
+#include <checkMemdata.h>
+#include <test_mm.h>
+#include <test_prio.h>
+#include <unistd.h>
+#include <test_process.h>
+#include <testPipe.h>
+#include <phylo.h>
+#include <processCom.h>
+
 
 void phyloS(char args[MAX_ARGS][MAX_ARG_LEN]);
 void test_pipe(char args[MAX_ARGS][MAX_ARG_LEN]);

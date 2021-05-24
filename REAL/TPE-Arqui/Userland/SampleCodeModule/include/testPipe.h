@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <stdio.h>
-#include <commands.h>
 #include <mySemaphore.h>
 #include <pipe.h>
 
