@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 
-void interCat();
-void interWc();
-void interFilter();
+void catS();
+void wcS();
+void filterS();
 #endif
