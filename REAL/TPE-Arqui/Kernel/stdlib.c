@@ -173,9 +173,11 @@ int strcmp(char * str1, char * str2){
 }
 
 char * strcpy(char * dest, char * src) {
-  for (int i = 0; src[i] != 0; i++) {
+  int i;
+  for ( i = 0; src[i] != 0; i++) {
     dest[i] = src[i];
   }
+  dest[i] = 0;
   return dest;
 }
 

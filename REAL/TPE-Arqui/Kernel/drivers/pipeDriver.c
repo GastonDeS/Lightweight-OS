@@ -26,7 +26,7 @@ int removePipe(int pipeId);
 char* createSemName(int pipeId);
 
 void pipeOpen(int pipeId, int *returnValue){
-    if(findPipe(pipeId)){
+    if(!findPipe(pipeId)){
         *returnValue = -1;
         return;
     }
@@ -64,7 +64,7 @@ void pipeClose(int pipeId, int *returnValue){
         return;
     }
 
-    returnValue = removePipe(pipeId);
+    *returnValue = removePipe(pipeId);
     return;
     /*removeSem(pipe[pipeId].lockS, returnValue);
     free(pipe[pipeId].data);

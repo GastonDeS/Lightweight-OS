@@ -1,10 +1,7 @@
 #include <test_sync.h>
 #include <commands.h>
 
-int global; //shared memory
-char *argv1[5];
-char *argv2[5];
-
+static int global; //shared memory
 //private:
 void slowInc(int *p, int inc);
 void inc(int argc, char **argv);
@@ -43,18 +40,19 @@ void test_sync(int argc,char ** argv){
 
   print("\nCREATING PROCESSES...(WITH SEM)\n");
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++){
+    char *argv1[5];
     argv1[0] = "inc+";      //nombre del proceso
     argv1[1] = "1";         //1 si se quiere usar semaforos
     argv1[2] = "1";         //valor a sumar al shMem
     argv1[3] = "10";      //cantidad de entradas al shMem
     argv1[4] = NULL;
     createProcess(inc,0, argv1);
-    argv2[0] = "inc-";
-    argv2[1] = "1";
-    argv2[2] = "-1";
-    argv2[3] = "10";
-    argv2[4] = NULL;
-    createProcess(inc,0, argv2);
+    argv1[0] = "inc-";
+    argv1[1] = "1";
+    argv1[2] = "-1";
+    argv1[3] = "10";
+    argv1[4] = NULL;
+    createProcess(inc,0, argv1);
   }
 }
 
@@ -64,17 +62,18 @@ void test_no_sync(){
 
   print("\nCREATING PROCESSES...(WITH SEM)\n");
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++){
+    char *argv1[5];
     argv1[0] = "inc+";
     argv1[1] = "0";
     argv1[2] = "1";
     argv1[3] = "10";
     argv1[4] = NULL;
     createProcess(inc,0, argv1);
-    argv2[0] = "inc-";
-    argv2[1] = "0";
-    argv2[2] = "-1";
-    argv2[3] = "10";
-    argv2[4] = NULL;
-    createProcess(inc,0, argv2);
+    argv1[0] = "inc-";
+    argv1[1] = "0";
+    argv1[2] = "-1";
+    argv1[3] = "10";
+    argv1[4] = NULL;
+    createProcess(inc,0, argv1);
   }
 }
