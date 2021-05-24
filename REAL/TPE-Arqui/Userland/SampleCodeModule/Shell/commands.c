@@ -20,6 +20,7 @@
 #include <testPipe.h>
 #include <phylo.h>
 #include <processCom.h>
+#include <loop.h>
 
 void inforeg(char args[MAX_ARGS][MAX_ARG_LEN]){
   clearScreen(0);
@@ -266,4 +267,12 @@ void filterS(char args[MAX_ARGS][MAX_ARG_LEN]) {
 	argv[1] = NULL;
   createProcess(filter,1, argv);
   return;
+}
+
+void loopS(char args[MAX_ARGS][MAX_ARG_LEN]) {
+  print("\n");
+  char *argv[2];
+  argv[0] = "loop";
+	argv[1] = NULL;
+  createProcess(loop,1, argv);
 }
