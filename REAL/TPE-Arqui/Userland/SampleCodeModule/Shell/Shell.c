@@ -7,6 +7,7 @@
 #include <stdGraphics.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <stddef.h>
 #include <colors.h>
 #include <commands.h>
 #include <Shell.h>
@@ -33,7 +34,7 @@ void updateShell(char * buff, int dim);
 
 
 static int iSbuiltIn(char *name);
-int isPipe(char *name);
+int isAPipe(char *name);
 int isAmpersand(char * name);
 
 char noBuiltIn[][MAX_ARG_LEN]={"loop","filter","wc","cat","phylo"};
@@ -47,7 +48,7 @@ void init_shell(int argc, char **argv) {
   drawShellLines();
   exceptions();
   while (1) {
-		int ch = getChar();
+		int ch = getChar(STDIN);
 		keyPressedShell(ch);
 	}
 }
@@ -132,19 +133,20 @@ static void exeCommand(char * line){
 
   int i = isCommand(commandArgs[0]);
   if(i == -1){
-    print(" - INVALID COMMAND");
+    print(STDOUT, " - INVALID COMMAND");
     return;
   }
 
-  if(!isPipe(commandArgs[1])){
+  if(!isAPipe(commandArgs[1])){
     if(!iSbuiltIn(commandArgs[0])){
       if (isAmpersand(commandArgs[1])) {
-        intToString(0, argv[1]);
+        intToString(0, argv[0]);
       }
       else {
-        intToString(1, argv[1]);
+        intToString(1, argv[0]);
       }
-      intToString(-1, argv[0]);
+      intToString(-1, argv[1]); //pipeIn  no se si dejarlo leer el stdin
+      intToString(-1, argv[2]); //pipeOut
       run[i](argv);
       return;
     }
@@ -154,24 +156,30 @@ static void exeCommand(char * line){
   }
 
   if( iSbuiltIn(commandArgs[0]) || iSbuiltIn(commandArgs[2])){
-    print(" - INVALID PIPE ");
+    print(STDOUT, " - INVALID PIPE ");
     return;
   }
 
   int pipeId = pipeCreate();
   if(pipeId == -1){
-    print(" - PIPE ERROR ");
+    print(STDOUT, " - PIPE ERROR ");
     return;
   }
 
-  //i = isCommand(commandArgs[0]);
-  intToString(pipeId, argv[0]);
-  intToString(1, argv[1]);
-  run[i](argv);
+  char argv1[10][32] = {{0}};
 
+  int aux = i;
   i = isCommand(commandArgs[2]);
-  intToString(0, argv[1]);
-  run[i](argv);
+  intToString(0, argv1[0]); //background
+  intToString(pipeId, argv1[1]); //pipe de input
+  intToString(-1, argv1[2]); //stdout
+  run[i](argv1);
+
+  //i = isCommand(commandArgs[0]);
+  intToString(1, argv[0]);
+  intToString(-1, argv[1]); //stdin
+  intToString(pipeId, argv[2]); //pipe de output
+  run[aux](argv);
 }
 
 
@@ -183,7 +191,7 @@ static int iSbuiltIn(char *name){
     return 1;
 }
 
-int isPipe(char *name){
+int isAPipe(char *name){
   return name[0] == '|';
 }
 
@@ -203,15 +211,18 @@ static int isCommand(char * name){
 
 void keyPressedShell(char ch) {
   if (ch) {
-    if (ch == '\n' && lineCursor > 0) {
+    if(ch == '\b' && shellCursor > 0) {
+      buffShell[shellCursor--] = 0;
+    }else if (ch == '\n' && lineCursor > 0) {
       buffShell[shellCursor] = 0;
       if (lineCursor!=shellCursor)
-        print("\n%s",buffShell);
+        print(STDOUT, "\n%s",buffShell);
       exeCommand(buffShell);
        //lines[(currentLineNumber)%(TOTAL_LINES-1)
     }
-    buffShell[shellCursor++] = ch;
-    putChar(ch);
+    else
+      buffShell[shellCursor++] = ch;
+  putChar(STDOUT, ch);
   }
 }
 
@@ -229,25 +240,25 @@ void exceptions(){
     if (error < 32) {
       uint64_t registers[19];
       getRegistersSyscall(registers);
-      print("ERROR: EXCEPTION %x ", error);
+      print(STDOUT, "ERROR: EXCEPTION %x ", error);
       switch (error) {
-        case 0: print("(DIVISION BY ZERO)\n");
+        case 0: print(STDOUT, "(DIVISION BY ZERO)\n");
         break;
-        case 1: print("(INVALID OPCODE)\n");
+        case 1: print(STDOUT, "(INVALID OPCODE)\n");
       }
-      print("REGISTERS STATUS:\n");
-      print("R15: %X - R14: %X\n", registers[0], registers[1]);
-      print("R13: %X - R12: %X\n", registers[2], registers[3]);
-      print("R11: %X - R10: %X\n", registers[4], registers[5]);
-      print("R9: %X - R8: %X\n", registers[6], registers[7]);
-      print("RSI: %X - RDI: %X\n", registers[8], registers[9]);
-      print("RBP: %X - RDX: %X\n", registers[10], registers[11]);
-      print("RCX: %X - RBX: %X\n", registers[12], registers[13]);
-      print("RAX: %X - RIP: %X\n", registers[14], registers[15]);
-      print("CS: %X - FLAGS: %X\n", registers[16], registers[17]);
-      print("RSP: %X\n", registers[18]);
+      print(STDOUT, "REGISTERS STATUS:\n");
+      print(STDOUT, "R15: %X - R14: %X\n", registers[0], registers[1]);
+      print(STDOUT, "R13: %X - R12: %X\n", registers[2], registers[3]);
+      print(STDOUT, "R11: %X - R10: %X\n", registers[4], registers[5]);
+      print(STDOUT, "R9: %X - R8: %X\n", registers[6], registers[7]);
+      print(STDOUT, "RSI: %X - RDI: %X\n", registers[8], registers[9]);
+      print(STDOUT, "RBP: %X - RDX: %X\n", registers[10], registers[11]);
+      print(STDOUT, "RCX: %X - RBX: %X\n", registers[12], registers[13]);
+      print(STDOUT, "RAX: %X - RIP: %X\n", registers[14], registers[15]);
+      print(STDOUT, "CS: %X - FLAGS: %X\n", registers[16], registers[17]);
+      print(STDOUT, "RSP: %X\n", registers[18]);
     } else {
-      print("What module would you like to run? (type \"help\" to see commands)\n");
+      print(STDOUT, "What module would you like to run? (type \"help\" to see commands)\n");
     }
 }
 

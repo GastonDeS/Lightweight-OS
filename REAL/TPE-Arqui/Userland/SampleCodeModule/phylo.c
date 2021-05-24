@@ -19,6 +19,7 @@ void addPhylosopher();
 void closePhylosfers(int semId);
 void printPhylos();
 void addPhylos();
+void printInst();
 
 #define RIGHT(i) ((i) + 1) % (phylosofersCount)                         /* number of i’s right neighbor */
 #define LEFT(i) ((i) + phylosofersCount - 1) % (phylosofersCount) /* number of i’s left neighbor */
@@ -77,16 +78,16 @@ void admin(int semId) {
                 return;
             } else if (buf[0] == 'a' ){
                 if (phylosofersCount<MAXPHYLOS) {
-                    print("A new phylosophers join. You have %d philosophers now\n",phylosofersCount+1);
+                    print(STDOUT, "A new phylosophers join. You have %d philosophers now\n",phylosofersCount+1);
                     addPhylosopher();
                 } else 
-                    print("The table is full you can\'t add more than %d philosophers.\n",MAXPHYLOS);
+                    print(STDOUT, "The table is full you can\'t add more than %d philosophers.\n",MAXPHYLOS);
             } else if (buf[0] == 'r' ) {
                 if (phylosofersCount>MINPHYLOS) {
-                    print("You remove one philosopher of the problem, %d left\n",phylosofersCount-1);
+                    print(STDOUT, "You remove one philosopher of the problem, %d left\n",phylosofersCount-1);
                     removePhylosofer();
                 } else {
-                    print("Can't leave only one philosopher he will be sad\n");
+                    print(STDOUT, "Can't leave only one philosopher he will be sad\n");
                 }
             }
         }
@@ -94,20 +95,20 @@ void admin(int semId) {
 }
 
 void printInst() {
-    print("Welcome to the philosophers pronlem!\n");
-    print("You are going to start with %d philosophers\nYou have a maximun of %d philosophers and have a minimun of %d\n", phylosofersCount, MAXPHYLOS, MINPHYLOS);
-    print("You can add then with \'a\', delete them with \'d\' and exit with \'e\'.\n");
-    print("The state of each will be displayed as E (EATING) or . (HUNGRY)\n");
+    print(STDOUT, "Welcome to the philosophers pronlem!\n");
+    print(STDOUT, "You are going to start with %d philosophers\nYou have a maximun of %d philosophers and have a minimun of %d\n", phylosofersCount, MAXPHYLOS, MINPHYLOS);
+    print(STDOUT, "You can add then with \'a\', delete them with \'d\' and exit with \'e\'.\n");
+    print(STDOUT, "The state of each will be displayed as E (EATING) or . (HUNGRY)\n");
 }
 
 void printPhylos(){ 
     for (int i = 0; i < phylosofersCount; i++) {
         if (phylosofers[i].state==EATING)
-            print("E");
+            print(STDOUT, "E");
         else
-            print(".");
+            print(STDOUT, ".");
     }
-    print("\n");
+    print(STDOUT, "\n");
 }
 
 void closePhylosfers(int semId){

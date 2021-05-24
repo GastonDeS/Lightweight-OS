@@ -23,7 +23,7 @@ void inc(int argc, char **argv){
   int N = atoi(argv[3]);
 
   if (sem && (semId = sem_open(SEM_ID, 1)) == -1){
-    print("ERROR OPENING SEM\n");
+    print(STDOUT, "ERROR OPENING SEM\n");
     return;
   }
   for (i = 0; i < N; i++){
@@ -33,7 +33,7 @@ void inc(int argc, char **argv){
   }
   if (sem) sem_close(semId);
 
-  print("Final value: %d\n", global);
+  print(STDOUT, "Final value: %d\n", global);
   myExit();
 }
 
@@ -41,7 +41,7 @@ void test_sync(int argc,char ** argv){
   int i;
   global = 0;
 
-  print("\nCREATING PROCESSES...(WITH SEM)\n");
+  print(STDOUT, "\nCREATING PROCESSES...(WITH SEM)\n");
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++){
     argv1[0] = "inc+";      //nombre del proceso
     argv1[1] = "1";         //1 si se quiere usar semaforos
@@ -62,7 +62,7 @@ void test_no_sync(){
   int i;
   global = 0;
 
-  print("\nCREATING PROCESSES...(WITH SEM)\n");
+  print(STDOUT, "\nCREATING PROCESSES...(WITH SEM)\n");
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++){
     argv1[0] = "inc+";
     argv1[1] = "0";

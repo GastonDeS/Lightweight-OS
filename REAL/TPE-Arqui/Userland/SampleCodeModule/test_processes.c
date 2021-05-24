@@ -53,7 +53,7 @@ void test_processes(){
       p_rqs[rq].pid = my_create_processProcess("endless_loop");  // TODO: Port this call as required
 
       if (p_rqs[rq].pid == -1){                           // TODO: Port this as required
-        print("Error creating process\n");               // TODO: Port this as required
+        print(STDOUT, "Error creating process\n");               // TODO: Port this as required
         return;
       }else{
         p_rqs[rq].state = RUNNING;
@@ -70,7 +70,7 @@ void test_processes(){
           case 0:
             if (p_rqs[rq].state == RUNNING || p_rqs[rq].state == BLOCKED){
               if (my_killProcess(p_rqs[rq].pid) == -1){          // TODO: Port this as required
-                print("Error killing process\n");        // TODO: Port this as required
+                print(STDOUT, "Error killing process\n");        // TODO: Port this as required
                 return;
               }
               p_rqs[rq].state = KILLED; 
@@ -81,7 +81,7 @@ void test_processes(){
           case 1:
             if (p_rqs[rq].state == RUNNING){
               if(my_blockProcess(p_rqs[rq].pid) == -1){          // TODO: Port this as required
-                print("Error blocking process\n");       // TODO: Port this as required
+                print(STDOUT, "Error blocking process\n");       // TODO: Port this as required
                 return;
               }
               p_rqs[rq].state = BLOCKED; 
@@ -94,13 +94,13 @@ void test_processes(){
       for(rq = 0; rq < MAX_PROCESSES; rq++)
         if (p_rqs[rq].state == BLOCKED && GetUniform(2) % 2){
           if(my_unblockProcess(p_rqs[rq].pid) == -1){            // TODO: Port this as required
-            print("Error unblocking process\n");         // TODO: Port this as required
+            print(STDOUT, "Error unblocking process\n");         // TODO: Port this as required
             return;
           }
           p_rqs[rq].state = RUNNING; 
         }
     }
-    print("terminamos");
+    print(STDOUT, "terminamos");
     myExit(); 
   }
 }

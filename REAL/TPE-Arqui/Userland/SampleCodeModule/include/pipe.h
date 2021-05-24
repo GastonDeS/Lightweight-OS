@@ -3,6 +3,7 @@
 
 #include <syscallsASM.h>
 #include <stdio.h>
+#include <stddef.h>
 
 int pipeOpen(int pipeId);
 

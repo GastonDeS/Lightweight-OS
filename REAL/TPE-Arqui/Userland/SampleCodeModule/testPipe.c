@@ -27,8 +27,8 @@ void lector(int  argc, char **argv) {
     pipeOpen(id);
     for(int i=0; i<N*3; i++){
         pipeReadSyscall(id,pipeBuff,15,&result);
-        print(pipeBuff);
-        print(" ");
+        print(STDOUT, pipeBuff);
+        print(STDOUT, " ");
     }
     pipeCloseSyscall(id, &result);
     myExit();

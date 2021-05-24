@@ -10,7 +10,7 @@ void test_mm(){
   uint8_t rq;
   uint32_t total;
 
-  print("\n");
+  print(STDOUT, "\n");
   int k;
   for(k=0; k<N; k++){
     rq = 0;
@@ -21,7 +21,7 @@ void test_mm(){
       mm_rqs[rq].size = GetUniform(MAX_MEMORY - total - 1) + 1;
       mm_rqs[rq].address = malloc(mm_rqs[rq].size);
       if(mm_rqs[rq].address == NULL)
-        print("la direccion: %d es NULL \n", rq);
+        print(STDOUT, "la direccion: %d es NULL \n", rq);
       total += mm_rqs[rq].size;
       rq++;
     }
@@ -42,14 +42,14 @@ void test_mm(){
     for (i = 0; i < rq; i++)
       if (mm_rqs[i].address != NULL)
         if(!memcheck(mm_rqs[i].address, i, mm_rqs[i].size))
-          print("ERROR!\n"); 
+          print(STDOUT, "ERROR!\n"); 
     
     //free
     for (i = 0; i < rq; i++)
       if (mm_rqs[i].address != NULL) {
         free(mm_rqs[i].address);
       }
-    print("vuelta : %d de %d \n", k + 1, N); 
+    print(STDOUT, "vuelta : %d de %d \n", k + 1, N); 
   } 
 }
 

@@ -7,24 +7,25 @@
 #include <syscallsASM.h>
 #include <stdlib.h>
 #include <stdGraphics.h>
+#include <pipe.h>
 
 
 void (*updateConsolePointer)(char *, int);
 uint8_t updateConsoleInitialized = 0;
 
-void scan(char * buff) {
+void scan(int pipeR, int pipeW, char * buff) {
   int ch = 0;
   int index = 0;
   while (ch != '\n') {
-    if (ch)
+    if (ch != 0)
       buff[index++] = ch;
-      putChar(ch);
-      ch = getChar();
+      putChar(pipeW, ch);
+      ch = getChar(pipeR);
   }
-  putChar('\n');
+  putChar(pipeW, '\n');
 }
 
-void print(char * str, ...) {
+void print(int pipeW, char * str, ...) {
   va_list vl;
   va_start(vl, str);
   char * auxPtr;
@@ -64,11 +65,19 @@ void print(char * str, ...) {
     }
     i++;
   }
-  updateConsolePointer(buffer, j);
+  if (pipeW == -1) {
+    updateConsolePointer(buffer, j);
+  }else {
+    pipeWrite(pipeW, buffer, j);
+  }
 }
 
-void putChar(char ch) {
-  updateConsolePointer(&ch, 1);
+void putChar(int pipeW,char ch) {
+  if (pipeW == -1) {
+    updateConsolePointer(&ch, 1);
+  }else {
+    pipeWrite(pipeW, &ch, 1);
+  }
 }
 
 int readKeyboard(char * buffer, int size) {
@@ -88,11 +97,17 @@ void setConsoleUpdateFunction(void (*f)(char *, int)) {
   updateConsoleInitialized = 1;
 }
 
-char getChar() {
+char getChar(pipeR) {
   char ch = 0;
   uint64_t count;
-  while(ch == 0 || count == 0) {
+  if (pipeR == -1) {
+    while(ch == 0 || count == 0) {
     readKeyboardSysCall(&ch, 1, &count);
+    }
+  }else {
+    while(ch == 0 || count == 0) {
+      pipeRead(pipeR, &ch, 1); //esto esta mal
+    }
   }
   return ch;
 }

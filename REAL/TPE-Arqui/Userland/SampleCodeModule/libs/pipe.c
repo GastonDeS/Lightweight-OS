@@ -34,5 +34,5 @@ void printPipe(){
     int strSize = 1024;
     char str[strSize];
     printPipeSyscall(str, strSize);
-    print("%s", str);
+    print(STDOUT, "%s", str);
 }
