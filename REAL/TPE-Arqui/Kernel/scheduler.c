@@ -168,9 +168,9 @@ void ps(char *result){
     int i = 0;
     int j = 0, k =0;
     char statesA[4][8] = {"Error","Blocked","Killed","Ready"}; 
-    char title[41] = "pid   prio   state   SP     BP     name";
+    char title[51] = "pid   prio   state     F/B     SP     BP      name";
     strcat(result,title,&j);
-    movIndex(result,49,&j);
+    movIndex(result,59,&j);
     result[j++] = '\n';
     while (arrayOfProcess[i] != NULL) {
         result[j++] = ' ';
@@ -182,15 +182,17 @@ void ps(char *result){
         strcat(result,prio,&j);
         movIndex(result,13,&j);
         strcat(result,statesA[arrayOfProcess[i]->state],&j);
-        movIndex(result,21,&j);
+        movIndex(result,23,&j);
+        result[j++] = arrayOfProcess[i]->foreground ? 'F' : 'B';
+        movIndex(result,31,&j);
         intToBase(arrayOfProcess[i]->SP,16,SP);
         strcat(result,SP,&j);
-        movIndex(result,28,&j);
+        movIndex(result,38,&j);
         intToBase(arrayOfProcess[i]->BP,16,BP);
         strcat(result,BP,&j);
-        movIndex(result,35,&j);
+        movIndex(result,46,&j);
         strcat(result,arrayOfProcess[i]->name,&j);
-        movIndex(result,49,&j);
+        movIndex(result,59,&j);
         result[j++] = '\n';
         i++;
     }
@@ -199,7 +201,7 @@ void ps(char *result){
 }
 
 void movIndex(char *dest,int to, int *from){
-    for ( ; (*from)%50 < to; (*from)++) {
+    for ( ; (*from)%60 < to; (*from)++) {
         dest[(*from)] = ' ';
     }
 }
