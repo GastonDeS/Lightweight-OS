@@ -195,7 +195,8 @@ static int isCommand(char * name){
 void keyPressedShell(char ch) {
   if (ch) {
     if (ch == '\n' && lineCursor > 0) {
-      print("\n%s",buffShell);
+      if (lineCursor!=shellCursor)
+        print("\n%s",buffShell);
       exeCommand(buffShell);
        //lines[(currentLineNumber)%(TOTAL_LINES-1)
     }
