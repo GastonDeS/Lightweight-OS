@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 
-void catS();
-void wcS();
-void filterS();
+void cat();
+void wc();
+void filter();
 #endif

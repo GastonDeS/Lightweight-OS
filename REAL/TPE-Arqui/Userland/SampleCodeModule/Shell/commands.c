@@ -241,29 +241,29 @@ void pipe(char args[MAX_ARGS][MAX_ARG_LEN]){
   print("%s", str);
 }
 
-void cat(char args[MAX_ARGS][MAX_ARG_LEN]) {
+void catS(char args[MAX_ARGS][MAX_ARG_LEN]) {
   print("\n");
   char *argv[2];
   argv[0] = "cat";
 	argv[1] = NULL;
-  createProcess(catS,1, argv);
+  createProcess(cat,1, argv);
   return;
 }
 
-void wc(char args[MAX_ARGS][MAX_ARG_LEN]) {
+void wcS(char args[MAX_ARGS][MAX_ARG_LEN]) {
   print("\n");
   char *argv[2];
   argv[0] = "wc";
 	argv[1] = NULL;
-  createProcess(wcS,1, argv);
+  createProcess(wc,1, argv);
   return;
 }
 
-void filter(char args[MAX_ARGS][MAX_ARG_LEN]) {
+void filterS(char args[MAX_ARGS][MAX_ARG_LEN]) {
   print("\n");
   char *argv[2];
   argv[0] = "filter";
 	argv[1] = NULL;
-  createProcess(filterS,1, argv);
+  createProcess(filter,1, argv);
   return;
 }

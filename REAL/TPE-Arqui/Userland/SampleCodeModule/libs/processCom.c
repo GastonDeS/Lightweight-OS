@@ -1,9 +1,10 @@
 #include <processCom.h>
 #include <stdint.h>
+#include <unistd.h>
 
 int notAVocal(char c);
 
-void catS(int argc, char **argv) {
+void cat(int argc, char **argv) {
     char c;
     int i = 0;
     char toPrint[512] = {0};
@@ -11,18 +12,15 @@ void catS(int argc, char **argv) {
         putChar(c);
         toPrint[i++] = c;
         if (c == '\n') {
+            toPrint[i] = 0;
             print("%s", toPrint);
-            i = 0;
-            while (toPrint[i] != 0) {
-                toPrint[i++] = 0;
-            }
             i = 0;
         }
     }
     myExit();
 }
 
-void wcS(int argc, char **argv) {
+void wc(int argc, char **argv) {
     uint32_t lines = 0;
     char c;
     while ((c = getChar()) != 'Q') {
@@ -36,7 +34,7 @@ void wcS(int argc, char **argv) {
     myExit();
 }
 
-void filterS(int argc, char **argv) {
+void filter(int argc, char **argv) {
     char toPrint[512] = {0};
     int i = 0;
     char c;
@@ -46,11 +44,8 @@ void filterS(int argc, char **argv) {
             toPrint[i++] = c;
         }
         if (c == '\n') {
+            toPrint[i] = 0;
             print("%s", toPrint);
-            i = 0;
-            while (toPrint[i] != 0) {
-                toPrint[i++] = 0;
-            }
             i = 0;
         }
     }
