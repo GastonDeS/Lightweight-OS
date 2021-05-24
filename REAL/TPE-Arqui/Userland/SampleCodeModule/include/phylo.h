@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <mySemaphore.h>
 #include <syscallsASM.h>
+#include <pipe.h>
+#include <stddef.h>
 
 #define INITIALPHYLOSOFERS 9
 #define MAXPHYLOS 10

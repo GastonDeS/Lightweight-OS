@@ -275,7 +275,7 @@ void loopS(char args[MAX_ARGS][MAX_ARG_LEN]) {
   argv[1] = args[1];
 	argv[2] = args[2];
   argv[3] = NULL;
-  createProcess(loop, atoi(args[0]), argv);
+  createProcess(loop, 0, argv);
 }
 
 void phyloS(char args[MAX_ARGS][MAX_ARG_LEN]){

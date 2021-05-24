@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include <unistd.h>
 #include <stddef.h>
+#include <processCom.h>
+
 
 
 void cat(int argc, char **argv);
