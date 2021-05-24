@@ -72,6 +72,23 @@ void filter(int argc, char **argv) {
     myExit();
 }
 
+void loop(int argc, char **argv) {
+    int pipeRead = atoi(argv[1]);    
+    int pipeWrite = atoi(argv[2]);
+    pipesOpen(pipeRead, pipeWrite);
+    putChar(pipeWrite, '\n');
+    uint64_t pid;
+    uint64_t i;
+    char c;
+    while(1) {
+        getPidSyscall(&pid);
+        print(pipeWrite, "Pid: %d ", pid );
+        for (i = 0; i < 200000000; i++){
+        }
+    }
+    myExit();
+}
+
 int notAVocal(char c) {
     return (c != 'a' && c !='e' && c != 'i' && c != 'o' && c != 'u' && c != 'A' && c !='E' && c != 'I' && c != 'O' && c != 'U');
 }

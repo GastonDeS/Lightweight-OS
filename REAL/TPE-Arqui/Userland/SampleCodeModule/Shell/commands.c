@@ -20,7 +20,6 @@
 #include <testPipe.h>
 #include <phylo.h>
 #include <processCom.h>
-#include <loop.h>
 
 void inforeg(char args[MAX_ARGS][MAX_ARG_LEN]){
   clearScreen(0);

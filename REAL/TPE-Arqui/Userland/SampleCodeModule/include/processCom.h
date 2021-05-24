@@ -10,4 +10,5 @@
 void cat(int argc, char **argv);
 void wc(int argc, char **argv);
 void filter(int argc, char **argv);
+void loop(int argc, char **argv);
 #endif
