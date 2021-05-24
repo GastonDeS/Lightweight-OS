@@ -26,14 +26,20 @@ int findFreePipe(int pipeId);
 char* createSemName(int pipeId);
 
 
-void pipeCreate(int pipeId, int *returnValue){
+void pipeOpen(int pipeId, int *returnValue){
     if(findPipe(pipeId)){
-        pipe[pipeId].numProcess++;
-        *returnValue = pipeId;
+        *returnValue = -1;
         return;
     }
 
-    pipeId = findFreePipe(pipeId);
+    pipe[pipeId].numProcess++;
+    *returnValue = pipeId;
+    return;
+}
+
+void pipeCreate(int *returnValue){
+    
+    int pipeId = findFreePipe(pipeId);
     if(pipeId == -1){
         *returnValue = -1;
         return;
@@ -187,6 +193,7 @@ int newPipe(int pipeId){
     pipe[pipeId].state = IN_USE;
     pipe[pipeId].readIndex = 0;
     pipe[pipeId].writeIndex = 0;
+    pipe[pipeId].numProcess = 0;
     numOfPipe++;
     return 1;
 }

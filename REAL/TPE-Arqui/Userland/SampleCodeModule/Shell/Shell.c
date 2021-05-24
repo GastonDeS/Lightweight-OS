@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <timer.h>
 #include <unistd.h>
+#include <pipe.h>
 
 static char lines[TOTAL_LINES][MAX_LINE_LENGTH];// = {0};
 static uint8_t lineCursor = 0;
@@ -108,6 +109,7 @@ static void clearScreenLine(uint8_t line){
 
 //ejecutaria los commands
 static void exeCommand(char * line){
+  char argv[10][32] = {{0}};
   char commandArgs[10][32] = {{0}}; //Maximo 10 argumentos de 32 caracteres c/u
   int foundArgs = 0;
   int index = 0;
@@ -123,28 +125,42 @@ static void exeCommand(char * line){
     index++;
   }
 
-    
-  
-    if(!isPipe(commandArgs[1])){
-      int i = isCommand(commandArgs[0]);
-      if(i >= 0) {
-        run[i](commandArgs);
-      } else {
-        print(" - INVALID COMMAND");
-      }
-    }else{
-      if( iSbuiltIn(commandArgs[0]) || iSbuiltIn(commandArgs[2])){
-        print(" - INVALID PIPE");
-        return;
-      }
+  int i = isCommand(commandArgs[0]);
+  if(i == -1){
+    print(" - INVALID COMMAND");
+    return;
+  }
 
-      pipeOpen();
-      int i = isCommand(commandArgs[0]);
-      run[i](commandArgs);
-      i = isCommand(commandArgs[2]);
-      run[i](commandArgs);
-    
+  if(!isPipe(commandArgs[1])){
+    if( iSbuiltIn(commandArgs[0])){
+      intToString(-1, argv[0]);
+      intToString(1, argv[1]);
+      run[i](argv);
+      return;
     }
+    run[i](commandArgs);
+    return;
+  }
+
+  if( iSbuiltIn(commandArgs[0]) || iSbuiltIn(commandArgs[2])){
+    print(" - INVALID PIPE ");
+    return;
+  }
+
+  int pipeId = pipeCreate();
+  if(pipeId == -1){
+    print(" - PIPE ERROR ");
+    return;
+  } 
+
+  //i = isCommand(commandArgs[0]);
+  intToString(pipeId, argv[0]);
+  intToString(1, argv[1]);
+  run[i](argv);
+  
+  i = isCommand(commandArgs[2]);
+  intToString(0, argv[1]);
+  run[i](argv);
 
 }
 
