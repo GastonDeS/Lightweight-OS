@@ -1,6 +1,7 @@
 #include <processCom.h>
 #include <stdint.h>
 #include <unistd.h>
+#define EOF -1
 
 int notAVocal(char c);
 
@@ -8,7 +9,7 @@ void cat(int argc, char **argv) {
     char c;
     int i = 0;
     char toPrint[512] = {0};
-    while ((c = getChar()) != 'Q') {
+    while ((c = getChar()) != EOF) {
         putChar(c);
         toPrint[i++] = c;
         if (c == '\n') {
@@ -23,7 +24,7 @@ void cat(int argc, char **argv) {
 void wc(int argc, char **argv) {
     uint32_t lines = 0;
     char c;
-    while ((c = getChar()) != 'Q') {
+    while ((c = getChar()) != EOF) {
         putChar(c);
         if (c == '\n') {
             lines++;
@@ -38,7 +39,7 @@ void filter(int argc, char **argv) {
     char toPrint[512] = {0};
     int i = 0;
     char c;
-    while ((c = getChar()) != 'Q') {
+    while ((c = getChar()) != EOF) {
         putChar(c);
         if (notAVocal(c)) {
             toPrint[i++] = c;
