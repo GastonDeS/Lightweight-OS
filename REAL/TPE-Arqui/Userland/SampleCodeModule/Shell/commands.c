@@ -196,22 +196,22 @@ void mem(char args[MAX_ARGS][MAX_ARG_LEN]){
 void memCheck(char args[MAX_ARGS][MAX_ARG_LEN]){
   struct checkMemdata data = {0};
   checkMemorySyscall(&data);
-  print("\n");
-  print("* Number of blocks: %d\n", data.numeberOfBlocks);
-  print("    |-> In use: %d\n", data.blockused);
-  print("    |-> Free: %d\n", data.freeBlock);
-  print("\n");
-  print("* Total number of bytes ordered: %d Bytes\n", data.totalBytes);
-  print("    |-> Used in infoBLox: %d Bytes\n", data.bytesUsedByBLocks);
-  print("    |-> Used by the user: %d Bytes\n", data.bytesUsedByUser);
-  print("    |-> Free: %d Bytes\n", data.freeBytes);
-  print("    |-> Lost: %d Bytes\n", data.lostBytes);
-  print("\n");
-  print("* Total errors: %d\n", data.numError);
-  print("    |-> Number of errors A: %d\n", data.freeBlocksTogether);
-  print("    |-> Number of errors B: %d\n", data.curNextPrev);
-  print("    |-> Number of errors C: %d\n", data.memError);
-  print("    |-> Number of errors D: %d\n", data.bytesError);
+  print(STDOUT, "\n");
+  print(STDOUT, "* Number of blocks: %d\n", data.numeberOfBlocks);
+  print(STDOUT, "    |-> In use: %d\n", data.blockused);
+  print(STDOUT, "    |-> Free: %d\n", data.freeBlock);
+  print(STDOUT, "\n");
+  print(STDOUT, "* Total number of bytes ordered: %d Bytes\n", data.totalBytes);
+  print(STDOUT, "    |-> Used in infoBLox: %d Bytes\n", data.bytesUsedByBLocks);
+  print(STDOUT, "    |-> Used by the user: %d Bytes\n", data.bytesUsedByUser);
+  print(STDOUT, "    |-> Free: %d Bytes\n", data.freeBytes);
+  print(STDOUT, "    |-> Lost: %d Bytes\n", data.lostBytes);
+  print(STDOUT, "\n");
+  print(STDOUT, "* Total errors: %d\n", data.numError);
+  print(STDOUT, "    |-> Number of errors A: %d\n", data.freeBlocksTogether);
+  print(STDOUT, "    |-> Number of errors B: %d\n", data.curNextPrev);
+  print(STDOUT, "    |-> Number of errors C: %d\n", data.memError);
+  print(STDOUT, "    |-> Number of errors D: %d\n", data.bytesError);
   /*
   Errores:
     A: dos bloque libreos juntos

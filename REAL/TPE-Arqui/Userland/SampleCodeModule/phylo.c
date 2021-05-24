@@ -70,7 +70,7 @@ void phyloMaster(int argc, char **argv) {
     
     admin(semId);
     sem_close(semId);
-    putChar(pipeR, EOF);
+    putChar(pipeW, EOF);
     pipesClose(pipeR, pipeW);
     myExit();
 }
