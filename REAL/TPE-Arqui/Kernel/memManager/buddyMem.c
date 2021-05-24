@@ -327,7 +327,7 @@ void checkMemory(struct checkMemdata* data){
 }
 
 void printMem(char *str, int strSize){
-   int i=0, buffDim=10, currentLevel = 0, aux;
+   int i=0, buffDim=10, currentLevel, aux;
    strSize--; //reservo el lugar del \n
    char auxBuf[buffDim];
    char *title = "\n\nFREE BLOCKS";
@@ -336,7 +336,7 @@ void printMem(char *str, int strSize){
    strcat2(str, &i, strSize, title);
    strcat2(str, &i, strSize, title1);
 
-   for (currentLevel; currentLevel < LEVELS; currentLevel++) {
+   for (currentLevel = 0; currentLevel < LEVELS; currentLevel++) {
       BUDDY_HEADER * block = (BUDDY_HEADER *) blocks[currentLevel];
       while(block != NULL) {
          aux = intToString(currentLevel, auxBuf);
