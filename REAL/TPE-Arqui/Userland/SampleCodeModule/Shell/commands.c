@@ -63,13 +63,19 @@ void printmem(char args[MAX_ARGS][MAX_ARG_LEN]) {
 void blockPid(char args[MAX_ARGS][MAX_ARG_LEN]){
   putChar(STDOUT, '\n');
   int pid = atoi(args[1]);
-  block(pid);
+  if (block(pid)==0) 
+    print(STDOUT,"Process %s blocked",args[1]);
+  else
+    print(STDOUT,"Process %s cannot be blocked",args[1]);
 }
 
 void unblockPid(char args[MAX_ARGS][MAX_ARG_LEN]){
   putChar(STDOUT, '\n');
   int pid = atoi(args[1]);
-  unblock(pid);
+  if (unblock(pid)==0) 
+    print(STDOUT,"Process %s unblocked",args[1]);
+  else
+    print(STDOUT,"Process %s cannot be unblocked",args[1]);
 }
 
 void ps(char args[MAX_ARGS][MAX_ARG_LEN]) {
@@ -97,10 +103,17 @@ void getPid(char args[MAX_ARGS][MAX_ARG_LEN]) {
 }
 
 void niceS(char args[MAX_ARGS][MAX_ARG_LEN]){
+  putChar(STDOUT, '\n');
   int pid = atoi(args[1]);
   int priority = atoi(args[2]);
-  nice(pid, priority);
-  print(STDOUT, "pid %s priority set to: %s", args[1], args[2]);
+  if (priority<=0 || pid < 0) {
+    print(STDOUT, "Invalid pid/priority");
+    return;
+  }
+  if (nice(pid, priority)>0)
+    print(STDOUT, "pid %s priority set to: %s", args[1], args[2]);
+  else 
+    print(STDOUT, "Cannot set pid %s to priority = %s", args[1], args[2]);
 }
 
 void sem(char args[MAX_ARGS][MAX_ARG_LEN]){
@@ -116,9 +129,11 @@ void chessS(char args[MAX_ARGS][MAX_ARG_LEN]){
 
 void killS(char args[MAX_ARGS][MAX_ARG_LEN]) {
   putChar(STDOUT, '\n');
-  print(STDOUT, "kill pid: %s",args[1]);
   int pid = atoi(args[1]);
-  kill(pid);
+  if (kill(pid)==0)
+    print(STDOUT, "Kill pid: %s",args[1]);
+  else
+    print(STDOUT, "Pid %s cannot be killed",args[1]);
 }
 
 void time(char args[MAX_ARGS][MAX_ARG_LEN]) {
@@ -240,11 +255,6 @@ void catS(char args[MAX_ARGS][MAX_ARG_LEN]) {
   createProcess(cat,atoi(args[0]), argv);
   return;
 }
-
-//odas las que terminan con S (ejempo wcS) no son built in
-//reciben en args[0] si son foreground o background,
-//en args[1] el pipePid de entrada
-//en args[2] el pipePid de salida
 
 void wcS(char args[MAX_ARGS][MAX_ARG_LEN]) {
   print(STDOUT, "\n");
