@@ -66,12 +66,6 @@ void pipeClose(int pipeId, int *returnValue){
 
     *returnValue = removePipe(pipeId);
     return;
-    /*removeSem(pipe[pipeId].lockS, returnValue);
-    free(pipe[pipeId].data);
-    pipe[pipeId].state = FREE;
-    numOfPipe--;
-    *returnValue = 1;
-    return;*/
 }
 
 

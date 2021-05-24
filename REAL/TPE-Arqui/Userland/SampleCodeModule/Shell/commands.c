@@ -197,26 +197,27 @@ void memCheck(char args[MAX_ARGS][MAX_ARG_LEN]){
   struct checkMemdata data = {0};
   checkMemorySyscall(&data);
   print(STDOUT, "\n");
-  print(STDOUT, "* Cantidad de bloques: %d\n", data.numeberOfBlocks);
-  print(STDOUT, "    |-> Usados: %d\n", data.blockused);
-  print(STDOUT, "    |-> Libre: %d\n", data.freeBlock);
+  print(STDOUT, "* Number of blocks: %d\n", data.numeberOfBlocks);
+  print(STDOUT, "    |-> In use: %d\n", data.blockused);
+  print(STDOUT, "    |-> Free: %d\n", data.freeBlock);
   print(STDOUT, "\n");
-  print(STDOUT, "* Cantidad total de bytes usados: %d Bytes\n", data.totalBytes);
-  print(STDOUT, "    |-> Usados en infoBLocks: %d Bytes\n", data.bytesUsedByBLocks);
-  print(STDOUT, "    |-> Usados por el usuario: %d Bytes\n", data.bytesUsedByUser);
-  print(STDOUT, "    |-> No utilizados: %d Bytes\n", data.unusedBytes);
-  print(STDOUT, "    |-> Usados para alinear: %d Bytes\n", data.bytesUsedByAlign);
-  print(STDOUT, "    |-> Bytes perdidos: %d Bytes\n", data.lostBytes);
+  print(STDOUT, "* Total number of bytes ordered: %d Bytes\n", data.totalBytes);
+  print(STDOUT, "    |-> Used in infoBLox: %d Bytes\n", data.bytesUsedByBLocks);
+  print(STDOUT, "    |-> Used by the user: %d Bytes\n", data.bytesUsedByUser);
+  print(STDOUT, "    |-> Free: %d Bytes\n", data.freeBytes);
+  print(STDOUT, "    |-> Lost: %d Bytes\n", data.lostBytes);
   print(STDOUT, "\n");
-  print(STDOUT, "* Numero de errores: %d\n", data.numError);
-  print(STDOUT, "    |-> Numero de bloque con error A: %d\n", data.freeBlocksTogether);
-  print(STDOUT, "    |-> Numero de bloque con error B: %d\n", data.noAlignBlocks);
-  print(STDOUT, "    |-> Numero de bloque con error C: %d\n", data.curNextPrev);
+  print(STDOUT, "* Total errors: %d\n", data.numError);
+  print(STDOUT, "    |-> Number of errors A: %d\n", data.freeBlocksTogether);
+  print(STDOUT, "    |-> Number of errors B: %d\n", data.curNextPrev);
+  print(STDOUT, "    |-> Number of errors C: %d\n", data.memError);
+  print(STDOUT, "    |-> Number of errors D: %d\n", data.bytesError);
   /*
   Errores:
     A: dos bloque libreos juntos
-    B: bloque no alineado a 8 bytes
-    C: que el previous no apunte el bloque anterior
+    B: que el previous no apunte el bloque anterior (current != current->next->previous))
+    C: si memoryDim - firstInfoBlock != data->totalBytes
+    D: sumatoria de los bytes no es igual a total bytes
   */
 
 }
@@ -285,7 +286,7 @@ void loopS(char args[MAX_ARGS][MAX_ARG_LEN]) {
   argv[1] = args[1];
 	argv[2] = args[2];
   argv[3] = NULL;
-  createProcess(loop, atoi(args[0]), argv);
+  createProcess(loop, 0, argv);
 }
 
 void phyloS(char args[MAX_ARGS][MAX_ARG_LEN]){

@@ -11,6 +11,8 @@ typedef struct {
 
 int phylosofersCount = INITIALPHYLOSOFERS;
 Phylosofer phylosofers[MAXPHYLOS];
+int pipeW;
+int pipeR;
 
 void launchPhylosofer(int number);
 void admin(int semId);
@@ -56,6 +58,9 @@ void phylosofer(int argc, char **argv){
 }
 
 void phyloMaster(int argc, char **argv) {
+    pipeR = atoi(argv[1]);    
+    pipeW = atoi(argv[2]);
+    pipesOpen(pipeR, pipeW);
     phylosofersCount = INITIALPHYLOSOFERS;
     int semId = sem_open(SEMPHYLO,1);
     printInst();
@@ -65,29 +70,31 @@ void phyloMaster(int argc, char **argv) {
     
     admin(semId);
     sem_close(semId);
+    putChar(pipeW, EOF);
+    pipesClose(pipeR, pipeW);
     myExit();
 }
 
 void admin(int semId) {
+    char c;
     while (1) {
-        char buf[1];
-        buf[0] = 0;
-        if (readKeyboard(buf, 1)) {
-            if (buf[0]=='e'){
+        c = getChar(pipeR);
+        if (c != '\0') {
+            if (c=='e' || c == EOF){
                 closePhylosfers(semId);
                 return;
-            } else if (buf[0] == 'a' ){
+            } else if (c == 'a' ){
                 if (phylosofersCount<MAXPHYLOS) {
-                    print(STDOUT, "A new phylosophers join. You have %d philosophers now\n",phylosofersCount+1);
+                    print(pipeW, "A new phylosophers join. You have %d philosophers now\n",phylosofersCount+1);
                     addPhylosopher();
                 } else 
-                    print(STDOUT, "The table is full you can\'t add more than %d philosophers.\n",MAXPHYLOS);
-            } else if (buf[0] == 'r' ) {
+                    print(pipeW, "The table is full you can\'t add more than %d philosophers.\n",MAXPHYLOS);
+            } else if (c == 'r' ) {
                 if (phylosofersCount>MINPHYLOS) {
-                    print(STDOUT, "You remove one philosopher of the problem, %d left\n",phylosofersCount-1);
+                    print(pipeW, "You remove one philosopher of the problem, %d left\n",phylosofersCount-1);
                     removePhylosofer();
                 } else {
-                    print(STDOUT, "Can't leave only one philosopher he will be sad\n");
+                    print(pipeW, "Can't leave only one philosopher he will be sad\n");
                 }
             }
         }
@@ -95,20 +102,20 @@ void admin(int semId) {
 }
 
 void printInst() {
-    print(STDOUT, "Welcome to the philosophers pronlem!\n");
-    print(STDOUT, "You are going to start with %d philosophers\nYou have a maximun of %d philosophers and have a minimun of %d\n", phylosofersCount, MAXPHYLOS, MINPHYLOS);
-    print(STDOUT, "You can add then with \'a\', delete them with \'d\' and exit with \'e\'.\n");
-    print(STDOUT, "The state of each will be displayed as E (EATING) or . (HUNGRY)\n");
+    print(pipeW, "Welcome to the philosophers problem!\n");
+    print(pipeW, "You are going to start with %d philosophers\nYou have a maximun of %d philosophers and have a minimun of %d\n", phylosofersCount, MAXPHYLOS, MINPHYLOS);
+    print(pipeW, "You can add then with \'a\', delete them with \'d\' and exit with \'e\'.\n");
+    print(pipeW, "The state of each will be displayed as E (EATING) or . (HUNGRY)\n");
 }
 
 void printPhylos(){ 
     for (int i = 0; i < phylosofersCount; i++) {
         if (phylosofers[i].state==EATING)
-            print(STDOUT, "E");
+            print(pipeW, "E");
         else
-            print(STDOUT, ".");
+            print(pipeW, ".");
     }
-    print(STDOUT, "\n");
+    print(pipeW, "\n");
 }
 
 void closePhylosfers(int semId){
