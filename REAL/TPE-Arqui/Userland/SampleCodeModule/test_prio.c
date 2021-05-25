@@ -3,9 +3,7 @@
 void endless_loop();
 
 uint64_t my_getpid(){
-  uint64_t pid;
-  getPidSyscall(&pid);
-  return pid;
+  return getPid();
 }
 
 uint64_t my_create_process(char * name){ // devuelve el pid nuevo

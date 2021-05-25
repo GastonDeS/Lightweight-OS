@@ -75,11 +75,9 @@ void test_pipe(char args[MAX_ARGS][MAX_ARG_LEN]){
   createProcess(testPipe,1,argv);
 }
 
-void getPid(char args[MAX_ARGS][MAX_ARG_LEN]) {
+void getPidS(char args[MAX_ARGS][MAX_ARG_LEN]) {
   putChar(STDOUT, '\n');
-  uint64_t pid ;
-  getPidSyscall(&pid);
-  print(STDOUT, "Pid: %d",pid);
+  print(STDOUT, "Pid: %d",getPid());
 }
 
 void niceS(char args[MAX_ARGS][MAX_ARG_LEN]){
