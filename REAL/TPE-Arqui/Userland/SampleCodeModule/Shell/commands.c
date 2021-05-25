@@ -72,7 +72,7 @@ void test_pipe(char args[MAX_ARGS][MAX_ARG_LEN]){
   char *argv[2];
 	argv[0] = "writer";
 	argv[1] = NULL;
-  createProcess(testPipe,1,argv);
+  createProcess(testPipe,0,argv);
 }
 
 void getPid(char args[MAX_ARGS][MAX_ARG_LEN]) {
@@ -159,11 +159,19 @@ void echo(char args[MAX_ARGS][MAX_ARG_LEN]) {
 }
 
 void test_syncS(char args[MAX_ARGS][MAX_ARG_LEN]){
-  test_sync();
+  print(STDOUT, "\n");
+  char *arg[2];
+  arg[0] = "test_sync";
+  arg[1] = NULL;
+  createProcess(test_sync,0,arg);
 }
 
 void test_no_syncS(char args[MAX_ARGS][MAX_ARG_LEN]){
-  test_no_sync();
+  print(STDOUT, "\n");
+  char *arg[2];
+  arg[0] = "test_no_sync";
+  arg[1] = NULL;
+  createProcess(test_no_sync,0,arg);
 }
 
 void mem(char args[MAX_ARGS][MAX_ARG_LEN]){
@@ -223,7 +231,7 @@ void ProcessTester(char args[MAX_ARGS][MAX_ARG_LEN]) {
   char *arg[2];
   arg[0] = "test_processes";
   arg[1] = NULL;
-  createProcess(test_processes,1,arg);
+  createProcess(test_processes,0,arg);
 }
 
 void pipe(char args[MAX_ARGS][MAX_ARG_LEN]){

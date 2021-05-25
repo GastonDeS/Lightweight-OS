@@ -54,6 +54,7 @@ void test_sync(int argc,char ** argv){
     argv1[4] = NULL;
     createProcess(inc,0, argv1);
   }
+  myExit();
 }
 
 void test_no_sync(){
@@ -76,4 +77,5 @@ void test_no_sync(){
     argv1[4] = NULL;
     createProcess(inc,0, argv1);
   }
+  myExit();
 }
