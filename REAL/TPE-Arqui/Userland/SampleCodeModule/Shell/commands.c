@@ -132,13 +132,9 @@ void clear(char args[MAX_ARGS][MAX_ARG_LEN]) {
 }
 
 void help(char args[MAX_ARGS][MAX_ARG_LEN]) {
+  print(STDOUT, "\nCommands with the (*) symbol can be connected via pipe like this : cmd1 | cmd2\n");
+  print(STDOUT, "Commands with the (*) symbol can be ran in background like this : cmd &\n");
   print(STDOUT, "\nAVAILABLE COMMANDS: \n");
-  print(STDOUT, "unblockPid [Pid] - unblocks a process given a pid\n");
-  print(STDOUT, "blockPid [Pid] - blocks a process given a pid\n");
-  print(STDOUT, "ps - Prints all the process pcb\n");
-  print(STDOUT, "getPid - Prints the pid of the current process\n");
-  print(STDOUT, "kill [Pid] - kills a process given a Pid\n");
-  print(STDOUT, "time - Displays current time and date\n");
   print(STDOUT, "echo [...] - Prints the given arguments in the shell (%d words max)\n", MAX_ARGS);
   print(STDOUT, "chess - Starts a chess game\n");
   print(STDOUT, "printmem [address] - Shows 32 bytes of memory from the given address\n");
@@ -146,6 +142,28 @@ void help(char args[MAX_ARGS][MAX_ARG_LEN]) {
   print(STDOUT, "clear - clears the shell\n");
   print(STDOUT, "divZero - Forces a divZero exception (For testing purposes)\n");
   print(STDOUT, "invalidOPCode - Forces a invalid opcode exception (For testing purposes)\n");
+  print(STDOUT, "time - Displays current time and date\n");
+  print(STDOUT, "mem - Prints the Memory State\n");
+  print(STDOUT, "ps - Prints all the process pcb\n");
+  print(STDOUT, "getPid - Prints the pid of the current process\n");
+  print(STDOUT, "kill [Pid] - kills a process given a Pid\n");
+  print(STDOUT, "nice - [Pid] [Priority] changes the process priority to the one stated\n");
+  print(STDOUT, "blockPid [Pid] - blocks a process given a pid\n");
+  print(STDOUT, "unblockPid [Pid] - unblocks a process given a pid\n");
+  print(STDOUT, "sem - Prints all the active semaphores\n");
+  print(STDOUT, "pipe - Prints all the active pipes\n");
+  print(STDOUT, "(*)loop - makes a loop process witch prints its pid\n");
+  print(STDOUT, "(*)cat - Prints stdin as it receves it\n");
+  print(STDOUT, "(*)wc - Counts the number of lines of the input\n");
+  print(STDOUT, "(*)filter - Prints the input without the vowels\n");
+  print(STDOUT, "(*)phylo - Phylosophers problem\n");
+  print(STDOUT, "(*)filter - Prints the input without the vowels\n");
+  print(STDOUT, "test_mm - tests the memory on background, you can stop it with kill\n");
+  print(STDOUT, "test_prio - tests the priority changes background\n");
+  print(STDOUT, "test_processes - creation of processes on background\n");
+  print(STDOUT, "test_sync - tests the process synchronization using semaphores on background\n");
+  print(STDOUT, "test_pipe - tests the pipe system implemented in background\n");
+  print(STDOUT, "memCheck - prints the state of the memory when not using buddy \n");
 }
 
 void echo(char args[MAX_ARGS][MAX_ARG_LEN]) {
