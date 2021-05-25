@@ -201,7 +201,11 @@ void memCheck(char args[MAX_ARGS][MAX_ARG_LEN]){
 }
 
 void test_memS(char args[MAX_ARGS][MAX_ARG_LEN]){
-  test_mm();
+  print(STDOUT, "\n");
+  char *arg[2];
+  arg[0] = "test_mem";
+  arg[1] = NULL;
+  createProcess(test_mm,0,arg);
 }
 
 void prioTester(char args[MAX_ARGS][MAX_ARG_LEN]) {
@@ -209,7 +213,7 @@ void prioTester(char args[MAX_ARGS][MAX_ARG_LEN]) {
   char *arg[2];
   arg[0] = "test_prio";
   arg[1] = NULL;
-  createProcess(test_prio,1,arg);
+  createProcess(test_prio,0,arg);
 }
 
 void ProcessTester(char args[MAX_ARGS][MAX_ARG_LEN]) {

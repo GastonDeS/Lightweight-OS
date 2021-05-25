@@ -11,8 +11,7 @@ void test_mm(){
   uint32_t total;
 
   print(STDOUT, "\n");
-  int k;
-  for(k=0; k<N; k++){
+  while(1){
     rq = 0;
     total = 0;
 
@@ -48,8 +47,7 @@ void test_mm(){
     for (i = 0; i < rq; i++)
       if (mm_rqs[i].address != NULL) {
         free(mm_rqs[i].address);
-      }
-    print(STDOUT, "vuelta : %d de %d \n", k + 1, N); 
+      } 
   } 
 }
 
