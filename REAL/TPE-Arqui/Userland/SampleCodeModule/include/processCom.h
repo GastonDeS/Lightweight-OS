@@ -6,6 +6,8 @@
 #include <unistd.h>
 #include <stddef.h>
 #include <processCom.h>
+#include <pipe.h>
+#include <stdlib.h>
 
 
 

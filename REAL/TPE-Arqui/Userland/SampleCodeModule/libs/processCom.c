@@ -93,11 +93,9 @@ void loop(int argc, char **argv) {
     int pipeR = atoi(argv[1]);    
     int pipeW = atoi(argv[2]);
     pipesOpen(pipeR, pipeW);
-    int flagEnd = 1;
     putChar(pipeW, '\n');
     uint64_t pid;
     uint64_t i;
-    char c;
     while(1) {
         getPidSyscall(&pid);
         print(pipeW, "Pid: %d ", pid );
