@@ -51,7 +51,7 @@ void phylosofer(int argc, char **argv){
             }
         }
         sem_post(semId);
-        yieldSyscall();
+        yield();
     }
     sem_close(semId);
     myExit();

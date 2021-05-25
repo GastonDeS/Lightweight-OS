@@ -10,7 +10,7 @@ void escritor(int argc, char** argv) {
         sem_wait(semId);
         pipeWrite(id,argv[2],10);
         sem_post(semId);
-        yieldSyscall();
+        yield();
     }
     sem_close(semId);
     pipeClose(id);

@@ -40,7 +40,7 @@ void chessS(char args[MAX_ARGS][MAX_ARG_LEN]);
 void blockPid(char args[MAX_ARGS][MAX_ARG_LEN]);
 void unblockPid(char args[MAX_ARGS][MAX_ARG_LEN]);
 void ps(char args[MAX_ARGS][MAX_ARG_LEN]);
-void getPid(char args[MAX_ARGS][MAX_ARG_LEN]);
+void getPidS(char args[MAX_ARGS][MAX_ARG_LEN]);
 void killS(char args[MAX_ARGS][MAX_ARG_LEN]);
 void help(char args[MAX_ARGS][MAX_ARG_LEN]);
 void echo(char args[MAX_ARGS][MAX_ARG_LEN]);

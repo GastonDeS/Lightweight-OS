@@ -18,6 +18,12 @@ void myExit(){
     while (1);
 }
 
+uint64_t getPid(){
+    uint64_t pid;
+    getPidSyscall(&pid);
+    return pid;
+}
+
 int nice(uint64_t pid, uint64_t prio){
     int ans;
     niceSyscall(pid, prio,&ans);
