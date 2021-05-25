@@ -9,7 +9,7 @@
 #include <pipe.h>
 #include <stddef.h>
 
-#define INITIALPHYLOSOFERS 9
+#define INITIALPHYLOSOFERS 5
 #define MAXPHYLOS 10
 #define MINPHYLOS 2
 #define SEMPHYLO "phylos"
