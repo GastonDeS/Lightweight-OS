@@ -1,3 +1,5 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #ifndef EXC_DISPATCHER
 #define EXC_DISPATCHER
 
@@ -25,7 +27,7 @@ void exceptionDispatcher(uint64_t exc, registerStruct * registers) {
 
 void printException(char *exception){
   clearDisplay(0x0000ff);
-  writeStr("A fatal exception",19,200,200,0xffffff,0x000000,2,1);
+  writeStr("A fatal exception ",19,200,200,0xffffff,0x000000,2,1);
   writeStr(exception,3,200+18*8*2,200,0xffffff,0x000000,2,1);
   writeStr("has ocurred",12,200+18*8*2+3*8*2,200,0xffffff,0x000000,2,1);
   writeStr("wait",5,200,400,0xffffff,0x000000,2,1);

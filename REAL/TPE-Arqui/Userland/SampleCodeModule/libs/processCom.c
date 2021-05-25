@@ -1,3 +1,5 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <processCom.h>
 
 int notAVocal(char c);
@@ -13,7 +15,7 @@ void cat(int argc, char **argv) {
     int flagEnd = 1;
     while (flagEnd) {
         c = getChar(pipeR);
-        if (c == EOF) {
+        if (c == (char)EOF) {
             flagEnd = 0;
         }
         if(!isPipe(pipeR))
@@ -21,13 +23,13 @@ void cat(int argc, char **argv) {
         if (flagEnd) {
             toPrint[i++] = c;
         }
-        if (c == '\n' || c==EOF) {
+        if (c == '\n' || c==(char)EOF) {
             toPrint[i] = 0;
             print(pipeW, "%s", toPrint);
             i = 0;
         }
     }
-    putChar(pipeW, EOF);
+    putChar(pipeW, (char)EOF);
     pipesClose(pipeR, pipeW);
     myExit();
 }
@@ -42,7 +44,7 @@ void wc(int argc, char **argv) {
     char c;
     while (flagEnd) {
         c = getChar(pipeR);
-        if (c == EOF) {
+        if (c == (char)EOF) {
             flagEnd = 0;
         }
         if (!isPipe(pipeR)) {
@@ -69,7 +71,7 @@ void filter(int argc, char **argv) {
     char c;
     while (flagEnd) {
         c = getChar(pipeR);
-        if (c == EOF) {
+        if (c == (char)EOF) {
             flagEnd = 0;
         }
         if (!isPipe(pipeR)) {
@@ -78,13 +80,13 @@ void filter(int argc, char **argv) {
         if (notAVocal(c) && flagEnd) {
             toPrint[i++] = c;
         }
-        if (c == '\n' || c == EOF) {
+        if (c == '\n' || c == (char)EOF) {
             toPrint[i] = 0;
             print(pipeW, "%s", toPrint);
             i = 0;
         }
     }
-    putChar(pipeW, EOF);
+    putChar(pipeW, (char)EOF);
     pipesClose(pipeR, pipeW);
     myExit();
 }

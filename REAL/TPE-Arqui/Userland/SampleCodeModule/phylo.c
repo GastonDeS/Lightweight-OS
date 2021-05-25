@@ -1,3 +1,5 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <phylo.h>
 
 typedef enum {WAITING,EATING}State; 
@@ -80,7 +82,7 @@ void admin(int semId) {
     while (1) {
         c = getChar(pipeR);
         if (c != '\0') {
-            if (c=='e' || c == EOF){
+            if (c=='e' || c == (char)EOF){
                 closePhylosfers(semId);
                 return;
             } else if (c == 'a' ){

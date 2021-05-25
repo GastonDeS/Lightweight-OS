@@ -1,3 +1,5 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <listADT.h>
 
 typedef struct node {
@@ -24,6 +26,7 @@ int size(const listADT list);
 
 listADT newList(int elemSize, int (*equals)(void* elem1, void* elem2)){
     listADT list = malloc(sizeof(struct listCDT));
+    if (list==NULL) return NULL;
     list->first = NULL;
     list->valueBytes = elemSize;
     list->equals = equals;
@@ -34,6 +37,7 @@ listADT newList(int elemSize, int (*equals)(void* elem1, void* elem2)){
 
 void * ListToArray(listADT list){
     void **array = malloc(sizeof(void*)*(size(list)+1));
+    if (array==NULL) return NULL;
     nodeP current = list->first;
     int i=0;
     while(current != NULL){
@@ -104,6 +108,7 @@ void* pop(listADT list){
         return NULL;
 
     void* result = malloc(list->valueBytes);
+    if (result==NULL) return NULL;
     memcpy(result, list->first->value, list->valueBytes);
 
     deleteFirstElem(list);

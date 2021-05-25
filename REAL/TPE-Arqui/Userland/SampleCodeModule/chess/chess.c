@@ -1,3 +1,5 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <chess.h>
 #include <unistd.h>
 
@@ -202,7 +204,7 @@ static void drawBoard(){
                 }
         }
     }
-    int startT,endT,startL,endL,stepT,stepL;
+    int startT=0,endT,startL=0,endL,stepT,stepL;
     switch (rotate) {
     case 0:
         startT=startL=0;

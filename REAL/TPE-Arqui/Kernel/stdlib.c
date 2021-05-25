@@ -1,3 +1,5 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #ifndef STD_LIB_C
 #define STD_LIB_C value
 
@@ -89,7 +91,6 @@ int intToBase(unsigned long long num, int base, char*buffer){
     int c = 0;
     int i=0;
     int remainder = 0;
-    if(num==0) stack[i++]='0';
     while(num!=0){
         remainder = num % base;
         stack[i]=remainder>=10? remainder+'A'-10:remainder+'0';
@@ -139,7 +140,7 @@ int intToString(int num, char * buffer){
     while (num != 0)
     {
         int rem = num % 10;
-        buffer[i++] = (rem > 9)? (rem-10) + 'a' : rem + '0';
+        buffer[i++] = rem + '0';
         num = num/10;
     }
   
@@ -200,6 +201,7 @@ void addSpace(char *dest, int* from, int strSize, int numSpace){
 char* strCopy(char* str){
   int strSize = strlen(str);
   char *copy = (char*) malloc(sizeof(char*)*strSize);
+  if (copy == NULL) return 0;
   strcpy(copy, str);
   return copy;
 }

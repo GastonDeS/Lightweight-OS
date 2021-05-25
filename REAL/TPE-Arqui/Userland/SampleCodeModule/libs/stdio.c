@@ -1,3 +1,5 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #ifndef STD_IO
 #define STD_IO
 
@@ -17,10 +19,11 @@ void scan(int pipeR, int pipeW, char * buff) {
   int ch = 0;
   int index = 0;
   while (ch != '\n') {
-    if (ch != 0)
+    if (ch != 0){
       buff[index++] = ch;
       putChar(pipeW, ch);
       ch = getChar(pipeR);
+    }
   }
   putChar(pipeW, '\n');
 }
@@ -74,7 +77,7 @@ void print(int pipeW, char * str, ...) {
 
 void putChar(int pipeW,char ch) {
   if (pipeW == -1) {
-    if (ch != EOF)
+    if (ch != (char)EOF)
       updateConsolePointer(&ch, 1);
   }else {
     pipeWrite(pipeW, &ch, 1);

@@ -1,3 +1,5 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #ifndef SHELL
 #define SHELL
 
@@ -60,7 +62,7 @@ void writeToLines(char * buff, int dim) {
     } else if (buff[i] == '\b') {
       if (lineCursor > 0) {
         lines[currentLineNumber%(TOTAL_LINES-1)][lineCursor-1] = lines[currentLineNumber%(TOTAL_LINES-1)][lineCursor];
-        lineCursor-=lineCursor==0?0:1; //TODO: checkear por que el lineCursor-- se va negativo aunque no deberia entrar al if
+        lineCursor--;//=lineCursor==0?0:1; //TODO: checkear por que el lineCursor-- se va negativo aunque no deberia entrar al if
       }
     } else {
       lines[currentLineNumber%(TOTAL_LINES-1)][lineCursor] = buff[i];

@@ -1,3 +1,5 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <scheduler.h>
 #include <listADT.h> 
 #include <stddef.h>
@@ -73,6 +75,10 @@ void changeProcess(){
 
 void nice(uint64_t pid, uint64_t priority, int *result){
     process *processAux = malloc(sizeof(process));
+    if (processAux==NULL) {
+        *result = -1;
+        return;
+    }
     process *toFree = processAux;
     (*processAux).pid = pid;
     processAux = (process*)getElem(processList, processAux);
@@ -241,6 +247,7 @@ void unlockProcess(uint64_t pid, int *result){
 
 int changeState(uint64_t pid , State state){
     process *processAux = malloc(sizeof(process));
+    if (processAux == NULL) return 0;
     process *toFree = processAux;
     (*processAux).pid = pid;
     processAux = (process*)getElem(processList, processAux);

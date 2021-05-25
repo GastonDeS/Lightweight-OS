@@ -1,12 +1,14 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <testPipe.h>
 
-int n = 10;
+int number = 10;
 
 void escritor(int argc, char** argv) {
     int id = atoi(argv[1]);
     int semId = sem_open(SEM_NAME,1);
     pipeOpen(id);
-    for(int i=0; i< n; i++){
+    for(int i=0; i< number; i++){
         sem_wait(semId);
         pipeWrite(id,argv[2],10);
         sem_post(semId);
@@ -21,7 +23,7 @@ void lector(int  argc, char **argv) {
     int id = atoi(argv[1]);
     char *pipeBuff = malloc(sizeof(char)*15);
     pipeOpen(id);
-    for(int i=0; i<n*3; i++){
+    for(int i=0; i<number*3; i++){
         pipeRead(id,pipeBuff,15);
         print(STDOUT, pipeBuff);
         print(STDOUT, " ");

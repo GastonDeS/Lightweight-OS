@@ -1,3 +1,5 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #ifndef STD_LIB_C
 #define STD_LIB_C value
 
@@ -89,7 +91,6 @@ int intToBase(unsigned long long num, int base, char*buffer){
     int c = 0;
     int i=0;
     int remainder = 0;
-    if(num==0) stack[i++]='0';
     while(num!=0){
         remainder = num % base;
         stack[i]=remainder>=10? remainder+'A'-10:remainder+'0';
@@ -139,7 +140,7 @@ int intToString(int num, char * buffer){
     while (num != 0)
     {
         int rem = num % 10;
-        buffer[i++] = (rem > 9)? (rem-10) + 'a' : rem + '0';
+        buffer[i++] =  rem + '0';
         num = num/10;
     }
   
@@ -185,9 +186,9 @@ char * strcpy(char * dest, char * src) {
 }
 
 void* malloc(long int size){
-  void **result = NULL; 
-  mallocSyscall(size, result);
-  return (void*) (*result);
+  void *result = NULL; 
+  mallocSyscall(size, &result);
+  return (void*) (result);
 }
 
 void free(void *ptr){
@@ -195,15 +196,15 @@ void free(void *ptr){
 }
 
 void* sbrk(long int size){
-  void **result = NULL; 
-  sbrkSyscall(size, result);
-  return (void*) (*result);
+  void *result = NULL; 
+  sbrkSyscall(size, &result);
+  return (void*) (result);
 }
 
 void* realloc(void *ptr, long int newSize){
-  void **result = NULL; 
-  reallocSyscall(ptr, newSize, result);
-  return (void*) (*result);
+  void *result = NULL; 
+  reallocSyscall(ptr, newSize, &result);
+  return (void*) (result);
 }
 
 

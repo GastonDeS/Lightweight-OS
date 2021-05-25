@@ -1,3 +1,5 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #ifndef VIDEO_DRIVER
 #define VIDEO_DRIVER
 #include <video_driver.h>

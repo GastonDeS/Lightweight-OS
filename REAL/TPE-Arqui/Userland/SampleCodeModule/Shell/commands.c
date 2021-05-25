@@ -1,3 +1,5 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <commands.h>
 
 
@@ -25,7 +27,7 @@ void printmem(char args[MAX_ARGS][MAX_ARG_LEN]) {
     with0x = 2;
   }
   uint64_t aux = atohex(&args[1][with0x]);
-  if (aux >= 0) {
+  // if (aux >= 0) {
     for (int i = 0; i < 32; i++, aux++) {
       uint64_t mem = 1;
       getMemSyscall(aux, &mem);
@@ -35,9 +37,9 @@ void printmem(char args[MAX_ARGS][MAX_ARG_LEN]) {
         print(STDOUT, "-0x%x: %x\n",aux, mem);
       }
     }
-  } else {
-    print(STDOUT, "INVALID ADDRESS\n");
-  }
+  // } else {
+    // print(STDOUT, "INVALID ADDRESS\n");
+  // }
 }
 
 void blockPid(char args[MAX_ARGS][MAX_ARG_LEN]){
@@ -162,6 +164,7 @@ void help(char args[MAX_ARGS][MAX_ARG_LEN]) {
   print(STDOUT, "test_prio - tests the priority changes background\n");
   print(STDOUT, "test_processes - creation of processes on background\n");
   print(STDOUT, "test_sync - tests the process synchronization using semaphores on background\n");
+  print(STDOUT, "test_no_sync - tests the process synchronization whitout using semaphores on background\n");
   print(STDOUT, "test_pipe - tests the pipe system implemented in background\n");
   print(STDOUT, "memCheck - prints the state of the memory when not using buddy \n");
 }

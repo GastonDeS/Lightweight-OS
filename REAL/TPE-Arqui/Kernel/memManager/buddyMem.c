@@ -1,8 +1,10 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #ifdef MM_BUDDY
 #include "MemMang.h"
 //para test con el malloc del heap hacer free a final
 
-#define HEAP_SIZE 1024*1024*4  // 4Mb entran aprox 1024 4kb sirve masomenos 
+#define HEAP_SIZE (1024*1024*4)  // 4Mb entran aprox 1024 4kb sirve masomenos 
 
 //void *myStartMemory = (void *)0x600000;
 void *myStartMemory =(void *) 0x600000;
@@ -27,7 +29,6 @@ http://brokenthorn.com/Resources/OSDev26.html
    ya que debemos sumarle el tamaño del header. De esta manera, no se busca en la liste del
    nivel 3, sino en la de nivel 2.
 */
-#define HEAP_SIZE 1024*1024*4 
 
 typedef struct BUDDY_HEADER {
    struct BUDDY_HEADER* next;
@@ -37,7 +38,7 @@ typedef struct BUDDY_HEADER {
 #define BUDDY_HEADER_SIZE sizeof(BUDDY_HEADER)
 
 #define BLOCKS_PER_LEVEL(level) (int64_t)(1<<(level))
-#define SIZE_OF_BLOCKS_AT_LEVEL(level) (uint64_t)(1 << (MAX_BLOCK_SIZE_LOG2 - level))
+#define SIZE_OF_BLOCKS_AT_LEVEL(level) (uint64_t)(1 << (MAX_BLOCK_SIZE_LOG2 - (level)))
 
 #define MIN_BLOCK_SIZE_LOG2 5
 #define MIN_BLOCK_SIZE ((uint64_t) 1<<MIN_BLOCK_SIZE_LOG2)
