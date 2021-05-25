@@ -6,7 +6,6 @@ void escritor(int argc, char** argv) {
     int id = atoi(argv[1]);
     int semId = sem_open(SEM_NAME,1);
     pipeOpen(id);
-    int result;
     for(int i=0; i< n; i++){
         sem_wait(semId);
         pipeWrite(id,argv[2],10);
@@ -21,7 +20,6 @@ void escritor(int argc, char** argv) {
 void lector(int  argc, char **argv) {
     int id = atoi(argv[1]);
     char *pipeBuff = malloc(sizeof(char)*15);
-    int result;
     pipeOpen(id);
     for(int i=0; i<n*3; i++){
         pipeRead(id,pipeBuff,15);

@@ -137,7 +137,8 @@ void exceptionProcess(){
     processList = NULL;
 }
 
-void freeEP(process * aux) {
+void freeEP(void * aux1) {
+    process *aux = (process *)aux1;
     free(aux->EP);
     free(aux->name);
     for (int i = 0; i < aux->argc; i++)
@@ -173,7 +174,7 @@ void getPid(uint64_t *pid) {
 void ps(char *result){
     process **arrayOfProcess = ListToArray(processList);
     int i = 0;
-    int j = 0, k =0;
+    int j = 0;
     char statesA[4][8] = {"Error","Blocked","Killed","Ready"}; 
     char title[51] = "pid   prio   state     F/B     SP     BP      name";
     strcat(result,title,&j);
@@ -192,10 +193,10 @@ void ps(char *result){
         movIndex(result,23,&j);
         result[j++] = arrayOfProcess[i]->foreground ? 'F' : 'B';
         movIndex(result,31,&j);
-        intToBase(arrayOfProcess[i]->SP,16,SP);
+        intToBase((uint64_t)arrayOfProcess[i]->SP,16,SP);
         strcat(result,SP,&j);
         movIndex(result,38,&j);
-        intToBase(arrayOfProcess[i]->BP,16,BP);
+        intToBase((uint64_t)arrayOfProcess[i]->BP,16,BP);
         strcat(result,BP,&j);
         movIndex(result,46,&j);
         strcat(result,arrayOfProcess[i]->name,&j);
