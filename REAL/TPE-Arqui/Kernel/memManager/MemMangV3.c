@@ -220,10 +220,10 @@ void checkMemory(struct checkMemdata *data){
                 data->numError ++;
             }else
                 freeFlag = 1;
-        }else
+        }else{
             data->bytesUsedByUser += current->size;
             freeFlag = 0;
-
+        }
         if (current->next != NULL){
             long notUsed = (long)current->next - (long)current - (int)current->size - INFO_BLOCK_SIZE;
             if (notUsed > MAX_DIFF_SIZE){
