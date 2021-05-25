@@ -19,21 +19,6 @@ uint64_t my_create_processProcess(char * name){
   return createProcess(endless_loopProcess,0,args);
 }
 
-uint64_t my_killProcess(uint64_t pid){
-  kill(pid);
-  return 0;
-}
-
-uint64_t my_blockProcess(uint64_t pid){
-  block(pid);
-  return 0;
-}
-
-uint64_t my_unblockProcess(uint64_t pid){
-  unblock(pid);
-  return 0;
-}
-
 #define MAX_PROCESSES 10 //Should be around 80% of the the processes handled by the kernel
 
 enum State {ERROR, RUNNING, BLOCKED, KILLED};
@@ -71,7 +56,7 @@ void test_processes(){
         switch(action){
           case 0:
             if (p_rqs[rq].state == RUNNING || p_rqs[rq].state == BLOCKED){
-              if (my_killProcess(p_rqs[rq].pid) == -1){          // TODO: Port this as required
+              if (kill(p_rqs[rq].pid) == -1){          // TODO: Port this as required
                 print(STDOUT, "Error killing process\n");        // TODO: Port this as required
                 return;
               }
@@ -82,7 +67,7 @@ void test_processes(){
 
           case 1:
             if (p_rqs[rq].state == RUNNING){
-              if(my_blockProcess(p_rqs[rq].pid) == -1){          // TODO: Port this as required
+              if(block(p_rqs[rq].pid) == -1){          // TODO: Port this as required
                 print(STDOUT, "Error blocking process\n");       // TODO: Port this as required
                 return;
               }
@@ -95,7 +80,7 @@ void test_processes(){
       // Randomly unblocks processes
       for(rq = 0; rq < MAX_PROCESSES; rq++)
         if (p_rqs[rq].state == BLOCKED && GetUniform(2) % 2){
-          if(my_unblockProcess(p_rqs[rq].pid) == -1){            // TODO: Port this as required
+          if(unblock(p_rqs[rq].pid) == -1){            // TODO: Port this as required
             print(STDOUT, "Error unblocking process\n");         // TODO: Port this as required
             return;
           }
