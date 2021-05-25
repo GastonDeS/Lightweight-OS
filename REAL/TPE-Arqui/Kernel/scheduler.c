@@ -72,10 +72,6 @@ void changeProcess(){
 }
 
 void nice(uint64_t pid, uint64_t priority, int *result){
-    if (current->pid!=0 && pid!= current->pid) {
-        *result = -1;
-        return;
-    }
     process *processAux = malloc(sizeof(process));
     process *toFree = processAux;
     (*processAux).pid = pid;

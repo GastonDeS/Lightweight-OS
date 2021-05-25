@@ -61,7 +61,7 @@ void test_no_sync(){
   int i;
   global = 0;
 
-  print(STDOUT, "\nCREATING PROCESSES...(WITH SEM)\n");
+  print(STDOUT, "\nCREATING PROCESSES...(WITHOUT SEM)\n");
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++){
     char *argv1[5];
     argv1[0] = "inc+";

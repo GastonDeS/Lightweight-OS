@@ -64,6 +64,7 @@ void test_sync(){
     my_create_process("inc", 1, 1, 1000000);
     my_create_process("inc", 1, -1, 1000000);
   }
+  myExit();
 }
 
 void test_no_sync(){
@@ -77,6 +78,7 @@ void test_no_sync(){
     my_create_process("inc", 0, 1, 1000000);
     my_create_process("inc", 0, -1, 1000000);
   }
+  myExit();
 }
 
 int main(){
