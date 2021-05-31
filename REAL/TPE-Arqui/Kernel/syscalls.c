@@ -194,6 +194,10 @@ void syscallHandler(registerStruct * registers) {
     case 37:
     pipeOpen((int) registers->rdi, (int*) registers->rsi);
     break;
+
+    case 38:
+    // shmOpen((int) registers->rsi ,(int) registers->rdx,(void *) registers->rdi);
+    break;
   }
 }
 
