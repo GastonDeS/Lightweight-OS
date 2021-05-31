@@ -309,3 +309,8 @@ void phyloS(char args[MAX_ARGS][MAX_ARG_LEN]){
   argv[3] = NULL;
   createProcess(phyloMaster, atoi(args[0]),argv);
 }
+
+void testShm(char args[MAX_ARGS][MAX_ARG_LEN]){
+  print(STDOUT, "\n");
+  test_shm();
+}

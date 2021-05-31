@@ -40,9 +40,9 @@ int isAPipe(char *name);
 int isAmpersand(char * name);
 
 char noBuiltIn[][MAX_ARG_LEN]={"loop","filter","wc","cat","phylo"};
-char commandsNames[][MAX_ARG_LEN]={"pipe","loop","filter","wc","cat","phylo","test_pipe","test_no_sync","test_mm","memCheck","mem","sem","test_processes","test_prio","test_sync","nice","unblockPid","blockPid","ps","getPid","kill","time","help","inforeg","chess","printmem","divZero","invalidOPCode","clear","echo"};
-void  (* run[])(char args[MAX_ARGS][MAX_ARG_LEN]) = {pipe,loopS,filterS,wcS,catS,phyloS,test_pipe,test_no_syncS,test_memS,memCheck,mem,sem,ProcessTester,prioTester,test_syncS,niceS,unblockPid,blockPid,ps,getPidS,killS,time,help,inforeg,chessS,printmem,divZero,invalidOPCode,clear,echo};
-static int totalCommands = 30;
+char commandsNames[][MAX_ARG_LEN]={"pipe","loop","filter","wc","cat","phylo","test_pipe","test_no_sync","test_mm","memCheck","mem","sem","test_processes","test_prio","test_sync","nice","unblockPid","blockPid","ps","getPid","kill","time","help","inforeg","chess","printmem","divZero","invalidOPCode","clear","echo","test_shm"};
+void  (* run[])(char args[MAX_ARGS][MAX_ARG_LEN]) = {pipe,loopS,filterS,wcS,catS,phyloS,test_pipe,test_no_syncS,test_memS,memCheck,mem,sem,ProcessTester,prioTester,test_syncS,niceS,unblockPid,blockPid,ps,getPidS,killS,time,help,inforeg,chessS,printmem,divZero,invalidOPCode,clear,echo,testShm};
+static int totalCommands = 31;
 static int totalNoBuiltIn = 5;
 
 void init_shell(int argc, char **argv) {

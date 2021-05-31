@@ -55,4 +55,5 @@ void catS(char args[MAX_ARGS][MAX_ARG_LEN]);
 void wcS(char args[MAX_ARGS][MAX_ARG_LEN]);
 void filterS(char args[MAX_ARGS][MAX_ARG_LEN]);
 void loopS(char args[MAX_ARGS][MAX_ARG_LEN]);
+void testShm(char args[MAX_ARGS][MAX_ARG_LEN]);
 #endif
