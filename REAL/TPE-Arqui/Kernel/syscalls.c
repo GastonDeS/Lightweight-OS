@@ -17,6 +17,7 @@
 #include <sem.h>
 #include <checkMemdata.h>
 #include <pipeDriver.h>
+#include <shmDriver.h>
 
 void getDateInfo(uint8_t mode, uint8_t * target);
 
