@@ -6,6 +6,6 @@
 
 #define SHM_SIZE 10
 
-void shmOpen(int id, int size, void *returnValue);
+void shmOpen(int id, int size, void **returnValue);
 
 #endif

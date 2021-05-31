@@ -197,7 +197,7 @@ void syscallHandler(registerStruct * registers) {
     break;
 
     case 38:
-    shmOpen((int) registers->rsi ,(int) registers->rdx,(void *) registers->rdi);
+    shmOpen((int) registers->rsi ,(int) registers->rdx,(void **) registers->rdi);
     break;
   }
 }
