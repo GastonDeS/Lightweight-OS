@@ -1,6 +1,7 @@
 #include <shmOpen.h>
 #include <unistd.h>
 #include <stdint.h>
+#include <stdio.h>
 
 void test_shm();
 void slowInc2(uint64_t *p, uint64_t inc);

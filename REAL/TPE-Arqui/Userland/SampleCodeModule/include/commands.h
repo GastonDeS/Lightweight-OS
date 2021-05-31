@@ -23,6 +23,7 @@
 #include <testPipe.h>
 #include <phylo.h>
 #include <processCom.h>
+#include <sharedMemory.h>
 
 
 void phyloS(char args[MAX_ARGS][MAX_ARG_LEN]);

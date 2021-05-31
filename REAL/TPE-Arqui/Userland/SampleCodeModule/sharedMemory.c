@@ -21,6 +21,7 @@ void inc2(){
   	for (i = 0; i < N; i++)
 		slowInc2(ptr, 1);
 
+	print(-1,"end inc2: %d", *ptr);
 	myExit();
 }
 
@@ -36,6 +37,7 @@ void dec2(){
 	for (i = 0; i < N; i++)
 		slowInc2(ptr, -1);
 
+	print(-1,"end dec2 : %d", *ptr);
 	myExit();
 }
 

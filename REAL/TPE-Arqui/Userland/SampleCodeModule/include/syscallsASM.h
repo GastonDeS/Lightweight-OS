@@ -40,6 +40,6 @@ void pipeWriteSyscall(int pipeId, char * addr, int n, int *returnValue);
 void pipeReadSyscall(int pipeId, char * addr, int n, int *returnValue);
 void printPipeSyscall(char *str, int strSize);
 void pipeOpenSyscall(int pipeId, int *returnValue);
-void smhOpenSyscall( int id, int size, void *ptr);
+void smhOpenSyscall( int id, int size, void **ptr);
 
 #endif
